@@ -1,0 +1,13 @@
+version: '3'
+services:
+  bucketify:
+    build: .
+    # This application will be running on AWS Amplify.
+    command: yarn start
+    volumes:
+      - .:/usr/src/app/
+      - ~/.aws/:/root/.aws/
+      - ~/.gitconfig:/root/.gitconfig
+      - ~/.zshrc:/root/.zshrc
+    ports:
+      - "3000:3000"
