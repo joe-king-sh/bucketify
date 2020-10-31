@@ -1,0 +1,17 @@
+{
+  "projectName": "bucketify",
+  "version": "3.0",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "react",
+    "config": {
+      "SourceDir": "bucketify/src",
+      "DistributionDir": "bucketify/build",
+      "BuildCommand": "yarn build",
+      "StartCommand": "yarn start"
+    }
+  },
+  "providers": [
+    "awscloudformation"
+  ]
+}
