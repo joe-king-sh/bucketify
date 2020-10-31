@@ -1,0 +1,10 @@
+version: "3"
+services:
+  bucketify:
+    environment:
+      - HOME=/root
+    volumes:
+      - ~/.aws/:/root/.aws/
+      - ~/.gitconfig:/root/.gitconfig
+      - ~/.zshrc:/root/.zshrc
+    command: /bin/zsh -c "while sleep 1000; do :; done"
