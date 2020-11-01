@@ -1,0 +1,65 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-bucketify-production-233306-authRole",
+      "UnauthRoleArn": "arn:aws:iam::757523705531:role/amplify-bucketify-production-233306-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::757523705531:role/amplify-bucketify-production-233306-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-bucketify-production-233306-deployment",
+      "UnauthRoleName": "amplify-bucketify-production-233306-unauthRole",
+      "StackName": "amplify-bucketify-production-233306",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:757523705531:stack/amplify-bucketify-production-233306/7c5f0950-1bd1-11eb-b9c5-063a64457ffa",
+      "AmplifyAppId": "d3bi2v1a9nl57i"
+    }
+  },
+  "api": {
+    "bucketify": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7,
+              "description": "amplify-api-key"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        },
+        "GraphQLAPIIdOutput": "ydmh7lk2nrdihlglkznodi6qz4",
+        "GraphQLAPIEndpointOutput": "https://qyuln3mzuzh5xhguh7ftnt66vu.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-fusajvanqbfytjgaxqtrlzlb6a"
+      },
+      "lastPushTimeStamp": "2020-11-01T02:18:49.308Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-233306-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apibucketify"
+      },
+      "lastPushDirHash": "oGOhLxFYMprOFFTFDfKdW8P/sGQ="
+    }
+  },
+  "auth": {
+    "bucketify45b5d1fa": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-233306-deployment/amplify-cfn-templates/auth/bucketify45b5d1fa-cloudformation-template.yml",
+        "logicalId": "authbucketify45b5d1fa"
+      },
+      "lastPushTimeStamp": "2020-11-01T02:18:49.398Z",
+      "output": {
+        "AppClientSecret": "1oo4jpssv50pvtul7534nk14n6tpu059v8p021q5rh4jbhk13v5m",
+        "UserPoolId": "ap-northeast-1_RGnjCb83f",
+        "AppClientIDWeb": "1u673efmg3utb0qs8f0tc098gn",
+        "AppClientID": "2nthk2gk47dgs174k9556n581r",
+        "IdentityPoolId": "ap-northeast-1:97d742c0-776d-4909-bfd3-a3de8198d00f",
+        "IdentityPoolName": "bucketify45b5d1fa_identitypool_45b5d1fa__production",
+        "UserPoolName": "bucketify45b5d1fa_userpool_45b5d1fa"
+      },
+      "lastPushDirHash": "IVQZJF+/wiyRa2vpgJ3O+rbDhmQ="
+    }
+  }
+}

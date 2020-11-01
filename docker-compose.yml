@@ -3,7 +3,7 @@ services:
   bucketify:
     build: .
     # This application will be running on AWS Amplify.
-    command: yarn start
+    command: cd ./bucketify && yarn start
     volumes:
       - .:/usr/src/app/
       - ~/.aws/:/root/.aws/
