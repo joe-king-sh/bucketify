@@ -68,30 +68,15 @@
 				}
 			}
 		},
-		"apibucketify": {
+		"authbucketify172ee80d": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-233306-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-130027-deployment/amplify-cfn-templates/auth/bucketify172ee80d-cloudformation-template.yml",
 				"Parameters": {
-					"CreateAPIKey": 1,
-					"AppSyncApiName": "bucketify",
-					"DynamoDBBillingMode": "PAY_PER_REQUEST",
-					"DynamoDBEnableServerSideEncryption": false,
-					"S3DeploymentBucket": "amplify-bucketify-production-233306-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/654b07d1bad2ef7423f571020dde52da36f20aca",
-					"env": "production"
-				}
-			}
-		},
-		"authbucketify45b5d1fa": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-233306-deployment/amplify-cfn-templates/auth/bucketify45b5d1fa-cloudformation-template.yml",
-				"Parameters": {
-					"identityPoolName": "bucketify45b5d1fa_identitypool_45b5d1fa",
+					"identityPoolName": "bucketify172ee80d_identitypool_172ee80d",
 					"allowUnauthenticatedIdentities": false,
-					"resourceNameTruncated": "bucket45b5d1fa",
-					"userPoolName": "bucketify45b5d1fa_userpool_45b5d1fa",
+					"resourceNameTruncated": "bucket172ee80d",
+					"userPoolName": "bucketify172ee80d_userpool_172ee80d",
 					"autoVerifiedAttributes": "email",
 					"mfaConfiguration": "OFF",
 					"mfaTypes": "SMS Text Message",
@@ -107,10 +92,10 @@
 					"userpoolClientRefreshTokenValidity": 30,
 					"userpoolClientWriteAttributes": "email",
 					"userpoolClientReadAttributes": "email",
-					"userpoolClientLambdaRole": "bucket45b5d1fa_userpoolclient_lambda_role",
+					"userpoolClientLambdaRole": "bucket172ee80d_userpoolclient_lambda_role",
 					"userpoolClientSetAttributes": false,
-					"sharedId": "45b5d1fa",
-					"resourceName": "bucketify45b5d1fa",
+					"sharedId": "172ee80d",
+					"resourceName": "bucketify172ee80d",
 					"authSelections": "identityPoolAndUserPool",
 					"authRoleArn": {
 						"Fn::GetAtt": [
@@ -133,11 +118,22 @@
 				}
 			}
 		},
+		"hostingamplifyhosting": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-130027-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
+				"Parameters": {
+					"appId": "d1v8j70m31dbw8",
+					"type": "manual",
+					"env": "production"
+				}
+			}
+		},
 		"UpdateRolesWithIDPFunction": {
 			"DependsOn": [
 				"AuthRole",
 				"UnauthRole",
-				"authbucketify45b5d1fa"
+				"authbucketify172ee80d"
 			],
 			"Type": "AWS::Lambda::Function",
 			"Properties": {
@@ -220,7 +216,7 @@
 				},
 				"idpId": {
 					"Fn::GetAtt": [
-						"authbucketify45b5d1fa",
+						"authbucketify172ee80d",
 						"Outputs.IdentityPoolId"
 					]
 				},

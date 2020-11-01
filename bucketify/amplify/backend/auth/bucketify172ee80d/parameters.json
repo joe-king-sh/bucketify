@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "bucketify45b5d1fa_identitypool_45b5d1fa",
+    "identityPoolName": "bucketify172ee80d_identitypool_172ee80d",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "bucket45b5d1fa",
-    "userPoolName": "bucketify45b5d1fa_userpool_45b5d1fa",
+    "resourceNameTruncated": "bucket172ee80d",
+    "userPoolName": "bucketify172ee80d_userpool_172ee80d",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "bucket45b5d1fa_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "bucket172ee80d_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "45b5d1fa",
-    "resourceName": "bucketify45b5d1fa",
+    "sharedId": "172ee80d",
+    "resourceName": "bucketify172ee80d",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
