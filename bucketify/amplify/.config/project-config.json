@@ -5,8 +5,8 @@
   "javascript": {
     "framework": "react",
     "config": {
-      "SourceDir": "bucketify/src",
-      "DistributionDir": "bucketify/build",
+      "SourceDir": "src",
+      "DistributionDir": "build",
       "BuildCommand": "yarn build",
       "StartCommand": "yarn start"
     }

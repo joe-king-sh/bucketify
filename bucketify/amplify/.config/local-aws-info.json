@@ -1,0 +1,7 @@
+{
+    "production": {
+        "configLevel": "project",
+        "useProfile": true,
+        "profileName": "amplify-user"
+    }
+}

@@ -9,7 +9,7 @@
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 	"dockerComposeFile": [
 		"../docker-compose.yml",
-		"docker-compose.extend.yml"
+		"docker-compose.extend.yml",
 	],
 	"service": "bucketify",
 
@@ -25,6 +25,7 @@
 		"hediet.vscode-drawio",
 		"shd101wyy.markdown-preview-enhanced",
 		"dbaeumer.vscode-eslint",
+		"codezombiech.gitignore",
 	],
 
 	"workspaceFolder": "/usr/src/app",
