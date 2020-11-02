@@ -1,31 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
+// Routing
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-function App() {
+
+
+// Amplify
+// import { 
+//   withAuthenticator,
+//   AmplifySignOut 
+// } from '@aws-amplify/ui-react'
+
+import Landing from './components/pages/Landing';
+import MyBuckets from './components/pages/MyBuckets';
+
+
+
+const App: React.FC = () => {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <AmplifySignOut />
-    </div>
+      <Router>
+        <Switch>
+          <div className="App">
+            <Route path="/" component={Landing} exact />
+            <Route path="/buckets" component={MyBuckets} exact />
+            {/* <AmplifySignOut /> */}
+          </div>
+      </Switch>
+      </Router>
   );
 }
 
-export default withAuthenticator(App);
-// export default App();
+// export default withAuthenticator(App);
+export default App;
 

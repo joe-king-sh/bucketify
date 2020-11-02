@@ -12,7 +12,9 @@ docker-compose up
 
 
 npm install -g react && \ 
-npm install -g redux react-redux 
+
+<!-- reduxやめる -->
+<!-- npm install -g redux react-redux  -->
 
 
 npm install aws-amplify @aws-amplify/ui-react
@@ -20,7 +22,16 @@ npm install aws-amplify @aws-amplify/ui-react
 npm install --save @types/graphql
 npm install --save type-graphql
 
-yarn add aws-amplify aws-amplify-react
+yarn add aws-amplify-react
+
+yarn add @material-ui/core
+
+
+yarn add @material-ui/icons
+
+yarn add react-router react-router-dom
+
+yarn add @types/react-router-dom
 
 最終的にはnpm installだけ
 ```
