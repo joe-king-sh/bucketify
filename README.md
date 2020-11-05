@@ -36,3 +36,8 @@ yarn add @types/react-router-dom
 最終的にはnpm installだけ
 ```
 
+
+TODO
+- GenericTemplateを分解
+- 
+
