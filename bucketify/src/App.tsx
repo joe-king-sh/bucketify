@@ -13,23 +13,26 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 //   AmplifySignOut 
 // } from '@aws-amplify/ui-react'
 
-import Landing from './components/pages/Landing';
-import MyBuckets from './components/pages/MyBuckets';
+import Landing from './components/05_pages/landing';
+import MyBuckets from './components/05_pages/myBuckets';
+import GenericTemplate from './components/04_templates/genericTemplate';
 
 
 
 const App: React.FC = () => {
 
   return (
-      <Router>
-        <Switch>
-          <div className="App">
+    <Router>
+      <Switch>
+        <div className="App">
+          <GenericTemplate>
             <Route path="/" component={Landing} exact />
             <Route path="/buckets" component={MyBuckets} exact />
             {/* <AmplifySignOut /> */}
-          </div>
+          </GenericTemplate>
+        </div>
       </Switch>
-      </Router>
+    </Router>
   );
 }
 

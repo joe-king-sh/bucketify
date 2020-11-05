@@ -1,15 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+//amplify
 import Amplify from "aws-amplify";
 import awsExports from "./aws-exports";
+//Grobal reset
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+// Parallax
+import { ParallaxProvider } from 'react-scroll-parallax';
+
+
+import App from './App';
+
+
 Amplify.configure(awsExports);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <CssBaseline />
+    <ParallaxProvider>
+      <App />
+    </ParallaxProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

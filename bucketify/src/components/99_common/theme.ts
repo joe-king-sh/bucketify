@@ -1,5 +1,3 @@
-import React from 'react';
-
 // materilai-ui
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
