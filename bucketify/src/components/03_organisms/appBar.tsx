@@ -32,12 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
     logoWrapper: {
       margin: 'auto',
       justifyContent: 'center',
-      paddingRight: '24px', // Menu button
+      paddingRight: '24px',
+      // Make the logo image stick out.
+      maxHeight: '4rem',
+
+
       [theme.breakpoints.up("md")]: {
         margin: '0',
-        '& img': {
-          // height: '10vh',
-        }
       },
     },
     logo: {
@@ -46,17 +47,25 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '0 0 0 0',
 
       '& h1': {
-        // fontSize: '2rem',
         margin: 'auto',
         paddingTop: '0.25rem',
+        [theme.breakpoints.down("sm")]: {
+          paddingTop: '0.5rem',
+        },
+  
+      },
 
-        // varticalAlign: 'center',
-
-      }
+      // Make the logo image stick out.
+      [theme.breakpoints.up("md")]: {
+          height: '5rem',
+      },
     },
 
     toolbar: {
       paddingRight: 24,
+      [theme.breakpoints.up("md")]: {
+        paddingLeft: '0.5rem',
+      }
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -70,7 +79,7 @@ const useStyles = makeStyles((theme: Theme) =>
     appBarShift: {
       marginLeft: drawerWidth,
       width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(["width", "margin"], {
+      transition: theme.transitions. create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
