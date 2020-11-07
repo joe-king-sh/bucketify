@@ -7,11 +7,12 @@ import { Author } from '../99_common/const'
 export const Footer: React.FC = () => {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
-        {"Copyright © "}
+        {"© "}
+        {new Date().getFullYear()}
+        {" Copyright "}
         <Link color="inherit" to="/">
           {Author}
-        </Link>{" "}
-        {new Date().getFullYear()}
+        </Link>
         {"."}
       </Typography>
     );

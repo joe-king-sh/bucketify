@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -22,7 +22,10 @@ import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 
 
 import logo from '../../images/bucketify_logo.png';
-
+import {
+  AuthContext,
+  // UserDataContext
+} from '../../App'
 
 const drawerWidth = 240;
 
@@ -52,12 +55,12 @@ const useStyles = makeStyles((theme: Theme) =>
         [theme.breakpoints.down("sm")]: {
           paddingTop: '0.5rem',
         },
-  
+
       },
 
       // Make the logo image stick out.
       [theme.breakpoints.up("md")]: {
-          height: '5rem',
+        height: '5rem',
       },
     },
 
@@ -79,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
     appBarShift: {
       marginLeft: drawerWidth,
       width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions. create(["width", "margin"], {
+      transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
@@ -122,10 +125,13 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
   handleDarkModeToggle,
   handleDrawerOpen,
 }) => {
+  const AuthStateHooks = useContext(AuthContext);
 
   const classes = useStyles();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('md'));
+
+
 
   return (
     <AppBar
@@ -173,6 +179,7 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
               )
           }
 
+          <p>login status {AuthStateHooks.authState}</p>
 
           <Button variant="outlined" color="secondary">
             Sign In

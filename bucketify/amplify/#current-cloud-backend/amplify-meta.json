@@ -1,38 +1,72 @@
 {
   "providers": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-bucketify-production-130027-authRole",
-      "UnauthRoleArn": "arn:aws:iam::757523705531:role/amplify-bucketify-production-130027-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::757523705531:role/amplify-bucketify-production-130027-authRole",
+      "AuthRoleName": "amplify-bucketify-dev-183117-authRole",
+      "UnauthRoleArn": "arn:aws:iam::757523705531:role/amplify-bucketify-dev-183117-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::757523705531:role/amplify-bucketify-dev-183117-authRole",
       "Region": "ap-northeast-1",
-      "DeploymentBucketName": "amplify-bucketify-production-130027-deployment",
-      "UnauthRoleName": "amplify-bucketify-production-130027-unauthRole",
-      "StackName": "amplify-bucketify-production-130027",
-      "StackId": "arn:aws:cloudformation:ap-northeast-1:757523705531:stack/amplify-bucketify-production-130027/37b35150-1c42-11eb-b9c5-063a64457ffa",
-      "AmplifyAppId": "d1v8j70m31dbw8"
+      "DeploymentBucketName": "amplify-bucketify-dev-183117-deployment",
+      "UnauthRoleName": "amplify-bucketify-dev-183117-unauthRole",
+      "StackName": "amplify-bucketify-dev-183117",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:757523705531:stack/amplify-bucketify-dev-183117/d3344390-2012-11eb-8886-0e07027c3ef6",
+      "AmplifyAppId": "d1wal9r75hr18"
+    }
+  },
+  "function": {
+    "bucketify15e1b624CustomMessage": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "lastBuildTimeStamp": "2020-11-06T09:49:18.088Z",
+      "lastPackageTimeStamp": "2020-11-06T09:49:18.138Z",
+      "distZipFilename": "bucketify15e1b624CustomMessage-4b765a7953416e54394e-build.zip",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/function/bucketify15e1b624CustomMessage-cloudformation-template.json",
+        "logicalId": "functionbucketify15e1b624CustomMessage"
+      },
+      "lastPushTimeStamp": "2020-11-06T10:16:12.194Z",
+      "output": {
+        "Region": "ap-northeast-1",
+        "Arn": "arn:aws:lambda:ap-northeast-1:757523705531:function:bucketify15e1b624CustomMessage-dev",
+        "Name": "bucketify15e1b624CustomMessage-dev",
+        "LambdaExecutionRole": "bucketify15e1b624CustomMessage-dev"
+      },
+      "lastPushDirHash": "0uQfjIvcYP2d04QH8p+FEdqorYg="
     }
   },
   "auth": {
-    "bucketify172ee80d": {
+    "bucketify15e1b624": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "bucketify15e1b624CustomMessage",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        }
+      ],
       "customAuth": false,
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-130027-deployment/amplify-cfn-templates/auth/bucketify172ee80d-cloudformation-template.yml",
-        "logicalId": "authbucketify172ee80d"
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/auth/bucketify15e1b624-cloudformation-template.yml",
+        "logicalId": "authbucketify15e1b624"
       },
-      "lastPushTimeStamp": "2020-11-01T13:07:07.464Z",
+      "lastPushTimeStamp": "2020-11-06T10:16:12.197Z",
       "output": {
-        "AppClientSecret": "1m4q0fmueh8q2pr50c886ka6kp68hfoo8dp9haoa7468n4neul0c",
-        "UserPoolId": "ap-northeast-1_vPIWoxPxJ",
-        "AppClientIDWeb": "1fpc5pclm9l63t15af9dge4l9u",
-        "AppClientID": "2hju6rq64o7pdlpac9nite4eis",
-        "IdentityPoolId": "ap-northeast-1:13ac7943-0536-4717-98d0-337e5b63275b",
-        "IdentityPoolName": "bucketify172ee80d_identitypool_172ee80d__production",
-        "UserPoolName": "bucketify172ee80d_userpool_172ee80d"
+        "AppClientSecret": "1kqua33bam11q8s24pvm2vb27khanoi17je33j0gkae9lce5eoou",
+        "UserPoolId": "ap-northeast-1_HdCWPvlrh",
+        "AppClientIDWeb": "1092vgukupp6pir9madues3k2t",
+        "AppClientID": "7ratcumb27u9ubocljvtiheo7s",
+        "HostedUIDomain": "bucketify-dev",
+        "IdentityPoolId": "ap-northeast-1:90120835-6188-430a-9079-dacc00de5ad4",
+        "IdentityPoolName": "bucketify15e1b624_identitypool_15e1b624__dev",
+        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://www.bucketify.net/\"],\"LogoutURLs\":[\"https://www.bucketify.net/\"]}",
+        "UserPoolName": "bucketify15e1b624_userpool_15e1b624"
       },
-      "lastPushDirHash": "tbpKLwGrVGGQGTY6t+xNCnef5Bk="
+      "lastPushDirHash": "Dz6kTuR9TzH0tSAuG/mC01w4NkM="
     }
   },
   "hosting": {
@@ -41,10 +75,10 @@
       "providerPlugin": "awscloudformation",
       "type": "manual",
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-production-130027-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
         "logicalId": "hostingamplifyhosting"
       },
-      "lastPushTimeStamp": "2020-11-01T13:07:07.464Z",
+      "lastPushTimeStamp": "2020-11-06T10:16:12.202Z",
       "output": {},
       "lastPushDirHash": "/+VZ33seFFqAr6wbtptwbINUfSA="
     }
