@@ -51,11 +51,8 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
 
   // DrawerOpen
   const [isDrawerOpen, setOpen] = React.useState(false);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleDrawerOpen = (isDrawerOpen: boolean) => {
+    setOpen(!isDrawerOpen);
   };
 
   // Dark or Light Mode.
@@ -83,11 +80,11 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
           isDarkMode={isDarkMode}
           isDrawerOpen={isDrawerOpen}
           handleDarkModeToggle={(isDarkMode) => handleDarkModeToggle(isDarkMode)}
-          handleDrawerOpen={() => handleDrawerOpen()} />
+          handleDrawerOpen={() => handleDrawerOpen(isDrawerOpen)} />
 
         <MyDrawer
           isDrawerOpen={isDrawerOpen}
-          handleDrawerClose={() => handleDrawerClose()}
+          handleDrawerClose={() => handleDrawerOpen(isDrawerOpen)}
           isDarkMode={isDarkMode}
           handleDarkModeToggle={(isDarkMode) => handleDarkModeToggle(isDarkMode)}
         />
