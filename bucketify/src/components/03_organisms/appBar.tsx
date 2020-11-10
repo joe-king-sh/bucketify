@@ -4,27 +4,32 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-// import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import Tooltip from "@material-ui/core/Tooltip";
 
-// import Typography from "@material-ui/core/Typography";
+// Icons
 import MenuIcon from "@material-ui/icons/Menu";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Language from "@material-ui/icons/Language";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
+// Auth
+import { Auth } from 'aws-amplify';
+import { AuthState } from '@aws-amplify/ui-components';
 
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 // style
 import clsx from "clsx";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 
 import logo from '../../images/bucketify_logo.png';
 import {
   AuthContext,
-  // UserDataContext
 } from '../../App'
 
 const drawerWidth = 240;
@@ -105,6 +110,11 @@ const useStyles = makeStyles((theme: Theme) =>
       '& button': {
         margin: '0.25rem',
       }
+    },
+
+    // IconButton
+    iconButtonLink: {
+      color: 'white',
     }
 
   })
@@ -130,8 +140,6 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('md'));
-
-
 
   return (
     <AppBar
@@ -164,29 +172,59 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
 
         <Box className={clsx(classes.buttonNav)}>
 
+        <Tooltip title="Language">
           <IconButton color="inherit"  >
             <Language />
           </IconButton>
-          {
-            isDarkMode ? (
-              <IconButton color="inherit" onClick={() => handleDarkModeToggle(isDarkMode)} >
-                <Brightness7Icon />
-              </IconButton>
-            ) : (
-                <IconButton color="inherit" onClick={() => handleDarkModeToggle(isDarkMode)} >
-                  <Brightness4Icon />
+        </Tooltip>
+
+
+          <Tooltip title="Contrast">
+            {
+              isDarkMode ? (
+                <IconButton color="inherit" onClick={() => handleDarkModeToggle(isDarkMode)} aria-label="Switch to Light mode">
+                  <Brightness7Icon />
                 </IconButton>
+              ) : (
+
+                  <IconButton color="inherit" onClick={() => handleDarkModeToggle(isDarkMode)} aria-label="Switch to Dark mode">
+                    <Brightness4Icon />
+                  </IconButton>
+                )
+            }
+          </Tooltip>
+
+          {
+            AuthStateHooks.authState === AuthState.SignedIn ? (
+              <React.Fragment>
+                <Link href='/accounts'>
+        <Tooltip title="Account">
+
+                  <IconButton className={clsx(classes.iconButtonLink)}>
+                    <AccountCircle />
+                  </IconButton>
+                  </Tooltip>
+
+                </Link>
+                <Tooltip title="SignOut">
+                <IconButton className={clsx(classes.iconButtonLink)} onClick={() => Auth.signOut()}>
+                  <ExitToAppIcon />
+                </IconButton>
+                </Tooltip>
+
+              </React.Fragment>
+            ) : (
+                <React.Fragment>
+                  <Button variant="outlined" color="secondary">
+                    Sign In
+                  </Button>
+                  <Button variant="contained" color="secondary">
+                    Sign Up
+                </Button>
+                </React.Fragment>
               )
           }
 
-          <p>login status {AuthStateHooks.authState}</p>
-
-          <Button variant="outlined" color="secondary">
-            Sign In
-        </Button>
-          <Button variant="contained" color="secondary">
-            Sign Up
-        </Button>
         </Box>
 
       </Toolbar>

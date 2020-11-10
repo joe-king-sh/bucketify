@@ -34,10 +34,20 @@ yarn add react-router react-router-dom
 yarn add @types/react-router-dom
 
 最終的にはnpm installだけ
+
+Docker内でtsのコンパイルが遅すぎるのでDockerやめる
 ```
 
 
-TODO
-- GenericTemplateを分解
-- 
 
+TODO
+- [x] GenericTemplateを分解
+- [ ] AuthStateをどこまで持たせるか、GenerateTmeplateに絶対渡さないといけないけどLandingはLogin不要にしたい。だけどLoginできてる時はAppBarとかを変更したい。Stateの流れを図示して考える。
+- 上記が無理そうなら、Landingだけ別ページとして管理、ヘッダーとかも付けない。もしくは付けても胃から、ログイン状態に応じて変更したりしない。そうする場合トップのロゴ押したときの遷移先を変更する必要あり
+
+- [x] stateのまとめ資料作成 
+- [ ] SingUpページの直接表示方法の確認
+
+Known error
+ - [] コントラストをDrawerから遷移した際にTopに飛ばされる
+ - 

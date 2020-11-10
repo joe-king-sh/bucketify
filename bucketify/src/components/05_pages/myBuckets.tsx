@@ -1,11 +1,28 @@
 import React from 'react';
+
+// Template
 import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+import GenericTemplate from '../04_templates/genericTemplate';
+
+import { Container, Typography } from "@material-ui/core";
+
 
 const MyBuckets: React.FC = () => {
-    const conponents = <h1>My Buckets</h1>
+    // const conponents = 
     return (
-        <LoginRequiredWrapper children={conponents} />
-           
+
+
+        // <LoginRequiredWrapper children={conponents} />
+        <GenericTemplate>
+            <LoginRequiredWrapper isLoginRequired={true}>
+                <Container>
+                    <Typography variant="h2" component="h2">
+                        My Buckets
+                    </Typography>
+                </Container>
+            </LoginRequiredWrapper>
+        </GenericTemplate>
+
     );
 }
 
