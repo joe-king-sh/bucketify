@@ -5,10 +5,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 // Auth
 import { AuthState } from '@aws-amplify/ui-components';
 
+// Pages
 import Landing from './components/05_pages/landing';
 import MyBuckets from './components/05_pages/myBuckets';
-import GenericTemplate from './components/04_templates/genericTemplate';
-
+import NotFound from './components/05_pages/404'
 
 // export type LoginContext = {
 //   login: boolean,
@@ -26,7 +26,7 @@ export interface IAuthStateHooks {
 }
 const defaultAuthStateHooks: IAuthStateHooks = {
   authState: AuthState.SignOut,
-  setAuthState: () => {}
+  setAuthState: () => { }
 }
 export const AuthContext = React.createContext<IAuthStateHooks>(defaultAuthStateHooks);
 
@@ -45,11 +45,6 @@ export const UserDataContext = React.createContext<IUserDataStateHooks>(defaultU
 
 const App: React.FC = () => {
 
-  // const [login, setLogin] = React.useState(false);
-  // const loginState: LoginContext = {
-  //   login: login, setLogin: setLogin
-  // };
-
   const [authState, setAuthState] = React.useState<AuthState>();
   const AuthStateHooks: IAuthStateHooks = {
     authState: authState,
@@ -60,26 +55,27 @@ const App: React.FC = () => {
     user: user,
     setUser: setUser
   }
-  
+
 
 
   return (
-    <Router>
-      <Switch>
-        <div className="App">
-          <AuthContext.Provider value={AuthStateHooks}>
-          <UserDataContext.Provider value={UserDataStateHooks}>
+    <AuthContext.Provider value={AuthStateHooks}>
+      <UserDataContext.Provider value={UserDataStateHooks}>
+        <Router>
+          <Switch>
+            {/* <div className="App"> */}
 
-            <GenericTemplate>
-              <Route path="/" component={Landing} exact />
-              <Route path="/buckets" component={MyBuckets} exact />
-            </GenericTemplate>
-          </UserDataContext.Provider>
+            {/* <GenericTemplate> */}
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/buckets" component={MyBuckets} />
 
-          </AuthContext.Provider>
-        </div>
-      </Switch>
-    </Router>
+            <Route component={NotFound} />
+            {/* </GenericTemplate> */}
+            {/* </div> */}
+          </Switch>
+        </Router>
+      </UserDataContext.Provider>
+    </AuthContext.Provider>
   );
 }
 
