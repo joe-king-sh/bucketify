@@ -31,6 +31,7 @@ import logo from '../../images/bucketify_logo.png';
 import {
   AuthContext,
 } from '../../App'
+import { Typography } from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -115,7 +116,22 @@ const useStyles = makeStyles((theme: Theme) =>
     // IconButton
     iconButtonLink: {
       color: 'white',
-    }
+    },
+
+    // Link in Button
+    linkInButtonOutline: {
+      color: 'white',
+      '&:hover': {
+        textDecoration: 'none',
+      },
+    },
+
+    linkInButtonContaind: {
+      color: 'black',
+      '&:hover': {
+        textDecoration: 'none',
+      },
+    },
 
   })
 );
@@ -144,7 +160,9 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
   return (
     <AppBar
       position="absolute"
-      className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}
+      className={clsx(
+        classes.appBar,
+        ( isDrawerOpen || (AuthStateHooks.authState === AuthState.SignedIn && matches) )&& classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
         <IconButton
@@ -162,21 +180,21 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
           <MenuIcon />
         </IconButton>
         <Box className={clsx(classes.logoWrapper)}>
-          <a href="/" className={clsx(classes.logo)} >
-            <h1>
-              <img src={logo} alt="bucketify-logo" className={clsx(classes.logo)} />
-            </h1>
-          </a>
+          <Typography variant="h1" component="h2" className={clsx(classes.logo)} >
+
+            <img src={logo} alt="bucketify-logo" className={clsx(classes.logo)} />
+
+          </Typography>
         </Box>
 
 
         <Box className={clsx(classes.buttonNav)}>
 
-        <Tooltip title="Language">
-          <IconButton color="inherit"  >
-            <Language />
-          </IconButton>
-        </Tooltip>
+          <Tooltip title="Language">
+            <IconButton color="inherit"  >
+              <Language />
+            </IconButton>
+          </Tooltip>
 
 
           <Tooltip title="Contrast">
@@ -198,29 +216,28 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
             AuthStateHooks.authState === AuthState.SignedIn ? (
               <React.Fragment>
                 <Link href='/accounts'>
-        <Tooltip title="Account">
-
-                  <IconButton className={clsx(classes.iconButtonLink)}>
-                    <AccountCircle />
-                  </IconButton>
+                  <Tooltip title="Account">
+                    <IconButton className={clsx(classes.iconButtonLink)}>
+                      <AccountCircle />
+                    </IconButton>
                   </Tooltip>
 
                 </Link>
                 <Tooltip title="SignOut">
-                <IconButton className={clsx(classes.iconButtonLink)} onClick={() => Auth.signOut()}>
-                  <ExitToAppIcon />
-                </IconButton>
+                  <IconButton className={clsx(classes.iconButtonLink)} onClick={() => Auth.signOut()}>
+                    <ExitToAppIcon />
+                  </IconButton>
                 </Tooltip>
 
               </React.Fragment>
             ) : (
                 <React.Fragment>
-                  <Button variant="outlined" color="secondary">
-                    Sign In
+                  <Button variant="outlined" color="secondary" >
+                    <Link href='/signin' className={clsx(classes.linkInButtonOutline)} >Sign In</Link>
                   </Button>
                   <Button variant="contained" color="secondary">
-                    Sign Up
-                </Button>
+                    <Link href='/signup' className={clsx(classes.linkInButtonContaind)} >Sign Up</Link>
+                  </Button>
                 </React.Fragment>
               )
           }

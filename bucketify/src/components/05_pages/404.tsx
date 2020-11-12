@@ -5,7 +5,7 @@ import { Container, Typography } from '@material-ui/core';
 import GenericTemplate from '../04_templates/genericTemplate';
 import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
 
-const NotFound = () => (
+const NotFound: React.FC = () => (
   <React.Fragment>
     <GenericTemplate>
       <LoginRequiredWrapper isLoginRequired={false}>
@@ -16,7 +16,7 @@ const NotFound = () => (
             Not Found
           </Typography>
           <Typography>
-            <p>Sorry..<br />This page has been deleted or not exists.</p>
+            Sorry..<br />This page has been deleted or not exists.
           </Typography>
 
         </Container>

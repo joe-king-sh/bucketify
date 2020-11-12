@@ -1,12 +1,8 @@
 import React, { useContext } from "react";
 import Amplify from 'aws-amplify';
-import {
-    AmplifyAuthenticator,
-    AmplifySignUp,
-    AmplifySignIn
-} from '@aws-amplify/ui-react';
+
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
-import Box from "@material-ui/core/Box";
+import MyAuthenticator from '../03_organisms/authenticator'
 
 import awsconfig from '../../aws-exports';
 
@@ -25,7 +21,7 @@ export interface LoginRequiredWrapperProps {
 
 const LoginRequiredWrapper: React.FC<LoginRequiredWrapperProps> = ({
     children,
-    isLoginRequired
+    isLoginRequired,
 }) => {
 
     // Hooks that manage auth states are injectioned from App.
@@ -37,50 +33,28 @@ const LoginRequiredWrapper: React.FC<LoginRequiredWrapperProps> = ({
             console.log('nextAuthState:' + nextAuthState)
             console.log('authData:' + authData)
             AuthStateHooks.setAuthState(nextAuthState);
-            UseDataStateHooks.setUser(authData)
+            UseDataStateHooks.setUser(authData);
         });
         // eslint-disable-next-line
     }, []);
 
 
     if ((AuthStateHooks.authState === AuthState.SignedIn && UseDataStateHooks.user) || !isLoginRequired) {
+        console.log('true')
         return (
-            <Box>
+
+            <React.Fragment>
                 {/* <div>Hello, {UseDataStateHooks.user.username}</div> */}
                 {children}
-            </Box>
+            </React.Fragment>
         );
     }
     else {
+        console.log('falese');
+
         return (
-            <React.Fragment>
-                <AmplifyAuthenticator>
-                    <AmplifySignUp
-                        slot="sign-up"
-                        formFields={[
-                            { type: 'email', required: true },
-                            { type: 'password', required: true },
-                            { type: 'username', required: true },
-
-                        ]}
-                        usernameAlias="email" />
-                    <AmplifySignIn slot="sign-in" usernameAlias="email" />
-                </AmplifyAuthenticator>
-            </React.Fragment>);
-    }
-    // return authState === AuthState.SignedIn && user ? (
-    //     <Box>
-    //         <div>Hello, {user}</div>
-    //         {children}
-    //         <AmplifySignOut />
-    //     </Box>
-    // ) : (
-    //         <div>
-    //             <p>login requierd</p>
-    //             <AmplifyAuthenticator />
-    //         </div>
-
-    //     );
+            <MyAuthenticator currentAuthState={AuthState.SignIn} />
+        )}
 }
 
 export default LoginRequiredWrapper;
