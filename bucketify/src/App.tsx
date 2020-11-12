@@ -9,6 +9,10 @@ import { AuthState } from '@aws-amplify/ui-components';
 import Landing from './components/05_pages/landing';
 import MyBuckets from './components/05_pages/myBuckets';
 import NotFound from './components/05_pages/404'
+import SignIn from './components/05_pages/signIn'
+import SignUp from './components/05_pages/signUp'
+import Accounts from './components/05_pages/accounts'
+
 
 // export type LoginContext = {
 //   login: boolean,
@@ -67,7 +71,11 @@ const App: React.FC = () => {
 
             {/* <GenericTemplate> */}
             <Route exact path="/" component={Landing} />
+            <Route exact path="/signin" component={SignIn} />
+            <Route exact path="/signup" component={SignUp} />
+            <Route exact path="/accounts" component={Accounts} />
             <Route exact path="/buckets" component={MyBuckets} />
+
 
             <Route component={NotFound} />
             {/* </GenericTemplate> */}

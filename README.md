@@ -47,6 +47,9 @@ TODO
 
 - [x] stateのまとめ資料作成 
 - [ ] SingUpページの直接表示方法の確認
+- [ ] アクセスキー塔の保存場所、Cognitoユーザプールはだめ、なぜなら更新ができないから。
+      Dynamodb案が妥当かと考えている。
+      usernameで引くようなやつ
 
 Known error
  - [] コントラストをDrawerから遷移した際にTopに飛ばされる

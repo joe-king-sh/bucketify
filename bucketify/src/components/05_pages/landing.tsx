@@ -5,7 +5,6 @@ import Box from "@material-ui/core/Box";
 import GenericTemplate from '../04_templates/genericTemplate';
 import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
 
-
 //Parallax
 import { ParallaxBanner } from 'react-scroll-parallax';
 

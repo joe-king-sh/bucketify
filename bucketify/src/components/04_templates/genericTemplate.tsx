@@ -30,10 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "auto",
     },
 
-    // container: {
-    //   paddingTop: theme.spacing(4),
-    //   paddingBottom: theme.spacing(4),
-    // },
   })
 );
 
@@ -69,6 +65,7 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
 
   // Make custom theme.
   const theme = makeCustomTheme(isDarkMode);
+
 
   return (
     <ThemeProvider theme={theme}>
