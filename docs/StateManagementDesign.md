@@ -38,6 +38,8 @@ The state list using in this application.
 | LoginRequiredWrapper | - | - |AuthContext<br>UserDataContext |
 | MyBuckets  | -  | - | - |
 | Player  | - | - | - |
+| Signin  | - | - |  AuthContext|
+| Signup  | - | - |  AuthContext|
 
 
 #### About states of `isDrawerOepn` and `isDarkMode` 

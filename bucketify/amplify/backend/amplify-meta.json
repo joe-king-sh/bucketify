@@ -24,7 +24,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/function/bucketify15e1b624CustomMessage-cloudformation-template.json",
         "logicalId": "functionbucketify15e1b624CustomMessage"
       },
-      "lastPushTimeStamp": "2020-11-07T12:14:34.061Z",
+      "lastPushTimeStamp": "2020-11-12T22:19:09.732Z",
       "output": {
         "Region": "ap-northeast-1",
         "Arn": "arn:aws:lambda:ap-northeast-1:757523705531:function:bucketify15e1b624CustomMessage-dev",
@@ -54,7 +54,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/auth/bucketify15e1b624-cloudformation-template.yml",
         "logicalId": "authbucketify15e1b624"
       },
-      "lastPushTimeStamp": "2020-11-07T12:14:34.067Z",
+      "lastPushTimeStamp": "2020-11-12T22:19:09.734Z",
       "output": {
         "AppClientSecret": "1kqua33bam11q8s24pvm2vb27khanoi17je33j0gkae9lce5eoou",
         "UserPoolId": "ap-northeast-1_HdCWPvlrh",
@@ -78,7 +78,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
         "logicalId": "hostingamplifyhosting"
       },
-      "lastPushTimeStamp": "2020-11-07T12:14:34.069Z",
+      "lastPushTimeStamp": "2020-11-12T22:19:09.735Z",
       "output": {},
       "lastPushDirHash": "/+VZ33seFFqAr6wbtptwbINUfSA="
     }
