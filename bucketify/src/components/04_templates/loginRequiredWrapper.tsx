@@ -40,9 +40,10 @@ const LoginRequiredWrapper: React.FC<LoginRequiredWrapperProps> = ({
 
 
     if ((AuthStateHooks.authState === AuthState.SignedIn && UseDataStateHooks.user) || !isLoginRequired) {
-        console.log('true')
-        return (
 
+        console.log('already signed in')
+
+        return (
             <React.Fragment>
                 {/* <div>Hello, {UseDataStateHooks.user.username}</div> */}
                 {children}
@@ -50,7 +51,8 @@ const LoginRequiredWrapper: React.FC<LoginRequiredWrapperProps> = ({
         );
     }
     else {
-        console.log('falese');
+
+        console.log('need to signed in')
 
         return (
             <MyAuthenticator currentAuthState={AuthState.SignIn} />

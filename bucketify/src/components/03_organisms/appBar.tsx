@@ -4,7 +4,6 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 import Tooltip from "@material-ui/core/Tooltip";
 
 // Icons
@@ -19,12 +18,16 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
+// Router
+import { Link } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 // style
 import clsx from "clsx";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 
 
 import logo from '../../images/bucketify_logo.png';
@@ -121,16 +124,12 @@ const useStyles = makeStyles((theme: Theme) =>
     // Link in Button
     linkInButtonOutline: {
       color: 'white',
-      '&:hover': {
-        textDecoration: 'none',
-      },
+      textDecoration: 'none',
     },
 
     linkInButtonContaind: {
+      textDecoration: 'none',
       color: 'black',
-      '&:hover': {
-        textDecoration: 'none',
-      },
     },
 
   })
@@ -156,13 +155,14 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('md'));
+  // const history = useHistory();
 
   return (
     <AppBar
       position="absolute"
       className={clsx(
         classes.appBar,
-        ( isDrawerOpen || (AuthStateHooks.authState === AuthState.SignedIn && matches) )&& classes.appBarShift)}
+        (isDrawerOpen || (AuthStateHooks.authState === AuthState.SignedIn && matches)) && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
         <IconButton
@@ -173,20 +173,20 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
           className={
             clsx(
               classes.menuButton,
-
               (isDrawerOpen || matches) && classes.menuButtonHidden
             )}
         >
           <MenuIcon />
         </IconButton>
-        <Box className={clsx(classes.logoWrapper)}>
-          <Typography variant="h1" component="h2" className={clsx(classes.logo)} >
 
-            <img src={logo} alt="bucketify-logo" className={clsx(classes.logo)} />
+        <Link to='/'>
+          <Box className={clsx(classes.logoWrapper)}>
+            <Typography variant="h1" component="h2" className={clsx(classes.logo)} >
 
-          </Typography>
-        </Box>
-
+              <img src={logo} alt="bucketify-logo" className={clsx(classes.logo)} />
+            </Typography>
+          </Box>
+        </Link>
 
         <Box className={clsx(classes.buttonNav)}>
 
@@ -215,7 +215,7 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
           {
             AuthStateHooks.authState === AuthState.SignedIn ? (
               <React.Fragment>
-                <Link href='/accounts'>
+                <Link to='/accounts'>
                   <Tooltip title="Account">
                     <IconButton className={clsx(classes.iconButtonLink)}>
                       <AccountCircle />
@@ -232,11 +232,14 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
               </React.Fragment>
             ) : (
                 <React.Fragment>
-                  <Button variant="outlined" color="secondary" >
-                    <Link href='/signin' className={clsx(classes.linkInButtonOutline)} >Sign In</Link>
+                  {/* Sign in button links to login require pages. */}
+                  <Button variant="outlined" color="secondary">
+
+                    <Link to='/buckets' className={clsx(classes.linkInButtonOutline)} >Sign In</Link>
                   </Button>
+
                   <Button variant="contained" color="secondary">
-                    <Link href='/signup' className={clsx(classes.linkInButtonContaind)} >Sign Up</Link>
+                    <Link to='/signup' className={clsx(classes.linkInButtonContaind)} >Sign Up</Link>
                   </Button>
                 </React.Fragment>
               )
