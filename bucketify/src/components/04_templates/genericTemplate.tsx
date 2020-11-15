@@ -20,15 +20,21 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex",
-    },
 
+    },
     appBarSpacer: theme.mixins.toolbar,
 
     content: {
       flexGrow: 1,
-      height: "100vh",
       overflow: "auto",
+      display: "flex",
+      flexDirection: 'column',
+      minHeight: '100vh',
     },
+
+    stickyFooter: {
+      marginTop: 'auto',
+    }
 
   })
 );
@@ -86,16 +92,12 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
           handleDarkModeToggle={(isDarkMode) => handleDarkModeToggle(isDarkMode)}
         />
         <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          {/* <Container maxWidth="lg" className={classes.container}> */}
+          <Box className={classes.appBarSpacer} />
 
-
-            {children}
-
-            <Box pt={4}>
-              <Footer />
-            </Box>
-          {/* </Container> */}
+          {children}
+          <Box className={classes.stickyFooter}>
+            <Footer />
+          </Box>
         </main>
       </div>
     </ThemeProvider>
