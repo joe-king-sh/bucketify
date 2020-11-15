@@ -31,10 +31,18 @@ const Accounts: React.FC = () => {
                 画面遷移と簡単あ画面のイメージをdrawoioで定義して、それに合わせてDynamodbの設計を始める。
 
                 パスワード変更画面作って、ここから遷移できるようにする。パスワード変更自体はAuthenticator使う
+
+                パスワード変更とかいる？いらなくね？
+
+                後、普通にログインした場合の確認コードからの認証がうまくいかない。
+                
+
                 */}
 
                     {console.log('usr data: ' + UserDataHooks.user)}
                     {UserDataHooks.user !== undefined &&
+
+                        
                         <Typography>
                             {UserDataHooks.user.username}<br />
                             {UserDataHooks.user.attributes.email}<br />

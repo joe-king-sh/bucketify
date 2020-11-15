@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
-import { Link } from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import Collapse from '@material-ui/core/Collapse';
 
+// Style
 import clsx from "clsx";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
+// Router
+import { Link } from "react-router-dom";
 
 // Icons
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -20,6 +23,20 @@ import Brightness7Icon from "@material-ui/icons/Brightness7";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Language from "@material-ui/icons/Language";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import LibraryMusic from '@material-ui/icons/LibraryMusic';
+import Search from '@material-ui/icons/Search';
+import QueueMusic from '@material-ui/icons/QueueMusic';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import People from '@material-ui/icons/People';
+import Album from '@material-ui/icons/Album';
+import Audiotrack from '@material-ui/icons/Audiotrack';
+import Settings from '@material-ui/icons/Settings';
+import Share from '@material-ui/icons/Share';
+import GitHub from '@material-ui/icons/GitHub';
+import Twitter from '@material-ui/icons/Twitter';
+
 
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -27,11 +44,18 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 // Authorization
 import {
   AuthContext,
+  IAuthStateHooks,
+  // UserDataContext,
+  // IUserDataStateHooks,
 } from '../../App'
 import { AuthState } from '@aws-amplify/ui-components';
+import { Auth } from 'aws-amplify';
 
+// Constant setting
 const drawerWidth = 240;
 
+
+// Make custom styles
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
 
@@ -76,8 +100,13 @@ const useStyles = makeStyles((theme: Theme) =>
       textDecoration: "none",
       color: theme.palette.text.secondary,
     },
+
+    nested: {
+      paddingLeft: theme.spacing(4),
+    },
   })
 );
+
 
 export interface MyDrawerProps {
   isDrawerOpen: boolean;
@@ -95,8 +124,28 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
 
   const classes = useStyles();
   const theme = useTheme();
-  const AuthStateHooks = useContext(AuthContext);
   const matches = useMediaQuery(theme.breakpoints.up('md'));
+  const AuthStateHooks: IAuthStateHooks = useContext(AuthContext);
+  // const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
+
+  // Collapse library menu settings.
+  const [isLibraryOpen, setLibraryOpen] = React.useState(false);
+  const handleLibraryOpen = () => {
+    setLibraryOpen(!isLibraryOpen);
+  };
+
+  // Collapse Setting menu settings.
+  const [isSettingOpen, setSettingOpen] = React.useState(false);
+  const handleSettingOpen = () => {
+    setSettingOpen(!isSettingOpen);
+  };
+
+  // Collapse SNS menu settings.
+  const [isSNSOpen, setSNSOpen] = React.useState(false);
+  const handleSNSOpen = () => {
+    setSNSOpen(!isSNSOpen);
+  };
+
 
   return (
     <React.Fragment>
@@ -105,53 +154,99 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
         classes={{
           paper: clsx(
             classes.drawerPaper,
-            // Drawer must be shown when width higher than md and signedin. 
+            // This drawer must be showned when width higher than md and signed in. 
             (!isDrawerOpen && !(matches && AuthStateHooks.authState === AuthState.SignedIn)) && classes.drawerPaperClose),
         }}
         open={isDrawerOpen || (matches && AuthStateHooks.authState === AuthState.SignedIn)}
       >
-        
+
         {
-        //Show "<" Icon only when width lower than md, because the drawer is always shown in widescreen.
-        !matches &&
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>        
+          //Show "<" Icon only when width lower than md, because the drawer is always shown in widescreen.
+          !matches &&
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
         }
         <Divider />
         <List>
           {
             AuthStateHooks.authState === AuthState.SignedIn ? (
+              // When authorized.
               <React.Fragment>
-              <Link to="/accounts" className={classes.link}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <AccountCircle />
-                  </ListItemIcon>
-                  <ListItemText primary="Account" />
-                </ListItem>
-              </Link>
-              <Link to="/buckets" className={classes.link}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Icon className="small fab fa-bitbucket" />
-                  </ListItemIcon>
-                  <ListItemText primary="MyBuckets" />
-                </ListItem>
-              </Link>
+                <Link to="/accounts" className={classes.link}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AccountCircle />
+                    </ListItemIcon>
+                    <ListItemText primary="Account" />
+                  </ListItem>
+                </Link>
+                <Link to="/buckets" className={classes.link}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Search />
+                    </ListItemIcon>
+                    <ListItemText primary="ScanBuckets" />
+                  </ListItem>
+                </Link>
 
+                {/* <Link to="/" className={classes.link}> */}
+                <ListItem button onClick={handleLibraryOpen}>
+                  <ListItemIcon>
+                    <LibraryMusic />
+                  </ListItemIcon>
+                  <ListItemText primary="Library" />
+                  {isLibraryOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+
+                <Collapse in={isLibraryOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <People />
+                      </ListItemIcon>
+                      <ListItemText primary="Artist" />
+                    </ListItem>
+
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <Album />
+                      </ListItemIcon>
+                      <ListItemText primary="Album" />
+                    </ListItem>
+
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <Audiotrack />
+                      </ListItemIcon>
+                      <ListItemText primary="Songs" />
+                    </ListItem>
+                  </List>
+                </Collapse>
+
+                {/* </Link> */}
+                <Link to="/" className={classes.link}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <QueueMusic />
+                    </ListItemIcon>
+                    <ListItemText primary="PlayList" />
+                  </ListItem>
+                </Link>
 
               </React.Fragment>
             ) : (
+                // When not authorized.
                 <React.Fragment>
-                  <Link to="/signin" className={classes.link}>
+                  {/* Sign in button links to login require pages. */}
+                  <Link to="/buckets" className={classes.link}>
                     <ListItem button>
                       <ListItemIcon>
                         <Icon className="fa fa-sign-in-alt small" />
                       </ListItemIcon>
-                      <ListItemText primary="Sign In" />
+                      <ListItemText primary="SignIn" />
                     </ListItem>
                   </Link>
                   <Link to="/signup" className={classes.link}>
@@ -160,36 +255,98 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                         <PersonAdd />
 
                       </ListItemIcon>
-                      <ListItemText primary="Sign Up" />
+                      <ListItemText primary="SignUp" />
                     </ListItem>
                   </Link>
                 </React.Fragment>
 
               )
           }
-          <Divider />
-          <Link to="/" className={classes.link}>
-            <ListItem button>
-              <ListItemIcon>
 
-                <Language />
-              </ListItemIcon>
-              <ListItemText primary="Language" />
-            </ListItem>
-          </Link>
-          <Link to="/" className={classes.link}>
+          {/* ----------- Setting ----------- */}
+          <ListItem button onClick={handleSettingOpen}>
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
+            <ListItemText primary="Setting" />
+            {isSettingOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
 
-            <ListItem button onClick={() => handleDarkModeToggle(isDarkMode)}>
-              <ListItemIcon >
-                {isDarkMode ? (
-                  <Brightness7Icon />
-                ) : (
-                    <Brightness4Icon />
-                  )}
-              </ListItemIcon>
-              <ListItemText primary="Contrast" />
-            </ListItem>
-          </Link>
+          <Collapse in={isSettingOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+
+              <Link to="/" className={classes.link}>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+
+                    <Language />
+                  </ListItemIcon>
+                  <ListItemText primary="Language" />
+                </ListItem>
+              </Link>
+
+              <ListItem button onClick={() => handleDarkModeToggle(isDarkMode)} className={classes.nested}>
+                <ListItemIcon >
+                  {isDarkMode ? (
+                    <Brightness7Icon />
+                  ) : (
+                      <Brightness4Icon />
+                    )}
+                </ListItemIcon>
+                <ListItemText primary="Contrast" />
+              </ListItem>
+
+            </List>
+          </Collapse>
+
+          {/* ----------- SNS ----------- */}
+          <ListItem button onClick={handleSNSOpen}> 
+            <ListItemIcon>
+              <Share />
+            </ListItemIcon>
+            <ListItemText primary="SNS" />
+            {isSNSOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={isSNSOpen} timeout="auto" unmountOnExit>
+
+            <List component="div" disablePadding>
+              <Link to="/" className={classes.link}>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+
+                    <GitHub />
+                  </ListItemIcon>
+                  <ListItemText primary="GitHub" />
+                </ListItem>
+              </Link>
+
+              <Link to="/" className={classes.link}>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon >
+                    <Twitter />
+                  </ListItemIcon>
+                  <ListItemText primary="Twitter" />
+                </ListItem>
+              </Link>
+            </List>
+          </Collapse>
+
+
+          {
+            AuthStateHooks.authState === AuthState.SignedIn &&
+            <React.Fragment>
+              <Divider />
+              <ListItem button onClick={() => Auth.signOut()}>
+                <ListItemIcon>
+                  {/* <IconButton className={clsx(classes.iconButtonLink)} > */}
+                  <ExitToAppIcon />
+                  {/* </IconButton> */}
+                  {/* <Icon className="small fab fa-bitbucket" /> */}
+                </ListItemIcon>
+                <ListItemText primary="SignOut" />
+              </ListItem>
+            </React.Fragment>
+          }
 
         </List>
       </Drawer>

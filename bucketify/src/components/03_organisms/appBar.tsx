@@ -165,6 +165,8 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
         (isDrawerOpen || (AuthStateHooks.authState === AuthState.SignedIn && matches)) && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
+
+        {/* Hamburger menu icon */}
         <IconButton
           edge="start"
           color="inherit"
@@ -179,24 +181,27 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
           <MenuIcon />
         </IconButton>
 
-        <Link to='/'>
-          <Box className={clsx(classes.logoWrapper)}>
+        {/* Site logo */}
+        <Box className={clsx(classes.logoWrapper)}>
+          <Link to='/'>
             <Typography variant="h1" component="h2" className={clsx(classes.logo)} >
 
               <img src={logo} alt="bucketify-logo" className={clsx(classes.logo)} />
             </Typography>
-          </Box>
-        </Link>
+          </Link>
+        </Box>
 
+        {/* The navigation menu on the right side. */}
         <Box className={clsx(classes.buttonNav)}>
 
+          {/* The button to select language. */}
           <Tooltip title="Language">
             <IconButton color="inherit"  >
               <Language />
             </IconButton>
           </Tooltip>
 
-
+          {/* The button to select contrast. */}
           <Tooltip title="Contrast">
             {
               isDarkMode ? (
@@ -204,7 +209,6 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
                   <Brightness7Icon />
                 </IconButton>
               ) : (
-
                   <IconButton color="inherit" onClick={() => handleDarkModeToggle(isDarkMode)} aria-label="Switch to Dark mode">
                     <Brightness4Icon />
                   </IconButton>
