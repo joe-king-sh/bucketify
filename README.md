@@ -2,7 +2,7 @@
 
 ![bucketify-logo](bucketify/build/static/media/bucketify_logo.43f80d6b.png)  
 Music player web application to play music stored in  AWS S3 bucket.  
-BucketifyはAmazon S3に格納したオーディオファイルを再生するクラウドミュージックプレーヤーです。  
+BucketifyはAmazon S3に格納したオーディオファイルを再生するクラウド時代のミュージックプレーヤーです。  
 
 ## 機能
 - ストリーミング再生
@@ -76,23 +76,3 @@ Docker内でtsのコンパイルが遅すぎるのでDockerやめる
 - 検索機能
 - 
 
-## TODO
-- [x] GenericTemplateを分解
-- [x] AuthStateをどこまで持たせるか、GenerateTmeplateに絶対渡さないといけないけどLandingはLogin不要にしたい。だけどLoginできてる時はAppBarとかを変更したい。Stateの流れを図示して考える。
-- [x] 上記が無理そうなら、Landingだけ別ページとして管理、ヘッダーとかも付けない。もしくは付けても胃から、ログイン状態に応じて変更したりしない。そうする場合トップのロゴ押したときの遷移先を変更する必要あり
-
-- [x] stateのまとめ資料作成 
-- [ ] SingUpページの直接表示方法の確認
-- [x] アクセスキーの保存場所、Cognitoユーザプールはだめ、なぜなら更新ができないから。
-      Dynamodb案が妥当かと考えている。
-      usernameで引くようなやつ
-      →曲のメタデータとしてDynamodb側でもつ
-- [ ] デモを最後に作る
-- [ ] アカウント画面　←いる？
-- [ ] スキャン機能
-- [ ] Dynamodbの設計、ユースケースを洗い出す。←　これが一番とっかかりやすい
-
-## 既知のエラー
-- [ ] コントラストをDrawerから遷移した際にTopに飛ばされる
-- [ ] ID/Passwordサインアップ寺に確認コードが届くがそこからうまく登録ができない
-- [ ] 
