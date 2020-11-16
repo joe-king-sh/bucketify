@@ -42,11 +42,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 
-export interface GenericTemplateProps {
+export interface IGenericTemplateProps {
   children: React.ReactNode;
 }
 
-const GenericTemplate: React.FC<GenericTemplateProps> = ({
+const GenericTemplate: React.FC<IGenericTemplateProps> = ({
   children,
 }) => {
   const classes = useStyles();
@@ -76,7 +76,7 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
   return (
     <ThemeProvider theme={theme}>
 
-      <div className={classes.root}>
+      <Box className={classes.root}>
         <CssBaseline />
 
         <MyAppBar
@@ -99,7 +99,7 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
             <Footer />
           </Box>
         </main>
-      </div>
+      </Box>
     </ThemeProvider>
   );
 };

@@ -241,7 +241,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 // When not authorized.
                 <React.Fragment>
                   {/* Sign in button links to login require pages. */}
-                  <Link to="/buckets" className={classes.link}>
+                  <Link to="/accounts" className={classes.link}>
                     <ListItem button>
                       <ListItemIcon>
                         <Icon className="fa fa-sign-in-alt small" />

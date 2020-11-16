@@ -239,7 +239,7 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
                   {/* Sign in button links to login require pages. */}
                   <Button variant="outlined" color="secondary">
 
-                    <Link to='/buckets' className={clsx(classes.linkInButtonOutline)} >Sign In</Link>
+                    <Link to='/accounts' className={clsx(classes.linkInButtonOutline)} >Sign In</Link>
                   </Button>
 
                   <Button variant="contained" color="secondary">

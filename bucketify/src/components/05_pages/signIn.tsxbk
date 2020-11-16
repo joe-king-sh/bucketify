@@ -1,37 +1,36 @@
-// import React
-//     //  { useContext }
-//     from 'react';
-// import { AuthState } from '@aws-amplify/ui-components';
+import React
+    //  { useContext }
+    from 'react';
+import { AuthState } from '@aws-amplify/ui-components';
 
-// // Template
-// import GenericTemplate from '../04_templates/genericTemplate';
+// Template
+import GenericTemplate from '../04_templates/genericTemplate';
 
-// // Authorization components
-// import MyAuthenticator from '../03_organisms/authenticator'
-
-console.log1110)
-
-// // Router
-// import { useHistory } from "react-router-dom";
+// Authorization components
+import MyAuthenticator from '../03_organisms/authenticator'
 
 
+// Router
+import { useHistory } from "react-router-dom";
 
-// const SignIn: () => void  = () => {
 
-//     const history = useHistory();
 
-//     history.push('buckets');
+const SignIn: () => void  = () => {
 
-//     // return (
+    const history = useHistory();
 
-//     //     //TODO Stateを見てSinin済みだったらAccountsにリダイレクトする処理を入れる
-//     //     <GenericTemplate>
-//     //         <MyAuthenticator currentAuthState={AuthState.SignIn} />
-//     //     </GenericTemplate>
+    history.push('buckets');
 
-//     // );
-// }
+    // return (
 
-// // Window onloadにページ遷移w入れたいんだけど、、
+    //     //TODO Stateを見てSinin済みだったらAccountsにリダイレクトする処理を入れる
+    //     <GenericTemplate>
+    //         <MyAuthenticator currentAuthState={AuthState.SignIn} />
+    //     </GenericTemplate>
 
-// export default SignIn
+    // );
+}
+
+// Window onloadにページ遷移w入れたいんだけど、、
+
+export default SignIn

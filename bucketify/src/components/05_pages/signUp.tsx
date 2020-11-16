@@ -21,10 +21,10 @@ const SignUp: React.FC = () => {
     useEffect(() => {
         console.log('Check whether the user has already signed in or not.')
 
-        // If ther user already signed in, push history /buckets.
+        // If ther user already signed in, push history /accounts.
         if (AuthStateHooks.authState === AuthState.SignedIn){
-            console.log('you have already signd in. push history to buckets')
-            history.push('/buckets')
+            console.log('you have already signd in. push history to accounts')
+            history.push('/accounts')
         }
       }, [history, AuthStateHooks.authState]);
     
