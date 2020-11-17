@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         responsiveButton: {
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("xs")]: {
                 width: '100%',
             },
             color: 'white',

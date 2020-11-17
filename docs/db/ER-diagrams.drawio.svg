@@ -1,0 +1,72 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="416px" height="172px" viewBox="-0.5 -0.5 416 172" content="&lt;mxfile host=&quot;13155443-ce49-41ac-ac54-414fdc9109e0&quot; modified=&quot;2020-11-17T12:38:13.970Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.51.1 Chrome/83.0.4103.122 Electron/9.3.3 Safari/537.36&quot; version=&quot;13.6.5&quot; etag=&quot;47ou2aCOKPHpPx9B1oSk&quot;&gt;&lt;diagram id=&quot;zsokv7-6flpAK8iZtoTb&quot; name=&quot;ページ1&quot;&gt;7VdNc9owEP01XDOyzfBxTIC0nZKWgXaaHhVb2JrIEiPLBefXd2VJ/oaQNqdOL4F9u6vV7r68KKNgkZ4+SHxIHkRE2MhH0WkULEe+P0c+/NRAYYDZbGaAWNLIQF4N7OgLsSCyaE4jkrUClRBM0UMbDAXnJFQtDEspju2wvWDtqgcckx6wCzHroz9opBLbhT+t8Y+Exomr7E3mxpNiF2w7yRIciWMDClajYCGFUOZbeloQpmfn5mLy7s94q4tJwtU1CXYRvzDLbW+3eUTFA1F4iRW2l1SF6zw70pRhDtZdmFAWrXEhcl0pUzh8dtZdIiR9EVxhBi4PAHBLZRcZoFbETmcCrFEpch6RyCbtwW9zvLGz7V1QeagUz9UGfJ1PMojfuPZRBa1xptxV3Mi1N8JZUtbTBmY05vA9hGwiAbDDIVKR09kBe9XagO5EpETJAkJcwsRu2lLdC6x9rIlTxSRN0kwtiC1Z4+rsep/wxa50eL1Bb70jH7pC5ZLh8xNAk5EfeKjstun6glPSd0pFYZA9mD3laQ/dBd+3a/gU+zpEn/BKoKnfrRCGJMs+k6KfTEJJlPGDORTy9chhnU20w2q3eEb2quLVQjABJFhyUdJ9TxnrQNkBh5TH6zJrOe4wVvNRU4eCbtzaAkocHCXxU8VjKRT8rtU2sMuR9SoG+sMMtIy7mnDj9yAc6jFuw3CxLlnzX0v+TkvGcPM/0xL/wmptuS38ocQ8hoG8qd5soFzQqYYZjIBjRe70SrIen6pOr6OYd0bUNNHgw3DtkrQNuNq5g9q3E1q6kJBRR0yGJeafVZsADZP0jXIzfw+1mQxQoTNtEsHTzZrQA1XFljCsqOCr2tMbZaJSJzeER7f6zQjmavtCpPgmHjAvjOeespYsnYs8UfWo424Qmlv7p57/jec7e3myCymNomFsiKQwGy0jBuMwp8cyHSHfAea8YOzs+rzSKppW90QzNT2qy9IEkxW5DEnrdQF9x8SR44yCNdmAhhTKgbJczq/2PS7I1kZQrmrJCqbt51Yw69DM3N9mNR/GnYPGXufdNvXbB5muewe9Lmhg1u97E17/kxSsfgM=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 161 31 L 161 14.5 Q 161 1 147.5 1 L 14.5 1 Q 1 1 1 14.5 L 1 31" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 1 31 L 1 157.5 Q 1 171 14.5 171 L 147.5 171 Q 161 171 161 157.5 L 161 31" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 1 31 L 161 31" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/>
+        <g fill="#000000" font-family="Helvetica" pointer-events="none" text-anchor="middle" font-size="14px">
+            <text x="80.5" y="21.5">
+                AudioMetaData
+            </text>
+        </g>
+        <g fill="#000000" font-family="Helvetica" pointer-events="none" font-size="12px">
+            <text x="6.5" y="48.5">
+                + Audio ID
+            </text>
+            <text x="6.5" y="62.5">
+                + Audio Name
+            </text>
+            <text x="6.5" y="76.5">
+                + Artist
+            </text>
+            <text x="6.5" y="90.5">
+                + Album
+            </text>
+            <text x="6.5" y="104.5">
+                + S3URL of Album Art
+            </text>
+            <text x="6.5" y="118.5">
+                + S3URL of Audio
+            </text>
+            <text x="6.5" y="132.5">
+                + AccessKey
+            </text>
+            <text x="6.5" y="146.5">
+                + SecretAccess Key
+            </text>
+            <text x="6.5" y="160.5">
+                + Owner
+            </text>
+        </g>
+        <path d="M 415 31 L 415 14.5 Q 415 1 401.5 1 L 268.5 1 Q 255 1 255 14.5 L 255 31" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 255 31 L 255 107.5 Q 255 121 268.5 121 L 401.5 121 Q 415 121 415 107.5 L 415 31" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 255 31 L 415 31" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/>
+        <g fill="#000000" font-family="Helvetica" pointer-events="none" text-anchor="middle" font-size="14px">
+            <text x="334.5" y="21.5">
+                PlayList
+            </text>
+        </g>
+        <g fill="#000000" font-family="Helvetica" pointer-events="none" font-size="12px">
+            <text x="260.5" y="48.5">
+                + Play List ID
+            </text>
+            <text x="260.5" y="62.5">
+                + Audio ID
+            </text>
+            <text x="260.5" y="76.5">
+                + Play List Name
+            </text>
+            <text x="260.5" y="90.5">
+                + Sort order
+            </text>
+            <text x="260.5" y="104.5">
+                + Owner
+            </text>
+        </g>
+        <path d="M 162.44 49.06 L 182.44 49.06 Q 192.44 49.06 201.78 52.62 L 215.98 58.04 Q 225.32 61.6 235.32 61.6 L 255.32 61.6" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/>
+        <ellipse cx="174.44" cy="49.06" rx="3" ry="3" fill="#ffffff" stroke="#000000" pointer-events="none"/>
+        <path d="M 162.44 53.06 L 170.44 49.06 L 162.44 45.06" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/>
+        <ellipse cx="243.32" cy="61.6" rx="3" ry="3" fill="#ffffff" stroke="#000000" pointer-events="none"/>
+        <path d="M 255.32 57.6 L 247.32 61.6 L 255.32 65.6" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/>
+    </g>
+</svg>
