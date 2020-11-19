@@ -22,7 +22,7 @@
 | 8   | PlayList | getPlaylist |
 
 **Note**
-Users can access only their audio metadata.
+Users can access to only their audio metadata.
 
 ## Schema definition
 ### Option1(not adopted ❌ )
@@ -31,21 +31,25 @@ Like RDB + multiple GSI
 ##### Table
 | PrimaryKey || Attributes|||||||
 |---|---|---|---|---|---|---|---|---|
-| **PK,LSI-1-PK,LSI-2-PK,** | **SK** | **LSI-1-PK** | **** | | | | | |
-| **UsersEmail** | **AudioS3Path** | **Artist** | **Album** | **AlbumArtWorkS3Path** | **AudioFileName** | **SSbucketName** | **AccessKey** | **SecretAccessKey** |
+| **PK,LSI-1-PK,LSI-2-PK,LSI-3-PK** | **SK** | **LSI-1-SK** | **LSI-2-SK** | **LIST-3-SK** | -| -|- | -|
+| **UserEmail** | **AudioS3Path** | **Artist** | **Album** | **SSbucketName** | **AlbumArtWorkS3Path** | **AudioFileName** | **AccessKey** | **SecretAccessKey** |
 | a@abc.com | s3://mybucket/aaa.mp3 | A | AlbumA | s3://mybucket/aaa.png | aaa | mybucket | AIJIJIGRXXX | jiAJFIadfgji|
 | b@abc.com | s3://mybucket/bbb.mp3 | B | AlbumB | s3://mybucket/bbb.png | bbb | mybucket | AIJIJIGRYYY | yamARsdfagrea
 
 ##### Index
 - LSI1
-  Search by Artist and UsersEmail
+  Search by UserEmail and by Artist
     | LSI Partition Key || Projected Attributes|
     |---|---|---|---|
     | **LSI-1-PK,(Primary Table PK)** | **LSI-1-SK** | s | 
-    | **UsersEmail** | **Artist** | ***AllColumns*** | s |
+    | **UserEmail** | **Artist** | ***AllColumns*** | s |
+- LSI2
+  Search by UserEmail and Album
+- LSI3
+  Search by UserEmail and S3BucketName
 
-Reason
-It’s too expensive for me.
+**The Reason of not adopt**
+It’s too expensive for development of personal.
 
 ### Option2(not adopted ❌ )
 Using GSI Overloading
@@ -55,7 +59,7 @@ Using GSI Overloading
 |---|---|---|---|
 | **PK** | **SK** | **** | 
 | **ID** | **DataType** | **DataValue** |
-| {AudioS3Path} | UsersEmail |{UsersEmail}|
+| {AudioS3Path} | UserEmail |{UserEmail}|
 | {AudioS3Path} | AudioFileName |{AudioFileName}|
 | {AudioS3Path} | Artist |{Artist}|
 | {AudioS3Path} | Album |{Album}|
@@ -82,6 +86,8 @@ Using GSI Overloading
 ### Option3
 Partition Key is User ID + S3 File Path
 PKの段階でユーザ名とSSをガッシャーンしておく案
+
+Startiwithをうまく使う
 
 #### AudioMetaData Table
 ##### Table
