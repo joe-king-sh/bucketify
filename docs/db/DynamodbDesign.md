@@ -12,29 +12,29 @@
 ## Use case list
 | #   | Entity        | Use Case     |
 | --- | ------------- | ------------ |
-| 1   | AudioMetaData | getAudioFilesByUserId |
-| 2   | AudioMetaData | getAudioFilesByUserIdByAudioId |
-| 3   | AudioMetaData | getAudioFilesByUserIdByArtist |
-| 4   | AudioMetaData | getAudioFilesByUserIdByAlbum |
-| 5   | AudioMetaData | getAudioFilesByUserIdBySSbucketName |
-| 6   | AudioMetaData | getArtistByUserId |
+| 1   | AudioMetaData | getAudioFilesByAudioId |
+| 2   | AudioMetaData | getAudioIdByUserId |
+| 3   | AudioMetaData | getAudioIdByUserIdByArtist |
+| 4   | AudioMetaData | getAudioIdByUserIdByAlbum |
+| 5   | AudioMetaData | getAudioIdByUserIdByS3bucketName |
+| 6   | AudioMetaData | getArtistsByUserId |
 | 7   | AudioMetaData | getAlbumByUserId |
-| 8   | PlayList | getPlaylistByUserId |
+| 8   | PlayList | getPlaylistIdsByUserId |
 
 **Note**
 Users can access to only their audio metadata.
 
 ## Schema definition
 ### Option1(not adopted ❌ )
-Like RDB + multiple GSI
+Like RDB and haves multiple GSI.
 #### AudioMetaData Table
 ##### Table
 | PrimaryKey || Attributes|||||||
 |---|---|---|---|---|---|---|---|---|
 | **PK,LSI-1-PK,LSI-2-PK,LSI-3-PK** | **SK** | **LSI-1-SK** | **LSI-2-SK** | **LIST-3-SK** | -| -|- | -|
 | **UserId** | **AudioS3Path** | **Artist** | **Album** | **SSbucketName** | **AlbumArtWorkS3Path** | **AudioFileName** | **AccessKey** | **SecretAccessKey** |
-| a@abc.com | s3://mybucket/aaa.mp3 | AC/DC | AlbumA | s3://mybucket/aaa.png | aaa | mybucket | AIJIJIGRXXX | jiAJFIadfgji|
-| b@abc.com | s3://mybucket/bbb.mp3 | B | AlbumB | s3://mybucket/bbb.png | bbb | mybucket | AIJIJIGRYYY | yamARsdfagrea
+| A | s3://mybucket/aaa.mp3 | AC/DC | Back in Black | s3://mybucket/aaa.png | aaa | mybucket | AIJIJIGRXXX | jiAJFIadfgji|
+| B | s3://mybucket/bbb.mp3 | Metallica | St.Anger | s3://mybucket/bbb.png | bbb | mybucket | AIJIJIGRYYY | yamARsdfagrea
 
 ##### Index
 - LSI1
@@ -61,13 +61,13 @@ Using GSI Overloading
 |---|---|---|---|
 | **PK** | **SK** | **** | 
 | **ID** | **DataType** | **DataValue** |
-| {AudioS3Path} | UserId |{UserId}|
-| {AudioS3Path} | AudioFileName |{AudioFileName}|
-| {AudioS3Path} | Artist |{Artist}|
-| {AudioS3Path} | Album |{Album}|
-| {AudioS3Path} | AlbumArtWorkS3Path |{AlbumArtWorkS3Path}|
-| {AudioS3Path} | AccessKey |{AccessKey}|
-| {AudioS3Path} | SecretAccessKey |{SecretAccessKey}|
+| {AudioS3Path} | UserId | {UserId}|
+| {AudioS3Path} | AudioFileName | {AudioFileName} |
+| {AudioS3Path} | Artist | {Artist} |
+| {AudioS3Path} | Album | {Album} |
+| {AudioS3Path} | AlbumArtWorkS3Path | {AlbumArtWorkS3Path} |
+| {AudioS3Path} | AccessKey | {AccessKey} |
+| {AudioS3Path} | SecretAccessKey | {SecretAccessKey} |
 | {AudioS3Path} | PlayListIds | [{PlayListIds}] |
 
 ##### Index
@@ -87,22 +87,25 @@ It is impossible when several users loading the same audio files.
 
 
 ### Option3(Adopted ✅ )
-Using GSI Overloading,
+Using GSI Overloading and each audio id,
 #### AudioMetaData Table
 ##### Table
-| PrimaryKey || Attributes||
-|---|---|---|---|---|
-| **PK,GSI-1-SK** | **SK,GSI-1-PK** | - | - | 
-| **ID** | **DataType** | **DataValue1** | **DataValue2** |
-| {AudioId} | UserId |{UserId}| - |
-| {AudioId} | AudioS3Path |{UserId}-{AudioS3Path}| - |
-| {AudioId} | AudioFileName |{UserId}-{AudioFileName}| - |
-| {AudioId} | Artist |{UserId}-{Artist}| - |
-| {AudioId} | Album |{UserId}-{Album}| - |
-| {AudioId} | AlbumArtWorkS3Path |{AlbumArtWorkS3Path}| - |
-| {AudioId} | AccessKey |{AccessKey}| - |
-| {AudioId} | SecretAccessKey |{SecretAccessKey}| - |
-| {AudioId} | PlayListIds | [{PlayListIds}] | - |
+| PrimaryKey || Attributes|||
+|---|---|---|---|---|---|
+| **PK,GSI-1-SK** | **SK,GSI-1-PK,GSI-2-SK** | - |  - | **GSI-2-PK** | 
+| **ID** | **DataType** | **DataValue1** | **DataValue2** | **Owner** |
+| {AudioId} | UserId | {UserId}| - | {UserId} | |
+| {AudioId} | S3BucketName | {UserId}-{S3BucketName}| - | {UserId} |
+| {AudioId} | AudioFileName | {UserId}-{AudioFileName}| - | {UserId} | 
+| {AudioId} | Artist | {UserId}-{Artist}| - | {UserId} | 
+| {AudioId} | Album | {UserId}-{Album}| - | {UserId} | 
+| {AudioId} | AlbumArtWorkS3Path |{AlbumArtWorkS3Path}| - | {UserId} | 
+| {AudioId} | AudioS3Path | {UserId}| - | {UserId} | 
+| {AudioId} | AccessKey | {AccessKey}| - | {UserId} | 
+| {AudioId} | SecretAccessKey | {SecretAccessKey} | - | {UserId} | 
+| {AudioId} | PlayListId | {PlayListId} | {SortOrder} | {UserId} | 
+| {PlayListId} | PlayListName | {PlayListName} | - | {UserId} | 
+| {PlayListId} | PlayListAudios | {[PlayListAudios]]} | - | {UserId} | 
 
 **Note**
 Because the song name and album name may be same, 
@@ -114,30 +117,27 @@ should be use filter expression, after fetch datas.
     | GSI Partition Key || Projected Attributes |
     |---|---|---|---|
     | **GSI-1-PK** | **GSI-1-SK** | **Primary Table SK** | 
-    | **DataValue** | **ID** | **DataType** |
-    | {UserId} | {AudioId} | UserId |
-    | {UserId}-{AudioS3Path} | {AudioId} | AudioS3Path |
-    | {UserId}-{Artist} | {AudioId} | Artist |
-    | {UserId}-{Album} | {AudioId} | Album |
+    | **DataValue** | **DataType** | **ID** |
+    | {UserId} | UserId |{AudioId} | 
+    | {UserId}-{S3BucketName} | S3BucketName | {AudioId} | 
+    | {UserId}-{Artist} | Artist | {AudioId} | 
+    | {UserId}-{Album} | Album | {AudioId} | 
 
 - GSI2
 
+    | GSI Partition Key || Projected Attributes ||
+    |---|---|---|---|---|
+    | **GSI-2-PK** | **GSI-2-SK** | - | - | 
+    | **Owner** |  **DataType** | **DataValue** | **ID**| 
+    | {UserId} | S3BucketName | {S3BucketName} | {AudioId} |
+    | {UserId} | Artist | {Artist} | {AudioId} |
+    | {UserId} | Album | {Album} | {AudioId} |
+    | {UserId} | PlayListName | {PlayListName} | {PlayListId} |
+    | {UserId} | PlayListAudios | {[PlayListAudios]]} | {PlayListId} |
 
-
-Neet one more index for search artist or album by useramail
-
-#### PlayList Table
-##### Table
-| PrimaryKey | - | Attributes |||
-|---|---|---|---|---|
-| **PK** | - | - | - | 
-| **ID** | **UserId** | **PlayListName** | **AudioId** | **SortOrder** |
-| {PlayListId} | {} | {UserId} |
-
-
-##### Index
-
-
+Many to many の考え方、
+Audio側でもPlayListIdを持って、playlist側でもAudioをもつ？
+playlistName入らなくて、別フィールドとして持たせるだけでいいのでは？
 
 ## Query condition definition
 
@@ -146,9 +146,9 @@ Neet one more index for search artist or album by useramail
 |---|---|---|---|---|---|
 | 1   | AudioMetaData | getAudioFilesByAudioId | {AuidioId} | Primary Table | Query(ID = :AudioId) |
 | 2   | AudioMetaData | getAudioIdByUserId | {UserId} | GSI-1 | Query(DataValue = :UserId) |
-| 3   | AudioMetaData | getAudioFilesByUserIdByArtist |
-| 4   | AudioMetaData | getAudioFilesByUserIdByAlbum |
-| 5   | AudioMetaData | getAudioFilesByUserIdBySSbucketName |
-| 6   | AudioMetaData | getArtistByUserId |
-| 7   | AudioMetaData | getAlbumByUserId |
-| 8   | PlayList | getPlaylistByUserId |
+| 3   | AudioMetaData | getAudioIdByUserIdByArtist | {UserId}-{Artist} | GSI-1 | Query(DataValue = :{UserId}-{Artist}) |
+| 4   | AudioMetaData | getAudioIdByUserIdByAlbum | {UserId}-{Album} | GSI-1 | Query(DataValue = :{UserId}-{Album}) |
+| 5   | AudioMetaData | getAudioIdByUserIdByS3bucketName | {UserId}-{S3BucketName}  | GSI-1 | Query(DataValue = :{UserId}-{S3BucketName}) |
+| 6   | AudioMetaData | getArtistsByUserId | {UserId} | GSI-2 | Query(Owner = :{UserId} and DataType = 'Artist')|
+| 7   | AudioMetaData | getAlbumsByUserId | {UserId} | GSI-2 | Query(Owner = :{UserId} and DataType = 'Album')|
+| 8   | PlayList | getPlaylistIdsByUserId |　 {UserId} | GSI-2 | Query(Owner = :{UserId} and DataType = 'PlayListName')|

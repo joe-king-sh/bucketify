@@ -30,5 +30,30 @@
       "providerPlugin": "awscloudformation",
       "type": "manual"
     }
+  },
+  "api": {
+    "bucketify": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authbucketify15e1b624"
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 7,
+                "description": "demo"
+              }
+            }
+          ]
+        }
+      }
+    }
   }
 }
