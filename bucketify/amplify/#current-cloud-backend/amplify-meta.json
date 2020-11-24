@@ -24,7 +24,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/function/bucketify15e1b624CustomMessage-cloudformation-template.json",
         "logicalId": "functionbucketify15e1b624CustomMessage"
       },
-      "lastPushTimeStamp": "2020-11-06T10:16:12.194Z",
+      "lastPushTimeStamp": "2020-11-24T14:14:13.951Z",
       "output": {
         "Region": "ap-northeast-1",
         "Arn": "arn:aws:lambda:ap-northeast-1:757523705531:function:bucketify15e1b624CustomMessage-dev",
@@ -54,7 +54,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/auth/bucketify15e1b624-cloudformation-template.yml",
         "logicalId": "authbucketify15e1b624"
       },
-      "lastPushTimeStamp": "2020-11-06T10:16:12.197Z",
+      "lastPushTimeStamp": "2020-11-24T14:14:16.765Z",
       "output": {
         "AppClientSecret": "1kqua33bam11q8s24pvm2vb27khanoi17je33j0gkae9lce5eoou",
         "UserPoolId": "ap-northeast-1_HdCWPvlrh",
@@ -66,7 +66,7 @@
         "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://www.bucketify.net/\"],\"LogoutURLs\":[\"https://www.bucketify.net/\"]}",
         "UserPoolName": "bucketify15e1b624_userpool_15e1b624"
       },
-      "lastPushDirHash": "Dz6kTuR9TzH0tSAuG/mC01w4NkM="
+      "lastPushDirHash": "e6Iw+RSLg0znY/esxY/YtW4Jr3c="
     }
   },
   "hosting": {
@@ -78,9 +78,43 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
         "logicalId": "hostingamplifyhosting"
       },
-      "lastPushTimeStamp": "2020-11-06T10:16:12.202Z",
+      "lastPushTimeStamp": "2020-11-24T14:14:13.954Z",
       "output": {},
       "lastPushDirHash": "/+VZ33seFFqAr6wbtptwbINUfSA="
+    }
+  },
+  "api": {
+    "bucketify": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authbucketify15e1b624"
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 7,
+                "description": "demo"
+              }
+            }
+          ]
+        },
+        "GraphQLAPIIdOutput": "kpxuqv77uzglvdpgldoptbwibm",
+        "GraphQLAPIEndpointOutput": "https://mlkju3zhlvgxtgpdecgyozweea.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-2k5xsilvjfevpkfrir3dxmrye4"
+      },
+      "lastPushTimeStamp": "2020-11-24T14:14:16.765Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apibucketify"
+      },
+      "lastPushDirHash": "KwpcJ0GW/72sJK3uTyubyJ40T5s="
     }
   }
 }
