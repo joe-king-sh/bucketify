@@ -1,9 +1,5 @@
-type AudioMetaData
-  @model
-  @auth(rules: [{ allow: owner }]) {
+type Todo @model {
   id: ID!
-  dataType: String!
-  dataValue1: String
-  dataValue2: String
-  owner: String!
+  name: String!
+  description: String
 }

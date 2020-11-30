@@ -76,3 +76,16 @@ Docker内でtsのコンパイルが遅すぎるのでDockerやめる
 - 検索機能
 - 
 
+grahqlschemaの退避
+
+```
+type AudioMetaData
+  @model
+  @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  dataType: String!
+  dataValue1: String
+  dataValue2: String
+  owner: String!
+}
+```
