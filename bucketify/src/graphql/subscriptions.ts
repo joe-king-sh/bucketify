@@ -2,49 +2,34 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateAudioMetaData = /* GraphQL */ `
-  subscription OnCreateAudioMetaData($owner: String!) {
-    onCreateAudioMetaData(owner: $owner) {
+export const onCreateTodo = /* GraphQL */ `
+  subscription OnCreateTodo {
+    onCreateTodo {
       id
-      dataType
-      dataValue1
-      dataValue2
-      owner
-      _version
-      _deleted
-      _lastChangedAt
+      name
+      description
       createdAt
       updatedAt
     }
   }
 `;
-export const onUpdateAudioMetaData = /* GraphQL */ `
-  subscription OnUpdateAudioMetaData($owner: String!) {
-    onUpdateAudioMetaData(owner: $owner) {
+export const onUpdateTodo = /* GraphQL */ `
+  subscription OnUpdateTodo {
+    onUpdateTodo {
       id
-      dataType
-      dataValue1
-      dataValue2
-      owner
-      _version
-      _deleted
-      _lastChangedAt
+      name
+      description
       createdAt
       updatedAt
     }
   }
 `;
-export const onDeleteAudioMetaData = /* GraphQL */ `
-  subscription OnDeleteAudioMetaData($owner: String!) {
-    onDeleteAudioMetaData(owner: $owner) {
+export const onDeleteTodo = /* GraphQL */ `
+  subscription OnDeleteTodo {
+    onDeleteTodo {
       id
-      dataType
-      dataValue1
-      dataValue2
-      owner
-      _version
-      _deleted
-      _lastChangedAt
+      name
+      description
       createdAt
       updatedAt
     }
