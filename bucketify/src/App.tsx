@@ -13,6 +13,9 @@ import NotFound from './components/05_pages/404'
 import SignUp from './components/05_pages/signUp'
 import Accounts from './components/05_pages/accounts'
 
+// TestPage
+import GraphqlTest from './components/05_pages/graphqlTest'
+import GraphqlAudioTest from './components/05_pages/graphqlAudioTest'
 
 // Auth Status
 export interface IAuthStateHooks {
@@ -65,6 +68,10 @@ const App: React.FC = () => {
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/accounts" component={Accounts} />
             <Route exact path="/buckets" component={ScanBuckets} />
+
+            <Route exact path="/test" component={GraphqlTest} />
+            <Route exact path="/test2" component={GraphqlAudioTest} />
+
 
             <Route component={NotFound} />
           </Switch>

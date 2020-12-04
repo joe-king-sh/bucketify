@@ -11,6 +11,7 @@ export const createTodo = /* GraphQL */ `
       id
       name
       description
+      owner
       createdAt
       updatedAt
     }
@@ -25,6 +26,7 @@ export const updateTodo = /* GraphQL */ `
       id
       name
       description
+      owner
       createdAt
       updatedAt
     }
@@ -39,6 +41,52 @@ export const deleteTodo = /* GraphQL */ `
       id
       name
       description
+      owner
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createAudioMetaData = /* GraphQL */ `
+  mutation CreateAudioMetaData(
+    $input: CreateAudioMetaDataInput!
+    $condition: ModelAudioMetaDataConditionInput
+  ) {
+    createAudioMetaData(input: $input, condition: $condition) {
+      id
+      dataType
+      dataValue
+      owner
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateAudioMetaData = /* GraphQL */ `
+  mutation UpdateAudioMetaData(
+    $input: UpdateAudioMetaDataInput!
+    $condition: ModelAudioMetaDataConditionInput
+  ) {
+    updateAudioMetaData(input: $input, condition: $condition) {
+      id
+      dataType
+      dataValue
+      owner
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteAudioMetaData = /* GraphQL */ `
+  mutation DeleteAudioMetaData(
+    $input: DeleteAudioMetaDataInput!
+    $condition: ModelAudioMetaDataConditionInput
+  ) {
+    deleteAudioMetaData(input: $input, condition: $condition) {
+      id
+      dataType
+      dataValue
+      owner
       createdAt
       updatedAt
     }
