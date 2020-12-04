@@ -1,5 +1,24 @@
-type Todo @model {
+type Todo 
+  @model 
+  @auth(rules: [{allow: owner}]) 
+  @key(fields: ["id"])
+  @key(name: "nameIndex", fields: ["name"], queryField: "todoByName")
+{
   id: ID!
   name: String!
-  description: String
+  description: String!
+  owner: String
+}
+
+type AudioMetaData
+  @model
+  @auth(rules: [{ allow: owner }])
+  @key(fields: ["id","dataType"])
+  @key(name: "dataValueIndex", fields: ["dataValue"], queryField: "listAudioByDataValue")
+  @key(name: "ownerIndex", fields: ["owner"], queryField: "listAudioByOwner")
+{
+  id: ID!
+  dataType: String!
+  dataValue: String
+  owner: String!
 }
