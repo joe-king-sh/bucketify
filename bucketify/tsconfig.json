@@ -22,7 +22,7 @@
     "jsx": "react"
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
   
 }

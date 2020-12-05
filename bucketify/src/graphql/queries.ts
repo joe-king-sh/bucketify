@@ -112,6 +112,7 @@ export const todoByName = /* GraphQL */ `
 export const listAudioByDataValue = /* GraphQL */ `
   query ListAudioByDataValue(
     $dataValue: String
+    $dataType: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelAudioMetaDataFilterInput
     $limit: Int
@@ -119,6 +120,7 @@ export const listAudioByDataValue = /* GraphQL */ `
   ) {
     listAudioByDataValue(
       dataValue: $dataValue
+      dataType: $dataType
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit
@@ -139,6 +141,7 @@ export const listAudioByDataValue = /* GraphQL */ `
 export const listAudioByOwner = /* GraphQL */ `
   query ListAudioByOwner(
     $owner: String
+    $dataType: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelAudioMetaDataFilterInput
     $limit: Int
@@ -146,6 +149,7 @@ export const listAudioByOwner = /* GraphQL */ `
   ) {
     listAudioByOwner(
       owner: $owner
+      dataType: $dataType
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit

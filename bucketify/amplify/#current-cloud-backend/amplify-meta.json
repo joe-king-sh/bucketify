@@ -24,7 +24,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/function/bucketify15e1b624CustomMessage-cloudformation-template.json",
         "logicalId": "functionbucketify15e1b624CustomMessage"
       },
-      "lastPushTimeStamp": "2020-12-04T11:23:16.771Z",
+      "lastPushTimeStamp": "2020-12-05T06:03:15.933Z",
       "output": {
         "Region": "ap-northeast-1",
         "Arn": "arn:aws:lambda:ap-northeast-1:757523705531:function:bucketify15e1b624CustomMessage-dev",
@@ -54,7 +54,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/auth/bucketify15e1b624-cloudformation-template.yml",
         "logicalId": "authbucketify15e1b624"
       },
-      "lastPushTimeStamp": "2020-12-04T11:23:16.775Z",
+      "lastPushTimeStamp": "2020-12-05T06:03:15.937Z",
       "output": {
         "AppClientSecret": "1kqua33bam11q8s24pvm2vb27khanoi17je33j0gkae9lce5eoou",
         "UserPoolId": "ap-northeast-1_HdCWPvlrh",
@@ -78,7 +78,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
         "logicalId": "hostingamplifyhosting"
       },
-      "lastPushTimeStamp": "2020-12-04T11:23:16.776Z",
+      "lastPushTimeStamp": "2020-12-05T06:03:15.939Z",
       "output": {},
       "lastPushDirHash": "/+VZ33seFFqAr6wbtptwbINUfSA="
     }
@@ -109,12 +109,12 @@
         "GraphQLAPIEndpointOutput": "https://mlkju3zhlvgxtgpdecgyozweea.appsync-api.ap-northeast-1.amazonaws.com/graphql",
         "GraphQLAPIKeyOutput": "da2-2k5xsilvjfevpkfrir3dxmrye4"
       },
-      "lastPushTimeStamp": "2020-12-04T11:23:18.515Z",
+      "lastPushTimeStamp": "2020-12-05T06:03:17.835Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-bucketify-dev-183117-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apibucketify"
       },
-      "lastPushDirHash": "vn7PcIQAyCFHgzmTpTfF+MEOygk="
+      "lastPushDirHash": "Amsb5H5p1+YziSmk2f76KqvJ/Wk="
     }
   }
 }
