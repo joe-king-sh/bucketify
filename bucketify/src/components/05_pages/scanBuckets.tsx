@@ -65,7 +65,6 @@ const ScanBuckets: React.FC = () => {
 
 
     return (
-
         <React.Fragment>
 
             <GenericTemplate>
