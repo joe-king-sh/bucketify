@@ -2,13 +2,13 @@ import React from 'react'
 import { Container, Typography } from '@material-ui/core';
 
 // template
-import GenericTemplate from '../04_templates/genericTemplate';
-import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+// import GenericTemplate from '../04_templates/genericTemplate';
+// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
 
 const NotFound: React.FC = () => (
   <React.Fragment>
-    <GenericTemplate>
-      <LoginRequiredWrapper isLoginRequired={false}>
+    {/* <GenericTemplate> */}
+      {/* <LoginRequiredWrapper isLoginRequired={false}> */}
 
         <Container>
 
@@ -21,8 +21,8 @@ const NotFound: React.FC = () => (
 
         </Container>
 
-      </LoginRequiredWrapper>
-    </GenericTemplate>
+      {/* </LoginRequiredWrapper> */}
+    {/* </GenericTemplate> */}
   </React.Fragment>
 )
 

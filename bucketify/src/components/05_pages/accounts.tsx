@@ -17,8 +17,8 @@ import TableRow from '@material-ui/core/TableRow';
 
 
 // Template
-import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
-import GenericTemplate from '../04_templates/genericTemplate';
+// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+// import GenericTemplate from '../04_templates/genericTemplate';
 import PageContainer from '../03_organisms/pageContainer'
 
 
@@ -27,12 +27,12 @@ const Accounts: React.FC = () => {
     const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
     return (
-        <GenericTemplate>
-            <LoginRequiredWrapper isLoginRequired={true}>
+        // <GenericTemplate>
+        //     <LoginRequiredWrapper isLoginRequired={true}>
 
-                <PageContainer 
-                h2Text='Account overview'
-                h3Text='Profile'
+                <PageContainer
+                    h2Text='Account overview'
+                    h3Text='Profile'
                 >
                     {UserDataHooks.user !== undefined &&
 
@@ -50,7 +50,7 @@ const Accounts: React.FC = () => {
                                         </TableRow>
                                         <TableRow>
                                             <TableCell component="th" scope="row">
-                                            <b>Email</b>
+                                                <b>Email</b>
                                             </TableCell>
                                             <TableCell align="right">{UserDataHooks.user.attributes.email}</TableCell>
                                         </TableRow>
@@ -58,13 +58,13 @@ const Accounts: React.FC = () => {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            
+
 
                         </React.Fragment>
                     }
                 </PageContainer>
-            </LoginRequiredWrapper>
-        </GenericTemplate>
+        //     </LoginRequiredWrapper>
+        // </GenericTemplate>
     )
 }
 export default Accounts

@@ -4,8 +4,8 @@ import React, {useState} from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 // Template
-import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
-import GenericTemplate from '../04_templates/genericTemplate';
+// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+// import GenericTemplate from '../04_templates/genericTemplate';
 import PageContainer from '../03_organisms/pageContainer'
 
 // Material-ui components
@@ -67,8 +67,8 @@ const ScanBuckets: React.FC = () => {
     return (
         <React.Fragment>
 
-            <GenericTemplate>
-                <LoginRequiredWrapper isLoginRequired={true}>
+            {/* <GenericTemplate> */}
+                {/* <LoginRequiredWrapper isLoginRequired={true}> */}
 
                     <PageContainer h2Text='Scan your bucket'>
 
@@ -124,8 +124,8 @@ const ScanBuckets: React.FC = () => {
                         </form>
 
                     </PageContainer>
-                </LoginRequiredWrapper>
-            </GenericTemplate>
+                {/* </LoginRequiredWrapper> */}
+            {/* </GenericTemplate> */}
         </React.Fragment>
     );
 }

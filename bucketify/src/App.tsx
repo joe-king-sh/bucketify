@@ -2,6 +2,8 @@ import React from 'react';
 
 // Routing
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+// import PrivateRoute from './components/03_organisms/privateRoot'
+
 // Auth
 import { AuthState } from '@aws-amplify/ui-components';
 
@@ -12,6 +14,11 @@ import NotFound from './components/05_pages/404'
 // import SignIn from './components/05_pages/signIn'
 import SignUp from './components/05_pages/signUp'
 import Accounts from './components/05_pages/accounts'
+
+// template
+import GenericTemplate from './components/04_templates/genericTemplate';
+import LoginRequiredWrapper from './components/04_templates/loginRequiredWrapper';
+
 
 // TestPage
 import GraphqlTest from './components/05_pages/graphqlTest'
@@ -24,7 +31,7 @@ export interface IAuthStateHooks {
 }
 const defaultAuthStateHooks: IAuthStateHooks = {
   authState: AuthState.SignOut,
-  setAuthState: () => {}
+  setAuthState: () => { }
 }
 export const AuthContext = React.createContext<IAuthStateHooks>(defaultAuthStateHooks);
 
@@ -35,7 +42,7 @@ export interface IUserDataStateHooks {
 }
 const defaultUserDataStateHooks = {
   user: undefined,
-  setUser: () => {}
+  setUser: () => { }
 }
 export const UserDataContext = React.createContext<IUserDataStateHooks>(defaultUserDataStateHooks);
 
@@ -55,25 +62,59 @@ const App: React.FC = () => {
   }
 
 
-  
+
 
   return (
     <AuthContext.Provider value={AuthStateHooks}>
       <UserDataContext.Provider value={UserDataStateHooks}>
         <Router>
           <Switch>
-            <Route exact path="/" component={Landing} />
-            {/* <Route exact path="/signin" component={SignIn} /> */}
-            
-            <Route exact path="/signup" component={SignUp} />
-            <Route exact path="/accounts" component={Accounts} />
-            <Route exact path="/buckets" component={ScanBuckets} />
+            {/* Login not required route */}
+            <Route exact path={[
+              "/",
+              "/signup",
+            ]}>
+              <GenericTemplate>
+                <LoginRequiredWrapper isLoginRequired={false}>
+                  <Route exact path="/" component={Landing} />
+                  {/* <Route exact path="/signin" component={SignIn} /> */}
+                  <Route exact path="/signup" component={SignUp} />
+                </LoginRequiredWrapper>
+              </GenericTemplate>
 
-            <Route exact path="/test" component={GraphqlTest} />
-            <Route exact path="/test2" component={GraphqlAudioTest} />
+            </Route>
 
+            {/* Login required route */}
+            <Route exact path={[
+              "/accounts",
+              "/buckets",
+              "/test",
+              "/test2"
+            ]}>
+              <Switch>
+                <GenericTemplate>
 
-            <Route component={NotFound} />
+                  <LoginRequiredWrapper isLoginRequired={true}>
+
+                    <Route exact path="/accounts" component={Accounts} />
+                    <Route exact path="/buckets" component={ScanBuckets} />
+
+                    <Route exact path="/test" component={GraphqlTest} />
+                    <Route exact path="/test2" component={GraphqlAudioTest} />
+
+                  </LoginRequiredWrapper>
+                </GenericTemplate>
+              </Switch>
+            </Route>
+
+            {/* Wrong url route */}
+            <Route render={() =>
+              (<GenericTemplate>
+                <NotFound />
+              </GenericTemplate>)
+            }
+            />
+
           </Switch>
         </Router>
       </UserDataContext.Provider>
