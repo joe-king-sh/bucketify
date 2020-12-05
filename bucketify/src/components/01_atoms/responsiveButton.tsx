@@ -15,17 +15,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface IResponsiveButton {
     children: React.ReactNode;
+    onClick: () => void;
 }
 
 const ResponsiveButton: React.FC<IResponsiveButton> = ({
     children
+    , onClick
 }) => {
 
     const classes = useStyles();
 
 
     return (
-        <Button variant="contained" color="secondary" className={classes.responsiveButton}>
+        <Button variant="contained" color="secondary" className={classes.responsiveButton} onClick={onClick}>
             {children}
         </Button>
     )

@@ -14,11 +14,11 @@ type AudioMetaData
   @model
   @auth(rules: [{ allow: owner }])
   @key(fields: ["id","dataType"])
-  @key(name: "dataValueIndex", fields: ["dataValue"], queryField: "listAudioByDataValue")
-  @key(name: "ownerIndex", fields: ["owner"], queryField: "listAudioByOwner")
+  @key(name: "dataValueIndex", fields: ["dataValue", "dataType"], queryField: "listAudioByDataValue")
+  @key(name: "ownerIndex", fields: ["owner", "dataType"], queryField: "listAudioByOwner")
 {
   id: ID!
   dataType: String!
-  dataValue: String
+  dataValue: String!
   owner: String!
 }
