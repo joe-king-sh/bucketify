@@ -100,7 +100,7 @@ Using GSI Overloading and each audio id,
 | {AudioId} | Artist | {UserId}-{Artist}| - | {UserId} | 
 | {AudioId} | Album | {UserId}-{Album}| - | {UserId} | 
 | {AudioId} | AlbumArtWorkS3Path |{AlbumArtWorkS3Path}| - | {UserId} | 
-| {AudioId} | AudioS3Path | {UserId}| - | {UserId} | 
+| {AudioId} | AudioS3Path | {AudioS3Path}| - | {UserId} | 
 | {AudioId} | AccessKey | {AccessKey}| - | {UserId} | 
 | {AudioId} | SecretAccessKey | {SecretAccessKey} | - | {UserId} | 
 | {AudioId} | PlayListId | {PlayListId} | {SortOrder} | {UserId} | 

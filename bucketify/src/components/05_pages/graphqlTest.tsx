@@ -14,8 +14,8 @@ import {
 import awsExports from "../../aws-exports";
 
 // Template
-import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
-import GenericTemplate from '../04_templates/genericTemplate';
+// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+// import GenericTemplate from '../04_templates/genericTemplate';
 
 Amplify.configure(awsExports);
 
@@ -116,8 +116,8 @@ const GraphqlTest: React.FC = () => {
 
 
     return (
-        <GenericTemplate>
-            <LoginRequiredWrapper isLoginRequired={true}>
+        // <GenericTemplate>
+            // <LoginRequiredWrapper isLoginRequired={true}>
 
                 <div >
                     <h2>Amplify Todos</h2>
@@ -142,8 +142,8 @@ const GraphqlTest: React.FC = () => {
                     }
                 </div>
 
-            </LoginRequiredWrapper>
-        </GenericTemplate>
+            // </LoginRequiredWrapper>
+        // </GenericTemplate>
     )
 }
 

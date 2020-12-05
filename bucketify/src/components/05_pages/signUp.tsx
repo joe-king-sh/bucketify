@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { AuthState } from '@aws-amplify/ui-components';
 
 // Template
-import GenericTemplate from '../04_templates/genericTemplate';
+// import GenericTemplate from '../04_templates/genericTemplate';
 
 // Authorization components
 import MyAuthenticator from '../03_organisms/authenticator'
@@ -30,10 +30,9 @@ const SignUp: React.FC = () => {
     
     return (
 
-        <GenericTemplate>
             <MyAuthenticator currentAuthState={AuthState.SignUp} />
             
-        </GenericTemplate>
+    
     );
 }
 

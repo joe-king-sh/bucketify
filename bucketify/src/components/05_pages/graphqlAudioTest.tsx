@@ -16,8 +16,8 @@ import {
 import awsExports from "../../aws-exports";
 
 // Template
-import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
-import GenericTemplate from '../04_templates/genericTemplate';
+// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+// import GenericTemplate from '../04_templates/genericTemplate';
 
 Amplify.configure(awsExports);
 
@@ -38,8 +38,6 @@ const GraphqlAudioTest: React.FC = () => {
     const [audio, setAudios] = useState<AudioMetaDatas>([]);
     
     // fetch data by login user id
-    
-    
     const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
     useEffect(() => {
         
@@ -86,8 +84,8 @@ const GraphqlAudioTest: React.FC = () => {
     }, [UserDataHooks])
 
     return (
-        <GenericTemplate>
-            <LoginRequiredWrapper isLoginRequired={true}>
+        // <GenericTemplate>
+            // <LoginRequiredWrapper isLoginRequired={true}>
 
                 <div >
                  
@@ -102,8 +100,8 @@ const GraphqlAudioTest: React.FC = () => {
                     }
                 </div>
 
-            </LoginRequiredWrapper>
-        </GenericTemplate>
+            // </LoginRequiredWrapper>
+        // </GenericTemplate>
     )
 }
 

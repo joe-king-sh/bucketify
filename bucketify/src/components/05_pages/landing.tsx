@@ -2,16 +2,14 @@ import React from 'react';
 import Box from "@material-ui/core/Box";
 
 // template
-import GenericTemplate from '../04_templates/genericTemplate';
-import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+// import GenericTemplate from '../04_templates/genericTemplate';
+// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
 
 //Parallax
 import { ParallaxBanner } from 'react-scroll-parallax';
 
 const Landing: React.FC = () => {
     return (
-        <GenericTemplate>
-        <LoginRequiredWrapper isLoginRequired={false}>
 
             <Box>
                 <ParallaxBanner
@@ -112,8 +110,7 @@ const Landing: React.FC = () => {
                 </Box>
 
             </Box>
-            </LoginRequiredWrapper>
-        </GenericTemplate>
+
 
     );
 }
