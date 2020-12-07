@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 // Template
@@ -11,8 +11,8 @@ import PageContainer from '../03_organisms/pageContainer'
 // Material-ui components
 import TextField from '@material-ui/core/TextField';
 import Box from "@material-ui/core/Box";
-// import Alert from "@material-ui/lab/Alert";
-// import AlertTitle from "@material-ui/lab/AlertTitle";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 
 // My components
 import ResponsiveButton from '../01_atoms/responsiveButton'
@@ -23,7 +23,7 @@ import { ListObjectsV2Request, ListObjectsV2Output } from 'aws-sdk/clients/s3';
 
 
 // Message
-import { requiredValueEmpty } from '../99_common/message'
+import { msgRequiredValueEmpty, msgInValidAccessKey, msgSignatureDoesNotMatch, msgNetworkingError } from '../99_common/message'
 
 
 // Style
@@ -58,11 +58,11 @@ const ScanBuckets: React.FC = () => {
     }
     const [validation, setValidation] = useState(initialValidationState);
 
-    const [error, setError] = useState(false);
-
+    // helper function for input form.
     const setInput = (key: string, value: string) => {
         setFormData({ ...formData, [key]: value })
     }
+
 
 
     // list user's object metadatas in s3 buckets. 
@@ -71,13 +71,12 @@ const ScanBuckets: React.FC = () => {
 
         // validation
         if (!formData.bucketName) {
-            const errorDescription = requiredValueEmpty({ requiredValue: 'your bucket name' })
+            const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your bucket name' })
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
                 validation.validationS3 = { isError: true, description: errorDescription }
                 return validation
             })
-            setError(true)
             return
         } else {
             setValidation(prevValidation => {
@@ -85,10 +84,9 @@ const ScanBuckets: React.FC = () => {
                 validation.validationS3 = { isError: false, description: '' }
                 return validation
             })
-            setError(false)
         }
         if (!formData.accessKey) {
-            const errorDescription = requiredValueEmpty({ requiredValue: 'your access key' })
+            const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your access key' })
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
                 validation.validationAccessKey = { isError: true, description: errorDescription }
@@ -103,7 +101,7 @@ const ScanBuckets: React.FC = () => {
             })
         }
         if (!formData.secretAccessKey) {
-            const errorDescription = requiredValueEmpty({ requiredValue: 'your secret access key' })
+            const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your secret access key' })
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
                 validation.validationSecretAccessKey = { isError: true, description: errorDescription }
@@ -125,14 +123,14 @@ const ScanBuckets: React.FC = () => {
         });
 
         const s3 = new AWS.S3({
-            region: 'ap-northeast-1',
-            maxRetries: 15
+            // region: 'ap-northeast-1',
+            region: 'us-east-1',
+            maxRetries: 5
         });
 
         // list objects 
         console.log('Start list objects oparation.')
         let keyList: string[] = [];
-
         try {
             for (let continuationToken = null; ;) {
                 console.log('continuationToken -> ' + continuationToken)
@@ -146,29 +144,17 @@ const ScanBuckets: React.FC = () => {
 
                 // Call S3 API
                 let objects: ListObjectsV2Output = {}
-                try {
-                    console.log('befor call api')
-                    objects = await s3.listObjectsV2(params).promise()
-                        .then(data => {
-                            console.log('listObjectsV2Result -> ' + objects)
-                            return data
-                        })
-                        .catch(err => {
-                            console.log('An error occured when call list objects v2 API.')
-                            console.log(err)
-                            throw new Error(err)
-                        });
-                    console.log('after call api')
-
-                } catch (e) {
-                    console.log('aaaa')
-                    console.log(e)
-                }
-                // .catch(err => {
-                //     console.log('An error occured when call list objects v2 API.')
-                //     console.log(err)
-                //     throw new Error(err)
-                // });
+                console.log('befor call api')
+                objects = await s3.listObjectsV2(params).promise()
+                    .then(data => {
+                        console.log('listObjectsV2Result -> ' + objects)
+                        return data
+                    })
+                    .catch(err => {
+                        console.log('An error occured when call list objects v2 API.')
+                        throw err
+                    });
+                console.log('after call api')
 
                 // Add object keys of audio files
                 if (objects.Contents === undefined) {
@@ -193,28 +179,78 @@ const ScanBuckets: React.FC = () => {
             console.log('keyList ->' + keyList)
 
         } catch (err) {
-            console.log('catch!!')
+            let alert: TAlert = { severity: 'error', title: '', description: '' }
+            if (err.code === 'InvalidAccessKeyId') {
+                alert.title = 'Error - InvalidAccessKeyId'
+                alert.description = msgInValidAccessKey()
+            } else if (err.code === 'SignatureDoesNotMatch') {
+                alert.title = 'Error - SignatureDoesNotMatch'
+                alert.description = msgSignatureDoesNotMatch()
+            } else if (err.code === 'NetworkingError') {
+                alert.title = 'Error - NetworkingError'
+                alert.description = msgNetworkingError()
+            } else {
+                // An expected error
+                alert.title = 'Error - ' + err.code
+                alert.description = err.message
+            }
+
+            setAlerts(prevAlerts => {
+                const alerts = [...prevAlerts, alert]
+                return alerts
+            })
+            console.log(err.code)
+            console.log(err.message)
             console.log(err)
         }
 
     }
 
-    // scan users buckets and puitem metadata to dynamodb.
+    // Scan users buckets and puitem metadata to dynamodb.
     const scanBuckets = () => {
         console.log('start scan your bucket')
+
+        // init alert field.
+        setAlerts([])
+
+        // call list object oparation.
         listObjects()
     }
 
+    // Show alert bar in page top.
+    const [alerts, setAlerts] = useState<TAlert[]>([])
+    type TAlert = {
+        severity: "error" | "warning" | "success" | "info" | undefined;
+        description: string;
+        title: string;
+    }
+    type TAlertFieldProps = {
+        children?: ReactNode;
+        alerts: TAlert[];
+    }
+    const AlertField: React.FC<TAlertFieldProps> = ({ alerts }) => {
+        return (
+            <>
+                {
+                    alerts.map(alert => {
+                        return (
+                            <Alert severity={alert.severity}>
+                                <AlertTitle>{alert.title}</AlertTitle>
+                                {alert.description}
+                            </Alert>
+                        )
+                    }
+                    )
+                }
+            </>
+        )
+    }
 
     return (
-        <React.Fragment>
-
-            {/* <GenericTemplate> */}
-            {/* <LoginRequiredWrapper isLoginRequired={true}> */}
-
+        <>
             <PageContainer h2Text='Scan your bucket'>
 
-                {/* <AlertField alerts={alerts} /> */}
+                <AlertField alerts={alerts} />
 
                 <form noValidate autoComplete="on">
 
@@ -229,8 +265,7 @@ const ScanBuckets: React.FC = () => {
                             color="secondary"
                             onChange={event => setInput('bucketName', event.target.value)}
                             value={formData.bucketName}
-                            // error={validation.validationS3.isError}
-                            error={error}
+                            error={validation.validationS3.isError}
                             helperText={validation.validationS3.description}
 
                         />
@@ -278,9 +313,7 @@ const ScanBuckets: React.FC = () => {
                 </form>
 
             </PageContainer>
-            {/* </LoginRequiredWrapper> */}
-            {/* </GenericTemplate> */}
-        </React.Fragment>
+        </>
     );
 }
 
