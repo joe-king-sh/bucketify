@@ -1,6 +1,4 @@
-
-
-import React, { useState, ReactNode } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 // Template
@@ -9,18 +7,23 @@ import PageContainer from '../03_organisms/pageContainer'
 // Material-ui components
 import TextField from '@material-ui/core/TextField';
 import Box from "@material-ui/core/Box";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
 
 // My components
 import ResponsiveButton from '../01_atoms/responsiveButton'
-
+import AlertField, {TAlert} from '../03_organisms/alert'
 // AWS SDK
 import AWS from 'aws-sdk';
-import { ListObjectsV2Request, ListObjectsV2Output } from 'aws-sdk/clients/s3';
 
 // Message
-import { msgRequiredValueEmpty, msgInValidAccessKey, msgSignatureDoesNotMatch, msgNetworkingError, msgAccessDenied, msgFileNotFound } from '../99_common/message'
+import { 
+    msgRequiredValueEmpty,
+    msgFileNotFound 
+} from '../99_common/message'
+
+// AWS utilify
+import {listObjectKeys, getMetadata} from '../99_common/aws_util/s3'
+
+
 
 
 /**
@@ -144,10 +147,22 @@ const useStyles = makeStyles((theme: Theme) =>
             return
         }
 
+        // Set aws credential
+        AWS.config.update({
+            accessKeyId: formData.accessKey,
+            secretAccessKey: formData.secretAccessKey
+        });
+
+        const s3 = new AWS.S3({
+            // region: 'ap-northeast-1',
+            region: 'us-east-1',
+            maxRetries: 5
+        });
+
         // Init alert field.
         setAlerts([])
         // Call list object operation.
-        const audioObjectKeys = listObjects()
+        const audioObjectKeys = listObjectKeys(s3, formData.bucketName, setAlerts)
         // If no audio file was found, the scan bucket operation will be end immediately.
         audioObjectKeys.then(keyList => {
             if (keyList.length === 0){
@@ -166,7 +181,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
             // Expand audio metadata and put them into dynamodb.
             keyList.forEach(key => {
-                const audioMetaData = getMetadata(key)
+                const audioMetaData = getMetadata(s3, formData.bucketName, key)
+
+                console.log(audioMetaData)
             });
 
             
@@ -176,164 +193,11 @@ const useStyles = makeStyles((theme: Theme) =>
         console.groupEnd()
     }
 
-    // List user's object keys in s3 buckets. 
-    const listObjects = async () => {
-        console.group('CALL_LISTOBJECTS_API')
-
-        // Set aws credential
-        AWS.config.update({
-            accessKeyId: formData.accessKey,
-            secretAccessKey: formData.secretAccessKey
-        });
-
-        const s3 = new AWS.S3({
-            // region: 'ap-northeast-1',
-            region: 'us-east-1',
-            maxRetries: 5
-        });
-
-        // List objects 
-        console.info('Start list objects oparation.')
-        let keyList: string[] = [];
-        try {
-            console.group('CALL_API_TRY_STATEMENT')
-            for (let continuationToken = null; ;) {
-                console.info('ContinuationToken -> ' + continuationToken)
-
-                const params: ListObjectsV2Request = {
-                    Bucket: formData.bucketName
-                };
-                if (continuationToken) {
-                    params.ContinuationToken = continuationToken
-                };
-
-                // Call S3 API
-                let objects: ListObjectsV2Output = {}
-                console.info('Call api start')
-                objects = await s3.listObjectsV2(params).promise()
-                    .then(data => {
-                        return data
-                    })
-                    .catch(err => {
-                        console.error('An error occured when call list objects v2 API.')
-                        throw err
-                    });
-                console.info('Call api end')
-
-                // Filter objects to remain only audio metadata
-                if (objects.Contents === undefined) {
-                    break;
-                }
-                objects.Contents.map(v => v.Key).forEach(key => {
-                    if (key === undefined) {
-                        return;
-                    }
-
-                    // Only allowed in below extensions
-                    const allowExtentions: Array<string> = ['mp3', 'mp4', 'm4a']
-                    const periodPosition: number = key.lastIndexOf('.')
-                    if (periodPosition !== -1) {
-                        const extension = key.slice(periodPosition + 1).toLowerCase();
-                        if (allowExtentions.indexOf(extension) !== -1) {
-                            keyList.push(key);
-                        }
-                    }
-                });
-
-                // If the object counts over 1000, isTruncated will be true.
-                if (!objects.IsTruncated) {
-                    console.info('All objects were listed, so the list buckets operation will be finished.')
-                    break;
-                }
-
-                // Save the next read position.
-                continuationToken = objects.NextContinuationToken;
-
-            }
-            console.table(keyList)
-            console.groupEnd()
-
-        } catch (err) {
-            console.group('CALL_API_CATCH_STATEMENT')
-            let alert: TAlert = { severity: 'error', title: '', description: '' }
-            if (err.code === 'InvalidAccessKeyId') {
-                alert.title = 'Error - InvalidAccessKeyId'
-                alert.description = msgInValidAccessKey()
-            } else if (err.code === 'SignatureDoesNotMatch') {
-                alert.title = 'Error - SignatureDoesNotMatch'
-                alert.description = msgSignatureDoesNotMatch()
-            } else if (err.code === 'NetworkingError') {
-                alert.title = 'Error - NetworkingError'
-                alert.description = msgNetworkingError()
-            } else if (err.code === 'AccessDenied') {
-                alert.title = 'Error - AccessDenied'
-                alert.description = msgAccessDenied()
-            } else {
-                // An unexpected error
-                alert.title = 'Error - ' + err.code
-                alert.description = err.message
-            }
-
-            setAlerts(prevAlerts => {
-                const alerts = [...prevAlerts, alert]
-                return alerts
-            })
-            console.error(err.code)
-            console.error(err.message)
-            console.error(err)
-            console.groupEnd()
-
-            throw err
-        }
-
-        console.groupEnd()
-        return keyList
-
-    }
-
-    // GetItem from dynamodb and expand metadata
-    type TAudioMetaData = {
-        AudioName: string,
-        Artist?: string,
-        Album?: string,
-    }
-    const getMetadata: (key: string) => TAudioMetaData[] = (key: string) => {
-        const audioMetaDatas: TAudioMetaData[] = []
-
-        return audioMetaDatas
-    } 
-
 
     /* ------------ Alert bar ------------ */ 
     // Show alert bar in page top.
     const [alerts, setAlerts] = useState<TAlert[]>([])
-    type TAlert = {
-        severity: "error" | "warning" | "success" | "info" | undefined;
-        description: string;
-        title: string;
-    }
-    type TAlertFieldProps = {
-        children?: ReactNode;
-        alerts: TAlert[];
-    }
-    // Alert TSX
-    const AlertField: React.FC<TAlertFieldProps> = ({ alerts }) => {
-        return (
-            <>
-                {
-                    alerts.map(alert => {
-                        return (
-                            <Alert severity={alert.severity} className={classes.alertField}>
-                                <AlertTitle>{alert.title}</AlertTitle>
-                                {alert.description}
-                            </Alert>
-                        )
-                    }
-                    )
-                }
-            </>
-        )
-    }
+
 
     /* ------------ Main TSX ------------ */ 
     // TSX to return
