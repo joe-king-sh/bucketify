@@ -17,8 +17,6 @@ import TableRow from '@material-ui/core/TableRow';
 
 
 // Template
-// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
-// import GenericTemplate from '../04_templates/genericTemplate';
 import PageContainer from '../03_organisms/pageContainer'
 
 
@@ -27,9 +25,6 @@ const Accounts: React.FC = () => {
     const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
     return (
-        // <GenericTemplate>
-        //     <LoginRequiredWrapper isLoginRequired={true}>
-
                 <PageContainer
                     h2Text='Account overview'
                     h3Text='Profile'
@@ -63,8 +58,6 @@ const Accounts: React.FC = () => {
                         </React.Fragment>
                     }
                 </PageContainer>
-        //     </LoginRequiredWrapper>
-        // </GenericTemplate>
     )
 }
 export default Accounts
