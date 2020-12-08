@@ -4,8 +4,6 @@ import React, { useState, ReactNode } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 // Template
-// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
-// import GenericTemplate from '../04_templates/genericTemplate';
 import PageContainer from '../03_organisms/pageContainer'
 
 // Material-ui components
@@ -21,12 +19,13 @@ import ResponsiveButton from '../01_atoms/responsiveButton'
 import AWS from 'aws-sdk';
 import { ListObjectsV2Request, ListObjectsV2Output } from 'aws-sdk/clients/s3';
 
-
 // Message
-import { msgRequiredValueEmpty, msgInValidAccessKey, msgSignatureDoesNotMatch, msgNetworkingError } from '../99_common/message'
+import { msgRequiredValueEmpty, msgInValidAccessKey, msgSignatureDoesNotMatch, msgNetworkingError, msgAccessDenied, msgFileNotFound } from '../99_common/message'
 
 
-// Style
+/**
+ * Style 
+ */
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         scanForm: {
@@ -34,50 +33,61 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         button: {
             textAlign: 'center',
+        },
+        alertField: {
+            whiteSpace: 'pre-wrap',
         }
     }),
+
 );
 
 
-
-const ScanBuckets: React.FC = () => {
+/**
+ * Return TSX to generate the scan bucket page.
+ * The scan bucket page allows below operations to users.
+ *  1.Scan user's s3 bucket.
+ *  2.Delete old metadata from dynamodb.
+ *  3.Expand audio metadata from audio files.
+ *  4.Put metadata into dynamodb.
+ * @return ScanBucket
+ */
+ const ScanBuckets: React.FC = () => {
     const classes = useStyles();
 
-    // states of input data to access aws environment.
+    /* ------------ Form input state ------------ */
+    // States of input data to access aws environment.
     const [formData, setFormData] = useState({
         bucketName: '',
         accessKey: '',
         secretAccessKey: ''
     });
+    // Helper function for input form.
+    const setInput = (key: string, value: string) => {
+        setFormData({ ...formData, [key]: value })
+    }
 
-    // states of validation.
+    /* ------------ Validation check ------------ */
+    // States of validation.
     const initialValidationState = {
         validationS3: { isError: false, description: '' },
         validationAccessKey: { isError: false, description: '' },
         validationSecretAccessKey: { isError: false, description: '' },
     }
     const [validation, setValidation] = useState(initialValidationState);
+    // Validation
+    const validationCheck: () => boolean = () => {
 
-    // helper function for input form.
-    const setInput = (key: string, value: string) => {
-        setFormData({ ...formData, [key]: value })
-    }
+        let isValidationError: boolean = false;
 
-
-
-    // list user's object metadatas in s3 buckets. 
-    const listObjects = async () => {
-        console.log('start call listObject api')
-
-        // validation
         if (!formData.bucketName) {
+            console.error('The bucket name is empty.')
             const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your bucket name' })
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
                 validation.validationS3 = { isError: true, description: errorDescription }
                 return validation
             })
-            return
+            isValidationError = true
         } else {
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
@@ -86,13 +96,14 @@ const ScanBuckets: React.FC = () => {
             })
         }
         if (!formData.accessKey) {
+            console.error('The access key or secret access key is empty.')
             const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your access key' })
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
                 validation.validationAccessKey = { isError: true, description: errorDescription }
                 return validation
             })
-            return
+            isValidationError = true
         } else {
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
@@ -101,13 +112,14 @@ const ScanBuckets: React.FC = () => {
             })
         }
         if (!formData.secretAccessKey) {
+            console.error('The access key or secret access key is empty.')
             const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your secret access key' })
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
                 validation.validationSecretAccessKey = { isError: true, description: errorDescription }
                 return validation
             })
-            return
+            isValidationError = true
         } else {
             setValidation(prevValidation => {
                 let validation = Object.assign({}, prevValidation)
@@ -115,6 +127,58 @@ const ScanBuckets: React.FC = () => {
                 return validation
             })
         }
+
+        return isValidationError
+    }
+
+    /* ------------ Scan bucket operations ------------ */
+    // Scan users buckets and put audio metadatas into dynamodb.
+    const scanBuckets = () => {
+        console.group('SCAN_BUCKETS_OPERATION')
+        console.info('Start scan your bucket')
+
+        // Validation check
+        const isValidationError = validationCheck()
+        if (isValidationError) {
+            console.error('A validation check error has occurred.')
+            return
+        }
+
+        // Init alert field.
+        setAlerts([])
+        // Call list object operation.
+        const audioObjectKeys = listObjects()
+        // If no audio file was found, the scan bucket operation will be end immediately.
+        audioObjectKeys.then(keyList => {
+            if (keyList.length === 0){
+                console.warn('No audio file was found.')
+                const description = msgFileNotFound()
+                const alert: TAlert = { severity: 'warning', title: 'FileNotFound', description: description }
+                setAlerts(prevAlerts => {
+                    const alerts = [...prevAlerts, alert]
+                    return alerts
+                })
+                return
+            }
+
+            // Delete old metadatas.
+            // TODO
+
+            // Expand audio metadata and put them into dynamodb.
+            keyList.forEach(key => {
+                const audioMetaData = getMetadata(key)
+            });
+
+            
+        })
+
+
+        console.groupEnd()
+    }
+
+    // List user's object keys in s3 buckets. 
+    const listObjects = async () => {
+        console.group('CALL_LISTOBJECTS_API')
 
         // Set aws credential
         AWS.config.update({
@@ -128,12 +192,13 @@ const ScanBuckets: React.FC = () => {
             maxRetries: 5
         });
 
-        // list objects 
-        console.log('Start list objects oparation.')
+        // List objects 
+        console.info('Start list objects oparation.')
         let keyList: string[] = [];
         try {
+            console.group('CALL_API_TRY_STATEMENT')
             for (let continuationToken = null; ;) {
-                console.log('continuationToken -> ' + continuationToken)
+                console.info('ContinuationToken -> ' + continuationToken)
 
                 const params: ListObjectsV2Request = {
                     Bucket: formData.bucketName
@@ -144,31 +209,40 @@ const ScanBuckets: React.FC = () => {
 
                 // Call S3 API
                 let objects: ListObjectsV2Output = {}
-                console.log('befor call api')
+                console.info('Call api start')
                 objects = await s3.listObjectsV2(params).promise()
                     .then(data => {
-                        console.log('listObjectsV2Result -> ' + objects)
                         return data
                     })
                     .catch(err => {
-                        console.log('An error occured when call list objects v2 API.')
+                        console.error('An error occured when call list objects v2 API.')
                         throw err
                     });
-                console.log('after call api')
+                console.info('Call api end')
 
-                // Add object keys of audio files
+                // Filter objects to remain only audio metadata
                 if (objects.Contents === undefined) {
                     break;
                 }
-                objects.Contents.map(v => v.Key).forEach(v => {
-                    if (v === undefined) {
+                objects.Contents.map(v => v.Key).forEach(key => {
+                    if (key === undefined) {
                         return;
                     }
-                    keyList.push(v);
+
+                    // Only allowed in below extensions
+                    const allowExtentions: Array<string> = ['mp3', 'mp4', 'm4a']
+                    const periodPosition: number = key.lastIndexOf('.')
+                    if (periodPosition !== -1) {
+                        const extension = key.slice(periodPosition + 1).toLowerCase();
+                        if (allowExtentions.indexOf(extension) !== -1) {
+                            keyList.push(key);
+                        }
+                    }
                 });
 
                 // If the object counts over 1000, isTruncated will be true.
                 if (!objects.IsTruncated) {
+                    console.info('All objects were listed, so the list buckets operation will be finished.')
                     break;
                 }
 
@@ -176,9 +250,11 @@ const ScanBuckets: React.FC = () => {
                 continuationToken = objects.NextContinuationToken;
 
             }
-            console.log('keyList ->' + keyList)
+            console.table(keyList)
+            console.groupEnd()
 
         } catch (err) {
+            console.group('CALL_API_CATCH_STATEMENT')
             let alert: TAlert = { severity: 'error', title: '', description: '' }
             if (err.code === 'InvalidAccessKeyId') {
                 alert.title = 'Error - InvalidAccessKeyId'
@@ -189,8 +265,11 @@ const ScanBuckets: React.FC = () => {
             } else if (err.code === 'NetworkingError') {
                 alert.title = 'Error - NetworkingError'
                 alert.description = msgNetworkingError()
+            } else if (err.code === 'AccessDenied') {
+                alert.title = 'Error - AccessDenied'
+                alert.description = msgAccessDenied()
             } else {
-                // An expected error
+                // An unexpected error
                 alert.title = 'Error - ' + err.code
                 alert.description = err.message
             }
@@ -199,24 +278,33 @@ const ScanBuckets: React.FC = () => {
                 const alerts = [...prevAlerts, alert]
                 return alerts
             })
-            console.log(err.code)
-            console.log(err.message)
-            console.log(err)
+            console.error(err.code)
+            console.error(err.message)
+            console.error(err)
+            console.groupEnd()
+
+            throw err
         }
 
+        console.groupEnd()
+        return keyList
+
     }
 
-    // Scan users buckets and puitem metadata to dynamodb.
-    const scanBuckets = () => {
-        console.log('start scan your bucket')
-
-        // init alert field.
-        setAlerts([])
-
-        // call list object oparation.
-        listObjects()
+    // GetItem from dynamodb and expand metadata
+    type TAudioMetaData = {
+        AudioName: string,
+        Artist?: string,
+        Album?: string,
     }
+    const getMetadata: (key: string) => TAudioMetaData[] = (key: string) => {
+        const audioMetaDatas: TAudioMetaData[] = []
 
+        return audioMetaDatas
+    } 
+
+
+    /* ------------ Alert bar ------------ */ 
     // Show alert bar in page top.
     const [alerts, setAlerts] = useState<TAlert[]>([])
     type TAlert = {
@@ -228,13 +316,14 @@ const ScanBuckets: React.FC = () => {
         children?: ReactNode;
         alerts: TAlert[];
     }
+    // Alert TSX
     const AlertField: React.FC<TAlertFieldProps> = ({ alerts }) => {
         return (
             <>
                 {
                     alerts.map(alert => {
                         return (
-                            <Alert severity={alert.severity}>
+                            <Alert severity={alert.severity} className={classes.alertField}>
                                 <AlertTitle>{alert.title}</AlertTitle>
                                 {alert.description}
                             </Alert>
@@ -246,6 +335,8 @@ const ScanBuckets: React.FC = () => {
         )
     }
 
+    /* ------------ Main TSX ------------ */ 
+    // TSX to return
     return (
         <>
             <PageContainer h2Text='Scan your bucket'>
@@ -307,7 +398,7 @@ const ScanBuckets: React.FC = () => {
                     <Box className={classes.button}>
                         <ResponsiveButton onClick={scanBuckets}>
                             Start Scan
-                                </ResponsiveButton>
+                        </ResponsiveButton>
                     </Box>
 
                 </form>
