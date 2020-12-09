@@ -18,10 +18,11 @@ import AWS from 'aws-sdk';
 import { 
     msgRequiredValueEmpty,
     msgFileNotFound 
-} from '../99_common/message'
+} from '../10_utilify/message'
 
 // AWS utilify
-import {listObjectKeys, getMetadata} from '../99_common/aws_util/s3'
+import {listObjectKeys, getObjectMetadata} from '../10_utilify/aws_util/s3'
+import {TAudioMetaData} from '../10_utilify/audioMetaDataParser'
 
 
 
@@ -181,14 +182,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
             // Expand audio metadata and put them into dynamodb.
             keyList.forEach(key => {
-                const audioMetaData = getMetadata(s3, formData.bucketName, key)
-
-                console.log(audioMetaData)
+                getObjectMetadata(s3, formData.bucketName, key, setAlerts).then((metadata: TAudioMetaData) =>{
+                    console.info('key: ' + key)
+                    console.info('metadata: ')
+                    console.dir(metadata)
+    
+                })
             });
-
             
         })
-
 
         console.groupEnd()
     }

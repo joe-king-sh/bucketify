@@ -1,6 +1,6 @@
-// import React, {ReactNode} from 'react';
-
-/* Messages tempalte master. */
+/** 
+ * Messages tempalte master. 
+*/
 
 // validation error
 export const msgRequiredValueEmpty = ({ requiredValue }: { requiredValue: string }) => `Enter ${requiredValue}.`;
@@ -26,6 +26,7 @@ Like below:
         "ExposeHeaders": []
     }
 ]
+CORS setting may take a few minutes to be enabled.
 `;
 
 export const msgAccessDenied = () => `Need to attach policy to allow ListBucket and GetItem oparation.

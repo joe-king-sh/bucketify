@@ -6,8 +6,8 @@ import Box from "@material-ui/core/Box";
 
 // Theme
 import { ThemeProvider } from "@material-ui/core/styles";
-import { AppName } from '../99_common/const'
-import makeCustomTheme from '../99_common/theme';
+import { AppName } from '../10_utilify/const'
+import makeCustomTheme from '../10_utilify/theme';
 
 // Organisms
 import { Footer } from '../03_organisms/footer'

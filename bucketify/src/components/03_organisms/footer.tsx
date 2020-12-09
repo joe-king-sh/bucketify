@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 
-import { Author } from '../99_common/const'
+import { Author } from '../10_utilify/const'
 
 import clsx from "clsx";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";

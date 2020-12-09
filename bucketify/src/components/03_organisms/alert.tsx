@@ -39,9 +39,9 @@ const AlertField: React.FC<TAlertFieldProps> = ({ alerts }) => {
     return (
         <>
             {
-                alerts.map(alert => {
+                alerts.map((alert, i) => {
                     return (
-                        <Alert severity={alert.severity} className={classes.alertField}>
+                        <Alert key={i} severity={alert.severity} className={classes.alertField}>
                             <AlertTitle>{alert.title}</AlertTitle>
                             {alert.description}
                         </Alert>
