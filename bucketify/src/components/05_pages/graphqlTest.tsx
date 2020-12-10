@@ -13,9 +13,6 @@ import {
 
 import awsExports from "../../aws-exports";
 
-// Template
-// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
-// import GenericTemplate from '../04_templates/genericTemplate';
 
 Amplify.configure(awsExports);
 

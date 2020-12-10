@@ -25,7 +25,7 @@ export const getExtension: (fileName: string) => string = fileName => {
 export const isAllowedAudioFormat: (fileName: string) => boolean = (fileName) => {
     
     // Only allowed in below extensions
-    const allowExtentions: Array<string> = ['mp3', 'mp4', 'm4a']
+    const allowExtentions: Array<string> = ['mp3', 'm4a']
 
     const extension: string = getExtension(fileName)
     if (allowExtentions.indexOf(extension) !== -1) {

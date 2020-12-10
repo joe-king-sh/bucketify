@@ -1,12 +1,28 @@
-import { fromUrl } from 'id3js';
+// import { fromUrl } from 'id3js';
+import * as musicMetadata from 'music-metadata-browser';
 import { getExtension } from './utility';
 
+// Type of metadata in audio file
 export type TAudioMetaData = {
   title: string;
-  album: string | null;
-  artist: string | null;
-  track: unknown | null;
+  album?: string | null;
+  artist?: string | null;
+  track?: number | null;
+  picture?: musicMetadata.IPicture[] | null;
+  genre?: string[] | null;
 };
+
+// Type of metadata in audio file without album cover art.
+type TAudioMetaDataWithoutPicture = Omit<TAudioMetaData, 'picture'>
+
+// Type of metadata in dynamodb table
+export type TAudioMetaDataDynamodb = TAudioMetaDataWithoutPicture & {
+  owner: string;
+  accessKey: string;
+  secretAccessKey: string;
+  s3BucketName: string;
+  s3ObjectKey: string;
+}
 
 /**
  * Get audio metadata from an audio file by s3 pre-signed URL.
@@ -15,32 +31,24 @@ export type TAudioMetaData = {
  * @param {string} key key of a s3 object.
  * @return {TAudioMetaData}
  */
-export const getMetadataBySignedUrl: (signedUrl: string, key: string) => TAudioMetaData = (
-  signedUrl,
-  key
-) => {
+export const getMetadataBySignedUrl: (
+  signedUrl: string,
+  key: string
+) => Promise<TAudioMetaData> = async (signedUrl, key) => {
   console.group('GET_AUDIO_METADATA');
 
   let audioMetaData: TAudioMetaData = {
     title: key,
-    album: null,
-    artist: null,
-    track: null
   };
 
   const extension = getExtension(key);
 
-  console.log('extension: ' + extension)
+  console.log('extension: ' + extension);
 
-  if (extension === 'mp3') {
-    const metadata = getMP3Metadata(signedUrl, key);
-    if (metadata !== null){
-      audioMetaData = metadata
-    }
-  } else if (extension === 'mp4') {
-  } else if (extension === 'm4a') {
+  const metadata = await getMP3Metadata(signedUrl, key);
+  if (metadata !== null) {
+      audioMetaData = metadata;
   }
-
   console.groupEnd();
   return audioMetaData;
 };
@@ -50,36 +58,27 @@ export const getMetadataBySignedUrl: (signedUrl: string, key: string) => TAudioM
  *
  * @param {*} signedUrl
  * @param {*} key
- * @return {*} 
+ * @return {*}
  */
-export const getMP3Metadata: (signedUrl: string, key: string) => TAudioMetaData | null = (
-  signedUrl,
-  key
-) => {
-  let audioMetaData: TAudioMetaData | null = null;
+export const getMP3Metadata: (
+  signedUrl: string,
+  key: string
+) => Promise<TAudioMetaData | null> | null = async (signedUrl, key) => {
+  let audioMetaData: TAudioMetaData | null = {title: key};
 
-  fromUrl(signedUrl).then((tags) => {
-    console.info(tags);
-    if (tags === null) {
-      return null;
-    } else {
-      const title = tags.title ? tags.title : key;
-      const album = tags.album ? tags.album : null;
-      const artist = tags.album ? tags.artist : null;
-      const track = tags.track ? tags.track : null;
-      
-      // console.info(title,album,artist,track)
-
-      audioMetaData = {
-        title: title,
-        album: album,
-        artist: artist,
-        track: track,
-      };
-
-      // console.dir(audioMetaData)
-    }
-  });
+  const metadata: musicMetadata.IAudioMetadata = await musicMetadata.fetchFromUrl(signedUrl);
+  console.dir(metadata);
+  if (metadata === null) {
+    return null;
+  } else {
+    if (metadata.common.title) audioMetaData.title = metadata.common.title ;
+    if (metadata.common.album) audioMetaData.album = metadata.common.album ;
+    if (metadata.common.artist) audioMetaData.artist = metadata.common.artist ;
+    if (metadata.common.albumartist) audioMetaData.artist = metadata.common.albumartist ;
+    if (metadata.common.track.no) audioMetaData.track = metadata.common.track.no ;
+    // if (metadata.common.picture) audioMetaData.picture = metadata.common.picture ;
+    if (metadata.common.genre) audioMetaData.genre = metadata.common.genre ;
+  }
 
   return audioMetaData;
 };

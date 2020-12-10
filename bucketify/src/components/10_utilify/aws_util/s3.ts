@@ -157,7 +157,7 @@ export const getObjectMetadata = async (
 
     const s3SignedUrl = await s3.getSignedUrl('getObject', params);
     console.info(s3SignedUrl);
-    audioMetaData = getMetadataBySignedUrl(s3SignedUrl, key);
+    audioMetaData = await getMetadataBySignedUrl(s3SignedUrl, key);
 
     console.info('Call api end');
 
