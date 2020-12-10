@@ -52,7 +52,7 @@ Like below:
 }
 `
 export const msgFileNotFound = () => `No audio file was found.
-File extensions that you can use in bucketify are only "mp3","mp4","m4a" .
+File extensions that you can use in bucketify are only "mp3","m4a" .
 Please confirm that your object is exists and file extension is allowed.
 `
 
