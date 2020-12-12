@@ -7,15 +7,29 @@ import PageContainer from '../03_organisms/pageContainer';
 // Material-ui components
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Typography } from '@material-ui/core';
 
 // My components
 import ResponsiveButton from '../01_atoms/responsiveButton';
 import AlertField, { TAlert } from '../03_organisms/alert';
+import { LinearProgressWithLabel } from '../01_atoms/linerProgressWithLabel';
+import { CustomizedSnackBar } from '../03_organisms/snackBar';
+
 // AWS SDK
 import AWS from 'aws-sdk';
 
 // Message
-import { msgRequiredValueEmpty, msgFileNotFound } from '../10_utilify/message';
+import {
+  msgRequiredValueEmpty,
+  msgFileNotFound,
+  msgProgressSearch,
+  msgProgressDelete,
+  msgProgressLoading,
+  msgProgressFailed,
+  msgScaningSucceeded,
+} from '../10_utilify/message';
 
 // AWS utilify
 import { listObjectKeys, getObjectMetadata } from '../10_utilify/aws_util/s3';
@@ -25,8 +39,7 @@ import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import { createAudioMetaData, deleteAudioMetaData } from '../../graphql/mutations';
 import { listAudioByDataValue } from '../../graphql/queries';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
-import { ListAudioByDataValueQuery,
-  DeleteAudioMetaDataInput } from '../../API';
+import { ListAudioByDataValueQuery, DeleteAudioMetaDataInput } from '../../API';
 
 // Utility
 import { v4 as uuidv4 } from 'uuid';
@@ -34,7 +47,9 @@ import { TAudioMetaData, TAudioMetaDataDynamodb } from '../10_utilify/audioMetaD
 
 import { UserDataContext, IUserDataStateHooks } from '../../App';
 
+// Typing
 import awsExports from '../../aws-exports';
+
 Amplify.configure(awsExports);
 
 /**
@@ -48,8 +63,17 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       textAlign: 'center',
     },
-    alertField: {
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
       whiteSpace: 'pre-wrap',
+      textAlign: 'center',
+    },
+    progressBarWrapper: {
+      width: '90%',
+    },
+    progresMessage: {
+      margin: '1rem 0 1rem 0',
     },
   })
 );
@@ -68,8 +92,10 @@ const ScanBuckets: React.FC = () => {
 
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
-  /* ------------ Form input state ------------ */
-  // States of input data to access aws environment.
+  /**
+   *  States used in this component.
+   */
+  // Form data
   const [formData, setFormData] = useState({
     bucketName: '',
     accessKey: '',
@@ -80,15 +106,71 @@ const ScanBuckets: React.FC = () => {
     setFormData({ ...formData, [key]: value });
   };
 
-  /* ------------ Validation check ------------ */
-  // States of validation.
-  const initialValidationState = {
-    validationS3: { isError: false, description: '' },
-    validationAccessKey: { isError: false, description: '' },
-    validationSecretAccessKey: { isError: false, description: '' },
+  // Alert field.
+
+  const [alerts, setAlerts] = useState<TAlert[]>([]);
+  const handleAlerts = (alert: TAlert) => {
+    setAlerts((prevAlerts) => {
+      const alerts = [...prevAlerts, alert];
+      return alerts;
+    });
   };
+
+  // Validation.
+  const initialValidationState = {
+    bucketName: { isError: false, description: '' },
+    accessKey: { isError: false, description: '' },
+    secretAccessKey: { isError: false, description: '' },
+  };
+  // Helper function for validation.
   const [validation, setValidation] = useState(initialValidationState);
-  // Validation
+  const handleValidation = (
+    isError: boolean,
+    message: string,
+    inputFormType: 'bucketName' | 'accessKey' | 'secretAccessKey'
+  ) => {
+    setValidation((prevValidation) => {
+      const validation = Object.assign({}, prevValidation);
+      validation[inputFormType] = { isError: isError, description: message };
+      return validation;
+    });
+  };
+
+  // Progress Field
+  type TProgress = {
+    inProgress: boolean;
+    nowProcessing: string;
+    processedCount: number;
+    allCount: number;
+  };
+  const [progress, setProgress] = useState<TProgress>({
+    inProgress: false,
+    nowProcessing: '',
+    processedCount: 0,
+    allCount: 0,
+  });
+
+  // Snack Bar
+  const [snackBar, setSnackBar] = useState({
+    isOpen: false,
+  });
+  const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBar({ isOpen: false });
+  };
+  const handleSnackbarOpen = () => {
+    setSnackBar({ isOpen: true });
+  };
+
+  console.log(setProgress);
+
+  /**
+   * Validation check
+   *
+   * @return {boolean}
+   */
   const validationCheck: () => boolean = () => {
     let isValidationError: boolean = false;
 
@@ -96,119 +178,144 @@ const ScanBuckets: React.FC = () => {
     if (!formData.bucketName) {
       console.error('The bucket name is empty.');
       const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your bucket name' });
-      setValidation((prevValidation) => {
-        let validation = Object.assign({}, prevValidation);
-        validation.validationS3 = { isError: true, description: errorDescription };
-        return validation;
-      });
+      handleValidation(true, errorDescription, 'bucketName');
       isValidationError = true;
     } else {
-      setValidation((prevValidation) => {
-        let validation = Object.assign({}, prevValidation);
-        validation.validationS3 = { isError: false, description: '' };
-        return validation;
-      });
+      handleValidation(false, '', 'bucketName');
     }
     // Confirm accessKey must be not empty.
     if (!formData.accessKey) {
       console.error('The access key or secret access key is empty.');
       const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your access key' });
-      setValidation((prevValidation) => {
-        let validation = Object.assign({}, prevValidation);
-        validation.validationAccessKey = { isError: true, description: errorDescription };
-        return validation;
-      });
+      handleValidation(true, errorDescription, 'accessKey');
       isValidationError = true;
     } else {
-      setValidation((prevValidation) => {
-        let validation = Object.assign({}, prevValidation);
-        validation.validationAccessKey = { isError: false, description: '' };
-        return validation;
-      });
+      handleValidation(false, '', 'accessKey');
     }
     // Confirm SecretAccessKey must be not empty.
     if (!formData.secretAccessKey) {
       console.error('The access key or secret access key is empty.');
       const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your secret access key' });
-      setValidation((prevValidation) => {
-        let validation = Object.assign({}, prevValidation);
-        validation.validationSecretAccessKey = { isError: true, description: errorDescription };
-        return validation;
-      });
+      handleValidation(true, errorDescription, 'secretAccessKey');
       isValidationError = true;
     } else {
-      setValidation((prevValidation) => {
-        let validation = Object.assign({}, prevValidation);
-        validation.validationSecretAccessKey = { isError: false, description: '' };
-        return validation;
-      });
+      handleValidation(false, '', 'secretAccessKey');
     }
 
     return isValidationError;
   };
 
-  /* ------------ Scan bucket operations ------------ */
-  // Scan users buckets and put audio metadatas into dynamodb.
+  /**
+   * Scan users buckets and put audio metadatas into dynamodb.
+   *
+   * @return {*}
+   */
   const scanBuckets = async () => {
-    console.group('SCAN_BUCKETS_OPERATION');
-    console.info('Start scan your bucket');
+    try {
+      console.group('SCAN_BUCKETS_OPERATION');
+      console.info('Start scan your bucket');
 
-    // Validation check
-    const isValidationError = validationCheck();
-    if (isValidationError) {
-      console.error('A validation check error has occurred.');
-      return;
-    }
+      // Validation check
+      const isValidationError = validationCheck();
+      if (isValidationError) {
+        console.error('A validation check error has occurred.');
+        return;
+      }
 
-    // Set aws credential
-    AWS.config.update({
-      accessKeyId: formData.accessKey,
-      secretAccessKey: formData.secretAccessKey,
-    });
-
-    // Init s3 client
-    const s3 = new AWS.S3({
-      // region: 'ap-northeast-1',
-      region: 'us-east-1',
-      maxRetries: 5,
-    });
-
-    // Init alert field
-    setAlerts([]);
-
-    // Call list object operation.
-    const audioObjectKeys = await listObjectKeys(s3, formData.bucketName, setAlerts);
-
-    // If no audio file was found, the scan bucket operation will be end immediately.
-    if (audioObjectKeys.length === 0) {
-      console.warn('No audio file was found.');
-      const description = msgFileNotFound();
-      const alert: TAlert = {
-        severity: 'warning',
-        title: 'FileNotFound',
-        description: description,
-      };
-      setAlerts((prevAlerts) => {
-        const alerts = [...prevAlerts, alert];
-        return alerts;
+      // Set aws credential
+      AWS.config.update({
+        accessKeyId: formData.accessKey,
+        secretAccessKey: formData.secretAccessKey,
       });
-      return;
+
+      // Init s3 client
+      const s3 = new AWS.S3({
+        // region: 'ap-northeast-1',
+        region: 'us-east-1',
+        maxRetries: 5,
+      });
+
+      // Init alert field
+      setAlerts([]);
+      handleSnackbarClose()
+
+      // Call list object operation.
+      setProgress({
+        inProgress: true,
+        nowProcessing: msgProgressSearch({ bucketName: formData.bucketName }),
+        processedCount: 0,
+        allCount: 0,
+      });
+      const audioObjectKeys = await listObjectKeys(s3, formData.bucketName, handleAlerts);
+
+      // If no audio file was found, the scan bucket operation will be end immediately.
+      if (audioObjectKeys.length === 0) {
+        console.warn('No audio file was found.');
+        const description = msgFileNotFound();
+        const alert: TAlert = {
+          severity: 'warning',
+          title: 'FileNotFound',
+          description: description,
+        };
+        handleAlerts(alert);
+        return;
+      }
+
+      // Delete old metadatas.
+      setProgress({
+        inProgress: true,
+        nowProcessing: msgProgressDelete({ bucketName: formData.bucketName }),
+        processedCount: 0,
+        allCount: 0,
+      });
+      await deleteAudioMetadata(formData.bucketName);
+
+      // Expand audio metadata and put them into dynamodb.
+
+      const allCount = audioObjectKeys.length;
+      for (const [index, audioObjectKey] of audioObjectKeys.entries()) {
+        const metadata = await getObjectMetadata(
+          s3,
+          formData.bucketName,
+          audioObjectKey,
+          handleAlerts
+        );
+
+        // Put metadate in dynamodb.
+        await putAudioMetadata(metadata, audioObjectKey);
+        setProgress({
+          inProgress: true,
+          nowProcessing: msgProgressLoading({ audioName: audioObjectKey }),
+          processedCount: index + 1,
+          allCount: allCount,
+        });
+      }
+
+      // Show success message in Snackbar.
+      handleSnackbarOpen();
+    } catch (err) {
+      // Show error message in AlertField.
+      console.error('An unexpected error has occurred while scanning bucket operation.');
+      console.error(err);
+      const alert: TAlert = {
+        severity: 'error',
+        title: 'Error',
+        description: msgProgressFailed(),
+      };
+      handleAlerts(alert);
+    } finally {
+      setProgress({ inProgress: false, nowProcessing: '', processedCount: 0, allCount: 0 });
     }
 
-    // Delete old metadatas.
-    await deleteAudioMetadata(formData.bucketName);
-
-    // Expand audio metadata and put them into dynamodb.
-    for (const audioObjectKey of audioObjectKeys) {
-      const metadata = await getObjectMetadata(s3, formData.bucketName, audioObjectKey, setAlerts);
-
-      // Put metadate in dynamodb.
-      await putAudioMetadata(metadata, audioObjectKey);
-    }
     console.groupEnd();
   };
 
-  // Put metadate in dynamodb operation.
+  /**
+   *
+   * Put metadate in dynamodb operation.
+   * @param {TAudioMetaData} metadata
+   * @param {string} audioObjectKey
+   */
   const putAudioMetadata: (metadata: TAudioMetaData, audioObjectKey: string) => {} = async (
     metadata,
     audioObjectKey
@@ -257,13 +364,19 @@ const ScanBuckets: React.FC = () => {
     }
   };
 
-  // Delete item by sSBucketName
+  /**
+   * Delete item by sSBucketName
+   *
+   * @param {string} s3BucketName
+   * @return {Promise()}
+   */
   const deleteAudioMetadata: (s3BucketName: string) => {} = async (s3BucketName: string) => {
     console.group('DELETE_EXISTING_DATA');
 
     // Get audioId by s3BucketName
+    const searchCondition = { dataValue: UserDataHooks.user.username + '_' + s3BucketName };
     const listAudioResult = (await API.graphql(
-      graphqlOperation(listAudioByDataValue, { dataValue: s3BucketName })
+      graphqlOperation(listAudioByDataValue, searchCondition)
     )) as GraphQLResult;
     const audioResult = listAudioResult.data as ListAudioByDataValueQuery;
 
@@ -287,31 +400,81 @@ const ScanBuckets: React.FC = () => {
 
     // Delete item by s3BucketName
     for (const id of audioIdSet) {
-      console.info('Delete audio id: ' + id)
-      
-      // It must be specified both the partition key and the sort key when delete combined key table in Dynamodb.
-      const dataTypes = ["title", "album" , "artist" , "track" , "genre", "owner", "accessKey", "secretAccessKey", "s3BucketName", "s3ObjectKey"]
-      for (const dataType in dataTypes){
+      console.info('Delete audio id: ' + id);
+
+      // Value is not used.
+      const dataTypes: TAudioMetaDataDynamodb = {
+        title: '',
+        album: '',
+        artist: '',
+        track: 0,
+        genre: [''],
+        owner: '',
+        accessKey: '',
+        secretAccessKey: '',
+        s3BucketName: '',
+        s3ObjectKey: '',
+      };
+      for (const dataType of Object.keys(dataTypes)) {
+        // It must be specified both the partition key and the sort key when delete combined key table in Dynamodb.
         const deleteInput: DeleteAudioMetaDataInput = {
           id: id,
-          dataType: dataType
-        }
-        await API.graphql(graphqlOperation(deleteAudioMetaData, {input: deleteInput}))
+          dataType: dataType,
+        };
+        const deleteResult = await API.graphql(
+          graphqlOperation(deleteAudioMetaData, { input: deleteInput })
+        );
+        console.dir(deleteResult);
       }
     }
     console.groupEnd();
   };
-
-  /* ------------ Alert bar ------------ */
-  // Show alert bar in page top.
-  const [alerts, setAlerts] = useState<TAlert[]>([]);
 
   /* ------------ Main TSX ------------ */
   // TSX to return
   return (
     <>
       <PageContainer h2Text="Scan your bucket">
+        {/*  Show notification that error or warning or information and more in this alert field. */}
         <AlertField alerts={alerts} />
+
+        {/* Show scanning progress in this field. */}
+        <Backdrop className={classes.backdrop} open={progress.inProgress}>
+          <Box className={classes.progressBarWrapper}>
+            <Box>
+              {
+                // Show circular progress.
+                progress.allCount === 0 && <CircularProgress color="secondary" />
+              }
+            </Box>
+            <Box className={classes.progresMessage}>
+              <Typography>{progress.nowProcessing}</Typography>
+            </Box>
+            <Box>
+              {
+                // Show progress bar.
+                progress.allCount !== 0 && (
+                  <LinearProgressWithLabel
+                    value={(progress.processedCount / progress.allCount) * 100}
+                    processedCount={progress.processedCount}
+                    allCount={progress.allCount}
+                  />
+                )
+              }
+            </Box>
+          </Box>
+        </Backdrop>
+
+        {/* Show success notification in this SnackBar. */}
+        <CustomizedSnackBar
+          alert={{
+            severity: 'success',
+            title: '',
+            description: msgScaningSucceeded(),
+          }}
+          isSnackBarOpen={snackBar.isOpen}
+          handleClose={handleSnackbarClose}
+        />
 
         <form noValidate autoComplete="on">
           <Box className={classes.scanForm}>
@@ -325,10 +488,10 @@ const ScanBuckets: React.FC = () => {
               color="secondary"
               onChange={(event) => setInput('bucketName', event.target.value)}
               value={formData.bucketName}
-              error={validation.validationS3.isError}
-              helperText={validation.validationS3.description}
+              error={validation.bucketName.isError}
+              helperText={validation.bucketName.description}
             />
-            <p>{validation.validationS3.isError}</p>
+            <p>{validation.bucketName.isError}</p>
 
             <TextField
               id="access-key"
@@ -340,8 +503,8 @@ const ScanBuckets: React.FC = () => {
               color="secondary"
               onChange={(event) => setInput('accessKey', event.target.value)}
               value={formData.accessKey}
-              error={validation.validationAccessKey.isError}
-              helperText={validation.validationAccessKey.description}
+              error={validation.accessKey.isError}
+              helperText={validation.accessKey.description}
             />
 
             <TextField
@@ -356,8 +519,8 @@ const ScanBuckets: React.FC = () => {
               color="secondary"
               onChange={(event) => setInput('secretAccessKey', event.target.value)}
               value={formData.secretAccessKey}
-              error={validation.validationSecretAccessKey.isError}
-              helperText={validation.validationSecretAccessKey.description}
+              error={validation.secretAccessKey.isError}
+              helperText={validation.secretAccessKey.description}
             />
           </Box>
 

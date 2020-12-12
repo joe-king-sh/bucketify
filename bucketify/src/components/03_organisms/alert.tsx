@@ -20,12 +20,6 @@ export type TAlertFieldProps = {
  */
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        scanForm: {
-            marginBottom: '2rem',
-        },
-        button: {
-            textAlign: 'center',
-        },
         alertField: {
             whiteSpace: 'pre-wrap',
         }
