@@ -148,7 +148,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
 
 
   return (
-    <React.Fragment>
+    <>
       <Drawer
         variant="permanent"
         classes={{
@@ -174,7 +174,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
           {
             AuthStateHooks.authState === AuthState.SignedIn ? (
               // When authorized.
-              <React.Fragment>
+              <>
                 <Link to="/accounts" className={classes.link}>
                   <ListItem button>
                     <ListItemIcon>
@@ -236,10 +236,10 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   </ListItem>
                 </Link>
 
-              </React.Fragment>
+              </>
             ) : (
                 // When not authorized.
-                <React.Fragment>
+                <>
                   {/* Sign in button links to login require pages. */}
                   <Link to="/accounts" className={classes.link}>
                     <ListItem button>
@@ -258,7 +258,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                       <ListItemText primary="SignUp" />
                     </ListItem>
                   </Link>
-                </React.Fragment>
+                </>
 
               )
           }
@@ -334,7 +334,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
 
           {
             AuthStateHooks.authState === AuthState.SignedIn &&
-            <React.Fragment>
+            <>
               <Divider />
               <ListItem button onClick={() => Auth.signOut()}>
                 <ListItemIcon>
@@ -345,11 +345,11 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 </ListItemIcon>
                 <ListItemText primary="SignOut" />
               </ListItem>
-            </React.Fragment>
+            </>
           }
 
         </List>
       </Drawer>
-    </React.Fragment>
+    </>
   );
 };
