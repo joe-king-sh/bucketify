@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     link: {
       textDecoration: "none",
-      color: theme.palette.text.secondary,
+      color: theme.palette.text.primary,
     },
 
     nested: {
@@ -161,7 +161,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
       >
 
         {
-          //Show "<" Icon only when width lower than md, because the drawer is always shown in widescreen.
+          //Show "<" Icon only when width lower than md, because this drawer is always shown in widescreen.
           !matches &&
           <div className={classes.toolbarIcon}>
             <IconButton onClick={handleDrawerClose}>
