@@ -192,7 +192,6 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   </ListItem>
                 </Link>
 
-                {/* <Link to="/" className={classes.link}> */}
                 <ListItem button onClick={handleLibraryOpen}>
                   <ListItemIcon>
                     <LibraryMusic />
@@ -226,7 +225,6 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   </List>
                 </Collapse>
 
-                {/* </Link> */}
                 <Link to="/" className={classes.link}>
                   <ListItem button>
                     <ListItemIcon>

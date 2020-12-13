@@ -11,6 +11,7 @@ import { AuthState } from '@aws-amplify/ui-components';
 import Landing from './components/05_pages/landing';
 import ScanBuckets from './components/05_pages/scanBuckets';
 import NotFound from './components/05_pages/404'
+import AudioList from './components/05_pages/songs'
 // import SignIn from './components/05_pages/signIn'
 import SignUp from './components/05_pages/signUp'
 import Accounts from './components/05_pages/accounts'
@@ -88,6 +89,7 @@ const App: React.FC = () => {
             <Route exact path={[
               "/accounts",
               "/buckets",
+              "/songs",
               "/test",
               "/test2"
             ]}>
@@ -98,6 +100,7 @@ const App: React.FC = () => {
 
                     <Route exact path="/accounts" component={Accounts} />
                     <Route exact path="/buckets" component={ScanBuckets} />
+                    <Route exact path="/songs" component={AudioList} />
 
                     <Route exact path="/test" component={GraphqlTest} />
                     <Route exact path="/test2" component={GraphqlAudioTest} />
