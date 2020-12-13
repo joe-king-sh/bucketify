@@ -110,3 +110,6 @@ SSから取得
 ImageはS3にアップロード
 Dynamodbに登録
 
+ランディングはStepperStepperを使う
+Stepper
+https://material-ui.com/components/steppers/#stepper
