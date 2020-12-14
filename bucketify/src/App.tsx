@@ -8,22 +8,22 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { AuthState } from '@aws-amplify/ui-components';
 
 // Pages
-import Landing from './components/05_pages/landing';
-import ScanBuckets from './components/05_pages/scanBuckets';
-import NotFound from './components/05_pages/404'
-import AudioList from './components/05_pages/songs'
+import Landing from './components/04_pages/landing';
+import ScanBuckets from './components/04_pages/scanBuckets';
+import NotFound from './components/04_pages/404'
+import Songs from './components/04_pages/songs'
 // import SignIn from './components/05_pages/signIn'
-import SignUp from './components/05_pages/signUp'
-import Accounts from './components/05_pages/accounts'
+import SignUp from './components/04_pages/signUp'
+import Accounts from './components/04_pages/accounts'
 
 // template
-import GenericTemplate from './components/04_templates/genericTemplate';
-import LoginRequiredWrapper from './components/04_templates/loginRequiredWrapper';
+import GenericTemplate from './components/03_templates/genericTemplate';
+import LoginRequiredWrapper from './components/03_templates/loginRequiredWrapper';
 
 
 // TestPage
-import GraphqlTest from './components/05_pages/graphqlTest'
-import GraphqlAudioTest from './components/05_pages/graphqlAudioTest'
+import GraphqlTest from './components/04_pages/graphqlTest'
+import GraphqlAudioTest from './components/04_pages/graphqlAudioTest'
 
 // Auth Status
 export interface IAuthStateHooks {
@@ -88,7 +88,7 @@ const App: React.FC = () => {
             {/* Login required route */}
             <Route exact path={[
               "/accounts",
-              "/buckets",
+              "/bucket",
               "/songs",
               "/test",
               "/test2"
@@ -99,8 +99,8 @@ const App: React.FC = () => {
                   <LoginRequiredWrapper isLoginRequired={true}>
 
                     <Route exact path="/accounts" component={Accounts} />
-                    <Route exact path="/buckets" component={ScanBuckets} />
-                    <Route exact path="/songs" component={AudioList} />
+                    <Route exact path="/bucket" component={ScanBuckets} />
+                    <Route exact path="/songs" component={Songs} />
 
                     <Route exact path="/test" component={GraphqlTest} />
                     <Route exact path="/test2" component={GraphqlAudioTest} />

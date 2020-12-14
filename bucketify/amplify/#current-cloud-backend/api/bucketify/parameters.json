@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "bucketify",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authbucketify15e1b624",
+            "Outputs.UserPoolId"
+        ]
+    }
+}
