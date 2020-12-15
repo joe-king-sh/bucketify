@@ -12,9 +12,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Typography } from '@material-ui/core';
 
 // My components
-import ResponsiveButton from '../01_atoms_ and_molecules/responsiveButton';
+import ResponsiveButton from '../01_atoms_and_molecules/responsiveButton';
 import AlertField, { TAlert } from '../02_organisms/alert';
-import { LinearProgressWithLabel } from '../01_atoms_ and_molecules/linerProgressWithLabel';
+import { LinearProgressWithLabel } from '../01_atoms_and_molecules/linerProgressWithLabel';
 import { CustomizedSnackBar } from '../02_organisms/snackBar';
 
 // AWS SDK
@@ -32,11 +32,15 @@ import {
 } from '../../common/message';
 
 // Service classes
-import { getObjectMetadataAsync, listAudioFilesKeysInS3Async, deleteAudioMetadataAsync, putAudioMetadataAsync } from '../../service/scanBucketService';
+import {
+  getObjectMetadataAsync,
+  listAudioFilesKeysInS3Async,
+  deleteAudioMetadataAsync,
+  putAudioMetadataAsync,
+} from '../../service/scanBucketService';
 
 // Contexts
 import { UserDataContext, IUserDataStateHooks } from '../../App';
-
 
 /**
  * Style
@@ -157,7 +161,7 @@ const ScanBuckets: React.FC = () => {
    * @return {boolean}
    */
   const validationCheck: () => boolean = () => {
-    let isValidationError: boolean = false;
+    let isValidationError = false;
 
     // Confirm bucket name must be not empty.
     if (!formData.bucketName) {
@@ -222,7 +226,7 @@ const ScanBuckets: React.FC = () => {
 
       // Init alert field
       setAlerts([]);
-      handleSnackbarClose()
+      handleSnackbarClose();
 
       // Call list object operation.
       setProgress({
@@ -231,7 +235,11 @@ const ScanBuckets: React.FC = () => {
         processedCount: 0,
         allCount: 0,
       });
-      const audioObjectKeys = await listAudioFilesKeysInS3Async(s3, formData.bucketName, handleAlerts);
+      const audioObjectKeys = await listAudioFilesKeysInS3Async(
+        s3,
+        formData.bucketName,
+        handleAlerts
+      );
 
       // If no audio file was found, the scan bucket operation will be end immediately.
       if (audioObjectKeys.length === 0) {
@@ -266,7 +274,14 @@ const ScanBuckets: React.FC = () => {
         );
 
         // Put metadate in dynamodb.
-        await putAudioMetadataAsync(metadata, audioObjectKey, UserDataHooks.user.username, formData.accessKey, formData.secretAccessKey, formData.bucketName);
+        await putAudioMetadataAsync(
+          metadata,
+          audioObjectKey,
+          UserDataHooks.user.username,
+          formData.accessKey,
+          formData.secretAccessKey,
+          formData.bucketName
+        );
         setProgress({
           inProgress: true,
           nowProcessing: msgProgressLoading({ audioName: audioObjectKey }),
@@ -293,9 +308,6 @@ const ScanBuckets: React.FC = () => {
 
     console.groupEnd();
   };
-
-
-
 
   /* ------------ Main TSX ------------ */
   // TSX to return

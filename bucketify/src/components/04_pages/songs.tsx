@@ -10,10 +10,7 @@ import PageContainer from '../02_organisms/pageContainer';
 // Material-ui components
 
 // Service classes
-import {
-  fetchAudiosAsync,
-  FetchAudiosInput,
-} from '../../service/songsService';
+import { fetchAudiosAsync, FetchAudiosInput } from '../../service/songsService';
 
 // Contexts
 import { UserDataContext, IUserDataStateHooks } from '../../App';
@@ -21,19 +18,19 @@ import { UserDataContext, IUserDataStateHooks } from '../../App';
 export const Songs: React.FC = () => {
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
-  const limitDisplaySongs: number = 10;
+  const limitDisplaySongs = 10;
 
   useEffect(() => {
     const fetchAudioMetadata = async () => {
       const fetchAudioIdByUserIdAsyncInput: FetchAudiosInput = {
         username: UserDataHooks.user.username,
         limit: limitDisplaySongs,
-        // nextToken: '',
+        prevNextToken: '',
       };
       await fetchAudiosAsync(fetchAudioIdByUserIdAsyncInput);
     };
     const audioMetaDatas = fetchAudioMetadata();
-    console.table(audioMetaDatas)
+    console.table(audioMetaDatas);
     // eslint-disable-next-line
   }, []);
 

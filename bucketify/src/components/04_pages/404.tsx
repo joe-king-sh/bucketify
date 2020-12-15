@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Container, Typography } from '@material-ui/core';
 
 // template
@@ -8,22 +8,22 @@ import { Container, Typography } from '@material-ui/core';
 const NotFound: React.FC = () => (
   <React.Fragment>
     {/* <GenericTemplate> */}
-      {/* <LoginRequiredWrapper isLoginRequired={false}> */}
+    {/* <LoginRequiredWrapper isLoginRequired={false}> */}
 
-        <Container>
+    <Container>
+      <Typography variant="h2" component="h2">
+        Not Found
+      </Typography>
+      <Typography>
+        Sorry..
+        <br />
+        This page has been deleted or not exists.
+      </Typography>
+    </Container>
 
-          <Typography variant="h2" component="h2">
-            Not Found
-          </Typography>
-          <Typography>
-            Sorry..<br />This page has been deleted or not exists.
-          </Typography>
-
-        </Container>
-
-      {/* </LoginRequiredWrapper> */}
+    {/* </LoginRequiredWrapper> */}
     {/* </GenericTemplate> */}
   </React.Fragment>
-)
+);
 
-export default NotFound
+export default NotFound;
