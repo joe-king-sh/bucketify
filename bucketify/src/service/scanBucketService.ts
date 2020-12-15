@@ -19,6 +19,7 @@ import { TAlert } from '../components/02_organisms/alert';
 // Utilify
 import { isAllowedAudioFormat, getExtension } from '../common/utility';
 import { v4 as uuidv4 } from 'uuid';
+import { searchabledDataType } from '../common/const';
 
 // Graphql
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
@@ -286,8 +287,6 @@ export const putAudioMetadataAsync: (
       break;
     }
 
-    // DataType of need to attach owner id prefix.
-    const searchabledDataType = ['s3BucketName', 'artist', 'album'];
     // Attach ownerid prefix to query owner's datas without scan operation.
     let registerValue: string | number | string[] | null | undefined = '';
     if (searchabledDataType.includes(k)) {

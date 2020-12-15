@@ -1,5 +1,7 @@
 // import React, { useState, useContext } from 'react';
 // import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+// Utility
+import { searchabledDataType } from '../common/const';
 
 // Graphql
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
@@ -42,16 +44,20 @@ export type FetchAudioMetaDataByAudioIdOutput =
       s3ObjectKey: string;
     }
   | undefined;
-export type FetchAudioOutput = FetchAudioMetaDataByAudioIdOutput[];
+export type FetchAudioOutput = {
+  fetchAudioOutput: FetchAudioMetaDataByAudioIdOutput[];
+  nextToken: string | string[] | null;
+};
 
-export const fetchAudiosAsync: (
-  props: FetchAudiosInput
-) => Promise<FetchAudioOutput | (string | string[] | FetchAudioOutput | null)[]> = async ({
+export const fetchAudiosAsync: (props: FetchAudiosInput) => Promise<FetchAudioOutput> = async ({
   username,
   limit,
   prevNextToken,
 }) => {
+  console.group('FETCH_AUDIO');
+
   // Fetch audio id by username
+  console.info('fetch audioId by userid');
   const [audioIds, nextToken] = await fetchAudioIdByUserIdAsync({
     username: username,
     limit: limit,
@@ -59,22 +65,33 @@ export const fetchAudiosAsync: (
   });
 
   // Fetch audio metadata by audio id
-  const audioMetaDatas: FetchAudioOutput = [];
+  console.info('fetch metadata by audioId');
+  const fetchAudioOutput: FetchAudioOutput = {
+    fetchAudioOutput: [],
+    nextToken: '',
+  };
   if (audioIds === null) {
-    return audioMetaDatas;
+    return fetchAudioOutput;
   }
   for (const audioId of audioIds) {
-    const audioMetaData = await fetchAudioMetaDataByAudioId(audioId);
-    audioMetaDatas.push(audioMetaData);
+    const audioMetaData = await fetchAudioMetaDataByAudioId(audioId, username);
+    fetchAudioOutput.fetchAudioOutput.push(audioMetaData);
   }
 
+  fetchAudioOutput.nextToken = nextToken;
+
+  console.groupEnd();
   // return audioMetaData and nextToken
-  return [audioMetaDatas, nextToken];
+  return fetchAudioOutput;
 };
 
 export const fetchAudioMetaDataByAudioId: (
-  audioId: string
-) => Promise<FetchAudioMetaDataByAudioIdOutput> = async (audioId) => {
+  audioId: string,
+  username: string
+) => Promise<FetchAudioMetaDataByAudioIdOutput> = async (audioId, username) => {
+  console.group('FETCH_AUDIO_METADATA_BY_AUDIO_ID');
+
+  // Fetch audio metadatas from dynamodb.
   const searchCondition = { id: audioId };
   const audioMetadataByAudioId = (await API.graphql(
     graphqlOperation(listAudioMetaDatas, searchCondition)
@@ -86,7 +103,7 @@ export const fetchAudioMetaDataByAudioId: (
     listAudioMetaDataResponse === null ||
     listAudioMetaDataResponse.listAudioMetaDatas === null ||
     listAudioMetaDataResponse.listAudioMetaDatas.items === null ||
-    listAudioMetaDataResponse.listAudioMetaDatas.items.length > 0
+    listAudioMetaDataResponse.listAudioMetaDatas.items.length === 0
   ) {
     console.info('No audio metadata was fetched. ');
     return;
@@ -119,20 +136,32 @@ export const fetchAudioMetaDataByAudioId: (
         | 'secretAccessKey'
         | 's3BucketName'
         | 's3ObjectKey';
-      const dataValue = item.dataValue as never;
-      if (dataType === 'track' && dataValue) {
-        listAudioMetaData[dataType] = Number(item.dataValue);
-        //   }else if (dataType === 'genre' && dataValue)){
-        //     listAudioMetaData[dataType]
+      const dataValue: string = item.dataValue;
+
+      if (dataType === 'track') {
+        // DataType 'track' has number datavalue.
+        listAudioMetaData[dataType] = Number(dataValue);
+      } else if (searchabledDataType.includes(dataType)) {
+        // Searchable data type has data value with user id prefix, so removes it.
+        listAudioMetaData[dataType] = dataValue.replace(username + '_', '') as string;
       } else {
         listAudioMetaData[dataType] = dataValue;
       }
     }
   });
 
+  console.groupEnd();
+
   return listAudioMetaData;
 };
 
+/**
+ *
+ * Fetchs audioIds and nextToken from dynamodb by userid.
+ *
+ * @param {FetchAudiosInput} { username, limit, prevNextToken }
+ * @return {(string[] | string | null)[]} [audioIds, nextToken]
+ */
 export const fetchAudioIdByUserIdAsync: (
   props: FetchAudiosInput
 ) => Promise<(string | string[] | null)[]> = async ({ username, limit, prevNextToken }) => {
@@ -157,7 +186,7 @@ export const fetchAudioIdByUserIdAsync: (
     audioIdByUserIdData.listAudioByDataValue === null ||
     audioIdByUserIdData.listAudioByDataValue.items === null
   ) {
-    console.info('Fetch audio id by userid result is nothing.');
+    console.info('Fetch audioId by userid result is nothing.');
     return resultAudioIds;
   }
 
