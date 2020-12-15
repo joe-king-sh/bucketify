@@ -1,2 +1,2 @@
-export const AppName: string = 'Bucketify';
-export const Author: string = '@joe-king-sh';
+export const AppName = 'Bucketify';
+export const Author = '@joe-king-sh';

@@ -1,14 +1,8 @@
-
-
 // 3rd party libs
 import * as musicMetadata from 'music-metadata-browser';
 
 // AWS SDK
-import {
-  ListObjectsV2Request,
-  ListObjectsV2Output,
-  GetObjectRequest,
-} from 'aws-sdk/clients/s3'
+import { ListObjectsV2Request, ListObjectsV2Output, GetObjectRequest } from 'aws-sdk/clients/s3';
 
 // Messages
 import {
@@ -17,21 +11,18 @@ import {
   msgNetworkingError,
   msgAccessDenied,
   // msgFileNotFound
-} from '../common/message'
+} from '../common/message';
 
 // My components
-import { TAlert } from '../components/02_organisms/alert'
+import { TAlert } from '../components/02_organisms/alert';
 
 // Utilify
-import { isAllowedAudioFormat,getExtension } from '../common/utility'
+import { isAllowedAudioFormat, getExtension } from '../common/utility';
 import { v4 as uuidv4 } from 'uuid';
-
 
 // Graphql
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
-import {
-   createAudioMetaData,
-   deleteAudioMetaData } from '../graphql/mutations';
+import { createAudioMetaData, deleteAudioMetaData } from '../graphql/mutations';
 import { listAudioByDataValue } from '../graphql/queries';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { ListAudioByDataValueQuery, DeleteAudioMetaDataInput } from '../API';
@@ -52,7 +43,7 @@ export type TAudioMetaData = {
 };
 
 // Type of metadata in audio file without album cover art.
-type TAudioMetaDataWithoutPicture = Omit<TAudioMetaData, 'picture'>
+type TAudioMetaDataWithoutPicture = Omit<TAudioMetaData, 'picture'>;
 
 // Type of metadata in dynamodb table
 export type TAudioMetaDataDynamodb = TAudioMetaDataWithoutPicture & {
@@ -61,7 +52,7 @@ export type TAudioMetaDataDynamodb = TAudioMetaDataWithoutPicture & {
   secretAccessKey: string;
   s3BucketName: string;
   s3ObjectKey: string;
-}
+};
 
 /**
  * Extracts audio metadata from an audio file by s3 pre-signed URL.
@@ -76,7 +67,7 @@ export const extractMetadataBySignedUrlAsync: (
 ) => Promise<TAudioMetaData> = async (signedUrl, key) => {
   console.group('GET_AUDIO_METADATA');
 
-  let audioMetaData: TAudioMetaData = {
+  const audioMetaData: TAudioMetaData = {
     title: key,
   };
 
@@ -84,19 +75,18 @@ export const extractMetadataBySignedUrlAsync: (
 
   console.log('extension: ' + extension);
 
-
   const metadata: musicMetadata.IAudioMetadata = await musicMetadata.fetchFromUrl(signedUrl);
   console.dir(metadata);
   if (metadata === null) {
     return audioMetaData;
   } else {
-    if (metadata.common.title) audioMetaData.title = metadata.common.title ;
-    if (metadata.common.album) audioMetaData.album = metadata.common.album ;
-    if (metadata.common.artist) audioMetaData.artist = metadata.common.artist ;
-    if (metadata.common.albumartist) audioMetaData.artist = metadata.common.albumartist ;
-    if (metadata.common.track.no) audioMetaData.track = metadata.common.track.no ;
+    if (metadata.common.title) audioMetaData.title = metadata.common.title;
+    if (metadata.common.album) audioMetaData.album = metadata.common.album;
+    if (metadata.common.artist) audioMetaData.artist = metadata.common.artist;
+    if (metadata.common.albumartist) audioMetaData.artist = metadata.common.albumartist;
+    if (metadata.common.track.no) audioMetaData.track = metadata.common.track.no;
     // if (metadata.common.picture) audioMetaData.picture = metadata.common.picture ;
-    if (metadata.common.genre) audioMetaData.genre = metadata.common.genre ;
+    if (metadata.common.genre) audioMetaData.genre = metadata.common.genre;
   }
 
   console.groupEnd();
@@ -111,45 +101,49 @@ export const extractMetadataBySignedUrlAsync: (
  * @param {string} key
  * @return Promise<TAudioMetaData>
  */
-export const getObjectMetadataAsync = async (
+export const getObjectMetadataAsync: (
   s3: AWS.S3,
   bucketName: string,
   key: string,
   handleAlerts: (alert: TAlert) => void
+) => Promise<TAudioMetaData> = async (
+  s3,
+  bucketName,
+  key,
+  handleAlerts: (alert: TAlert) => void
 ) => {
-  console.group('CALL_GET_OBJECT_API')
-  let audioMetaData: TAudioMetaData | null = null
+  console.group('CALL_GET_OBJECT_API');
+  let audioMetaData: TAudioMetaData | null = null;
   try {
     const params: GetObjectRequest = {
       Bucket: bucketName,
       Key: key,
-    }
-    console.info('Call api start')
+    };
+    console.info('Call api start');
 
-    const s3SignedUrl = await s3.getSignedUrl('getObject', params)
-    console.info(s3SignedUrl)
-    audioMetaData = await extractMetadataBySignedUrlAsync(s3SignedUrl, key)
+    const s3SignedUrl = await s3.getSignedUrl('getObject', params);
+    console.info(s3SignedUrl);
+    audioMetaData = await extractMetadataBySignedUrlAsync(s3SignedUrl, key);
 
-    console.info('Call api end')
-
+    console.info('Call api end');
   } catch (err) {
-    console.group('CALL_API_CATCH_STATEMENT')
-    let alert: TAlert = { severity: 'error', title: '', description: '' }
-    alert.title = 'Error - ' + err.code
-    alert.description = err.message
+    console.group('CALL_API_CATCH_STATEMENT');
+    const alert: TAlert = { severity: 'error', title: '', description: '' };
+    alert.title = 'Error - ' + err.code;
+    alert.description = err.message;
 
-    handleAlerts(alert)
-    console.error(err.code)
-    console.error(err.message)
-    console.error(err)
-    console.groupEnd()
+    handleAlerts(alert);
+    console.error(err.code);
+    console.error(err.message);
+    console.error(err);
+    console.groupEnd();
 
-    throw err
+    throw err;
   }
 
-  console.groupEnd()
-  return audioMetaData
-}
+  console.groupEnd();
+  return audioMetaData;
+};
 
 /**
  * Calls list object s3 API to scan objects in the user's s3 buckets.
@@ -160,101 +154,101 @@ export const getObjectMetadataAsync = async (
  * @param {(alert: TAlert) => void} handleAlerts
  * @return Promise<string[]> An array of s3 object keys of user's audio files.
  */
-export const listAudioFilesKeysInS3Async = async (
+export const listAudioFilesKeysInS3Async: (
   s3: AWS.S3,
   bucketName: string,
   handleAlerts: (alert: TAlert) => void
-) => {
-  console.group('CALL_LIST_OBJECTS_API')
+) => Promise<string[]> = async (s3, bucketName, handleAlerts) => {
+  console.group('CALL_LIST_OBJECTS_API');
 
   // List objects
-  console.info('Start list objects oparation.')
-  let keyList: string[] = []
+  console.info('Start list objects oparation.');
+  const keyList: string[] = [];
   try {
-    console.group('CALL_API_TRY_STATEMENT')
-    for (let continuationToken = null ;;) {
-      console.info('ContinuationToken -> ' + continuationToken)
+    console.group('CALL_API_TRY_STATEMENT');
+    for (let continuationToken = null; ; ) {
+      console.info('ContinuationToken -> ' + continuationToken);
 
       const params: ListObjectsV2Request = {
         Bucket: bucketName,
-      }
+      };
       if (continuationToken) {
-        params.ContinuationToken = continuationToken
+        params.ContinuationToken = continuationToken;
       }
 
       // Call S3 API
-      let objects: ListObjectsV2Output = {}
-      console.info('Call api start')
+      let objects: ListObjectsV2Output = {};
+      console.info('Call api start');
       objects = await s3
         .listObjectsV2(params)
         .promise()
         .then((data) => {
-          return data
+          return data;
         })
         .catch((err) => {
-          console.error('An error occured when call list objects v2 API.')
-          throw err
-        })
-      console.info('Call api end')
+          console.error('An error occured when call list objects v2 API.');
+          throw err;
+        });
+      console.info('Call api end');
 
       // Filter objects to remain only audio metadata
       if (objects.Contents === undefined) {
-        break
+        break;
       }
       objects.Contents.map((v) => v.Key).forEach((key) => {
         if (key === undefined) {
-          return
+          return;
         }
 
         if (isAllowedAudioFormat(key)) {
-          keyList.push(key)
+          keyList.push(key);
         }
-      })
+      });
 
       // If the object counts over 1000, isTruncated will be true.
       if (!objects.IsTruncated) {
-        console.info('All objects were listed, so the list buckets operation will be finished.')
-        break
+        console.info('All objects were listed, so the list buckets operation will be finished.');
+        break;
       }
 
       // Save the next read position.
-      continuationToken = objects.NextContinuationToken
+      continuationToken = objects.NextContinuationToken;
     }
-    console.table(keyList)
-    console.groupEnd()
+    console.table(keyList);
+    console.groupEnd();
   } catch (err) {
-    console.group('CALL_API_CATCH_STATEMENT')
-    let alert: TAlert = { severity: 'error', title: '', description: '' }
+    console.group('CALL_API_CATCH_STATEMENT');
+    const alert: TAlert = { severity: 'error', title: '', description: '' };
     if (err.code === 'InvalidAccessKeyId') {
-      alert.title = 'Error - InvalidAccessKeyId'
-      alert.description = msgInValidAccessKey()
+      alert.title = 'Error - InvalidAccessKeyId';
+      alert.description = msgInValidAccessKey();
     } else if (err.code === 'SignatureDoesNotMatch') {
-      alert.title = 'Error - SignatureDoesNotMatch'
-      alert.description = msgSignatureDoesNotMatch()
+      alert.title = 'Error - SignatureDoesNotMatch';
+      alert.description = msgSignatureDoesNotMatch();
     } else if (err.code === 'NetworkingError') {
-      alert.title = 'Error - NetworkingError'
-      alert.description = msgNetworkingError()
+      alert.title = 'Error - NetworkingError';
+      alert.description = msgNetworkingError();
     } else if (err.code === 'AccessDenied') {
-      alert.title = 'Error - AccessDenied'
-      alert.description = msgAccessDenied()
+      alert.title = 'Error - AccessDenied';
+      alert.description = msgAccessDenied();
     } else {
       // An unexpected error
-      alert.title = 'Error - ' + err.code
-      alert.description = err.message
+      alert.title = 'Error - ' + err.code;
+      alert.description = err.message;
     }
 
-    handleAlerts(alert)
-    console.error(err.code)
-    console.error(err.message)
-    console.error(err)
-    console.groupEnd()
+    handleAlerts(alert);
+    console.error(err.code);
+    console.error(err.message);
+    console.error(err);
+    console.groupEnd();
 
-    throw err
+    throw err;
   }
 
-  console.groupEnd()
-  return keyList
-}
+  console.groupEnd();
+  return keyList;
+};
 
 /**
  *
@@ -262,121 +256,126 @@ export const listAudioFilesKeysInS3Async = async (
  * @param {TAudioMetaData} metadata
  * @param {string} audioObjectKey
  */
-export const putAudioMetadataAsync: (metadata: TAudioMetaData, audioObjectKey: string, username: string, accessKey: string, secretAccessKey:string, bucketName:string) => {} = async (
-    metadata,
-    audioObjectKey,
-    username,
-    accessKey,
-    secretAccessKey,
-    bucketName
-  ) => {
-    const audioId = uuidv4();
-    const audioMetaDataDynamodb: TAudioMetaDataDynamodb = {
-      ...metadata,
-      owner: username,
-      accessKey: accessKey,
-      secretAccessKey: secretAccessKey,
-      s3BucketName: bucketName,
-      s3ObjectKey: audioObjectKey,
-    };
-
-    type TCreateAudioMetadataInput = {
-      id: string;
-      dataType: string;
-      dataValue: string | number | string[] | null | undefined;
-      owner: string;
-    };
-    for (let [k, v] of Object.entries(audioMetaDataDynamodb)) {
-      // Picture is not stored in dynamodb.
-      if (k === 'picture') {
-        break;
-      }
-
-      // DataType of need to attach owner id prefix.
-      const searchabledDataType = ['s3BucketName', 'artist', 'album'];
-      // Attach ownerid prefix to query owner's datas without scan operation.
-      if (searchabledDataType.includes(k)) {
-        v = username + '_' + v;
-        console.info('confirm key prefix');
-        console.info(k);
-      }
-
-      // Set create item input.
-      const audioMetaDataDynamodb: TCreateAudioMetadataInput = {
-        id: audioId,
-        dataType: k,
-        dataValue: v,
-        owner: username,
-      };
-
-      // Put item operation.
-      await API.graphql(graphqlOperation(createAudioMetaData, { input: audioMetaDataDynamodb }));
-    }
+export const putAudioMetadataAsync: (
+  metadata: TAudioMetaData,
+  audioObjectKey: string,
+  username: string,
+  accessKey: string,
+  secretAccessKey: string,
+  bucketName: string
+) => void = async (metadata, audioObjectKey, username, accessKey, secretAccessKey, bucketName) => {
+  const audioId = uuidv4();
+  const audioMetaDataDynamodb: TAudioMetaDataDynamodb = {
+    ...metadata,
+    owner: username,
+    accessKey: accessKey,
+    secretAccessKey: secretAccessKey,
+    s3BucketName: bucketName,
+    s3ObjectKey: audioObjectKey,
   };
 
+  type TCreateAudioMetadataInput = {
+    id: string;
+    dataType: string;
+    dataValue: string | number | string[] | null | undefined;
+    owner: string;
+  };
+  for (const [k, v] of Object.entries(audioMetaDataDynamodb)) {
+    // Picture is not stored in dynamodb.
+    if (k === 'picture') {
+      break;
+    }
+
+    // DataType of need to attach owner id prefix.
+    const searchabledDataType = ['s3BucketName', 'artist', 'album'];
+    // Attach ownerid prefix to query owner's datas without scan operation.
+    let registerValue: string | number | string[] | null | undefined = '';
+    if (searchabledDataType.includes(k)) {
+      registerValue = username + '_' + v;
+      console.info('confirm key prefix');
+      console.info(k);
+    } else {
+      registerValue = v;
+    }
+
+    // Set create item input.
+    const audioMetaDataDynamodb: TCreateAudioMetadataInput = {
+      id: audioId,
+      dataType: k,
+      dataValue: registerValue,
+      owner: username,
+    };
+
+    // Put item operation.
+    await API.graphql(graphqlOperation(createAudioMetaData, { input: audioMetaDataDynamodb }));
+  }
+};
 
 /**
  * Delete item by sSBucketName
  *
  * @param {string} s3BucketName
- * @return Promise()
+ * @param {string} username
  */
-export const deleteAudioMetadataAsync: (s3BucketName: string, username: string) => {} = async (s3BucketName: string, username: string) => {
-    console.group('DELETE_EXISTING_DATA');
+export const deleteAudioMetadataAsync: (s3BucketName: string, username: string) => void = async (
+  s3BucketName: string,
+  username: string
+) => {
+  console.group('DELETE_EXISTING_DATA');
 
-    // Get audioId by s3BucketName
-    const searchCondition = { dataValue: username + '_' + s3BucketName };
-    const listAudioResult = (await API.graphql(
-      graphqlOperation(listAudioByDataValue, searchCondition)
-    )) as GraphQLResult;
-    const audioResult = listAudioResult.data as ListAudioByDataValueQuery;
+  // Get audioId by s3BucketName
+  const searchCondition = { dataValue: username + '_' + s3BucketName };
+  const listAudioResult = (await API.graphql(
+    graphqlOperation(listAudioByDataValue, searchCondition)
+  )) as GraphQLResult;
+  const audioResult = listAudioResult.data as ListAudioByDataValueQuery;
 
-    // Type guard
-    if (
-      audioResult === null ||
-      audioResult.listAudioByDataValue === null ||
-      audioResult.listAudioByDataValue.items === null
-    ) {
-      console.info('Delete audio metadata is nothing to do.');
-      return;
+  // Type guard
+  if (
+    audioResult === null ||
+    audioResult.listAudioByDataValue === null ||
+    audioResult.listAudioByDataValue.items === null
+  ) {
+    console.info('Delete audio metadata is nothing to do.');
+    return;
+  }
+
+  // Make unique id set
+  const audioIdSet = new Set<string>();
+  audioResult.listAudioByDataValue.items.forEach((item) => {
+    if (item) {
+      audioIdSet.add(item.id);
     }
+  });
 
-    // Make unique id set
-    const audioIdSet = new Set<string>();
-    audioResult.listAudioByDataValue.items.forEach((item) => {
-      if (item) {
-        audioIdSet.add(item.id);
-      }
-    });
+  // Delete item by s3BucketName
+  for (const id of audioIdSet) {
+    console.info('Delete audio id: ' + id);
 
-    // Delete item by s3BucketName
-    for (const id of audioIdSet) {
-      console.info('Delete audio id: ' + id);
-
-      // Value is not used.
-      const dataTypes: TAudioMetaDataDynamodb = {
-        title: '',
-        album: '',
-        artist: '',
-        track: 0,
-        genre: [''],
-        owner: '',
-        accessKey: '',
-        secretAccessKey: '',
-        s3BucketName: '',
-        s3ObjectKey: '',
+    // Value is not used.
+    const dataTypes: TAudioMetaDataDynamodb = {
+      title: '',
+      album: '',
+      artist: '',
+      track: 0,
+      genre: [''],
+      owner: '',
+      accessKey: '',
+      secretAccessKey: '',
+      s3BucketName: '',
+      s3ObjectKey: '',
+    };
+    for (const dataType of Object.keys(dataTypes)) {
+      // It must be specified both the partition key and the sort key when delete combined key table in Dynamodb.
+      const deleteInput: DeleteAudioMetaDataInput = {
+        id: id,
+        dataType: dataType,
       };
-      for (const dataType of Object.keys(dataTypes)) {
-        // It must be specified both the partition key and the sort key when delete combined key table in Dynamodb.
-        const deleteInput: DeleteAudioMetaDataInput = {
-          id: id,
-          dataType: dataType,
-        };
-        const deleteResult = await API.graphql(
-          graphqlOperation(deleteAudioMetaData, { input: deleteInput })
-        );
-        console.dir(deleteResult);
-      }
+      const deleteResult = await API.graphql(
+        graphqlOperation(deleteAudioMetaData, { input: deleteInput })
+      );
+      console.dir(deleteResult);
     }
-    console.groupEnd();
-  };
+  }
+  console.groupEnd();
+};

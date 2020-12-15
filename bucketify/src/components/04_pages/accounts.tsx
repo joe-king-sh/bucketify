@@ -1,8 +1,5 @@
 import React, { useContext } from 'react';
-import {
-    UserDataContext,
-    IUserDataStateHooks,
-} from '../../App'
+import { UserDataContext, IUserDataStateHooks } from '../../App';
 
 // import { Typography, Container } from '@material-ui/core';
 
@@ -15,49 +12,37 @@ import TableRow from '@material-ui/core/TableRow';
 
 // import Paper from '@material-ui/core/Paper';
 
-
 // Template
-import PageContainer from '../02_organisms/pageContainer'
-
+import PageContainer from '../02_organisms/pageContainer';
 
 const Accounts: React.FC = () => {
+  const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
-    const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
-
-    return (
-                <PageContainer
-                    h2Text='Account overview'
-                    h3Text='Profile'
-                >
-                    {UserDataHooks.user !== undefined &&
-
-                        <React.Fragment>
-
-                            <TableContainer>
-                                <Table aria-label="simple table">
-
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell component="th" scope="row">
-                                                <b>Username</b>
-                                            </TableCell>
-                                            <TableCell align="right">{UserDataHooks.user.attributes.name}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell component="th" scope="row">
-                                                <b>Email</b>
-                                            </TableCell>
-                                            <TableCell align="right">{UserDataHooks.user.attributes.email}</TableCell>
-                                        </TableRow>
-
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-
-
-                        </React.Fragment>
-                    }
-                </PageContainer>
-    )
-}
-export default Accounts
+  return (
+    <PageContainer h2Text="Account overview" h3Text="Profile">
+      {UserDataHooks.user !== undefined && (
+        <React.Fragment>
+          <TableContainer>
+            <Table aria-label="simple table">
+              <TableBody>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <b>Username</b>
+                  </TableCell>
+                  <TableCell align="right">{UserDataHooks.user.attributes.name}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <b>Email</b>
+                  </TableCell>
+                  <TableCell align="right">{UserDataHooks.user.attributes.email}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </React.Fragment>
+      )}
+    </PageContainer>
+  );
+};
+export default Accounts;

@@ -3,14 +3,15 @@
  */
 
 // validation error
-export const msgRequiredValueEmpty = ({ requiredValue }: { requiredValue: string }) =>
-  `Enter ${requiredValue}.`;
+export const msgRequiredValueEmpty: ({ requiredValue }: { requiredValue: string }) => string = ({
+  requiredValue,
+}) => `Enter ${requiredValue}.`;
 
 // s3 error message
-export const msgInValidAccessKey = () => `Check your access key is correct.`;
-export const msgSignatureDoesNotMatch = () =>
+export const msgInValidAccessKey: () => string = () => `Check your access key is correct.`;
+export const msgSignatureDoesNotMatch: () => string = () =>
   `The request signature we calculated does not match the signature you provided.  Check your secret access key is correct.`;
-export const msgNetworkingError = () => `Check s3 bucket name is exists.
+export const msgNetworkingError: () => string = () => `Check s3 bucket name is exists.
 Need to allow Cross-Origin Resource Sharing (CORS) setting in your buckets.
 
 Like below:
@@ -31,7 +32,7 @@ Like below:
 CORS setting may take a few minutes to be enabled.
 `;
 
-export const msgAccessDenied = () => `Need to attach policy to allow ListBucket and GetItem oparation.
+export const msgAccessDenied: () => string = () => `Need to attach policy to allow ListBucket and GetItem oparation.
 
 Like below: 
 {
@@ -53,22 +54,26 @@ Like below:
     ]
 }
 `;
-export const msgFileNotFound = () => `No audio file was found.
+export const msgFileNotFound: () => string = () => `No audio file was found.
 File extensions that you can use in bucketify are only "mp3","m4a" .
 Please confirm that your object is exists and file extension is allowed.
 `;
 
 // Progress message
-export const msgProgressSearch = ({ bucketName }: { bucketName: string }) =>
-  `Searching audio files in ${bucketName}...`;
-export const msgProgressDelete = ({ bucketName }: { bucketName: string }) =>
-  `Deleting metadata in Bucketify about ${bucketName}...`;
-export const msgProgressLoading = ({ audioName }: { audioName: string}) =>
-`Now loading... 
+export const msgProgressSearch: ({ bucketName }: { bucketName: string }) => string = ({
+  bucketName,
+}) => `Searching audio files in ${bucketName}...`;
+export const msgProgressDelete: ({ bucketName }: { bucketName: string }) => string = ({
+  bucketName,
+}) => `Deleting metadata in Bucketify about ${bucketName}...`;
+export const msgProgressLoading: ({ audioName }: { audioName: string }) => string = ({
+  audioName,
+}) =>
+  `Now loading... 
 ${audioName}
 `;
-export const msgProgressFailed = () =>
-`An unexpected error has occurred. Please try again. 
+export const msgProgressFailed: () => string = () =>
+  `An unexpected error has occurred. Please try again. 
 If it wouldn't be resolved, please open the issue on GitHub.`;
 
-export const msgScaningSucceeded = () => `Successfully scanned your bucket.`
+export const msgScaningSucceeded: () => string = () => `Successfully scanned your bucket.`;
