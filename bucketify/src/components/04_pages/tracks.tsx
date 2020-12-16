@@ -5,19 +5,36 @@ import React, {
   useContext,
 } from 'react';
 
+// Styles
+import { makeStyles, createStyles } from '@material-ui/core/styles';
+
+// 3rd party lib
 import InfiniteScroll from 'react-infinite-scroller';
 
 // Template
 import PageContainer from '../02_organisms/pageContainer';
 
 // Material-ui components
-import CircularProgress from '@material-ui/core/CircularProgress';
+// import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Service classes
 import { fetchAudiosAsync, FetchAudiosInput, FetchAudioOutput } from '../../service/tracksService';
 
 // Contexts
 import { UserDataContext, IUserDataStateHooks } from '../../App';
+
+// Make custom styles
+const useStyles = makeStyles(() =>
+  createStyles({
+    trackListWrapper: {
+      height: '700px',
+      overflow: 'auto',
+    },
+  })
+);
+
+// init current page
+// let page = 0;
 
 type TracksDisplayProps = {
   id: string;
@@ -29,8 +46,10 @@ type TracksDisplayProps = {
 };
 
 export const Tracks: React.FC = () => {
+  const classes = useStyles();
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
+  // TODO move to const.ts
   const limitDisplayTracks = 5;
 
   /**
@@ -39,9 +58,11 @@ export const Tracks: React.FC = () => {
   // NextToken from dynamodb.
   const [nextToken, setNextToken] = useState<string | null | undefined>('');
   // The tracks list to display on this tracks page.
-  const [tracks, setTrackss] = useState<(TracksDisplayProps | undefined)[]>();
+  const [tracks, setTracks] = useState<(TracksDisplayProps | undefined)[]>();
   // Whether has more track metadata in dynamodb.
   const [hasMoreTracks, setHasMoreTracks] = useState<boolean>(true);
+  // Whether is fetching data now.
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchAudioInput: FetchAudiosInput = {
     username: UserDataHooks.user.username,
@@ -49,11 +70,16 @@ export const Tracks: React.FC = () => {
     prevNextToken: nextToken,
   };
 
-  const fetchAudioMetaData = async () => {
-    // Fetch audio metadata from dynamodb
-    const fetchAudioOutput: FetchAudioOutput = await fetchAudiosAsync(fetchAudioInput);
-    const fetchedTracks: (TracksDisplayProps | undefined)[] = fetchAudioOutput.fetchAudioOutput.map(
-      (item) => {
+  const fetchAudioMetaDataAsync = async () => {
+    try {
+      setIsFetching(true);
+
+      // Fetch audio metadata from dynamodb
+      const fetchAudioOutput: FetchAudioOutput = await fetchAudiosAsync(fetchAudioInput);
+      const fetchedTracks: (
+        | TracksDisplayProps
+        | undefined
+      )[] = fetchAudioOutput.fetchAudioOutput.map((item) => {
         if (item) {
           return {
             id: item.id,
@@ -64,66 +90,87 @@ export const Tracks: React.FC = () => {
             track: item.track,
           };
         }
-      }
-    );
+      });
 
-    // Set tracks state for displayed.
-    setTrackss((prevTrackss) => {
-      console.info('prevTrackss');
-      console.dir(prevTrackss);
+      // Set tracks state for displayed.
+      console.info('prevTracks');
+      console.table(tracks);
       console.info('fetchedTracks');
-      console.dir(fetchedTracks);
-
-      let tracksList;
-      if (prevTrackss) {
-        tracksList = prevTrackss.concat(fetchedTracks);
+      console.table(fetchedTracks);
+      if (tracks) {
+        setTracks([...tracks, ...fetchedTracks]);
       } else {
-        tracksList = fetchedTracks;
+        setTracks([...fetchedTracks]);
+      }
+      // setTracks([...tracks, ...fetchedTracks]);
+      console.info('nowTracks');
+      console.table(tracks);
+
+      // Set hasMoreTracks
+      if (!fetchAudioOutput.nextToken) {
+        setHasMoreTracks(false);
       }
 
-      return tracksList;
-    });
-
-    // Set next token.
-    setNextToken(fetchAudioOutput.nextToken);
-    if (!fetchAudioOutput.nextToken) {
-      setHasMoreTracks(false);
+      // Set nextToken.
+      console.info('nextToken: ' + fetchAudioOutput.nextToken);
+      setNextToken(fetchAudioOutput.nextToken);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      setIsFetching(false);
     }
   };
 
-  const items: JSX.Element[] = [];
-  if (tracks) {
-    console.info('tracks:');
-    console.table(tracks);
-    tracks.map((track, i) => {
-      if (track) {
-        items.push(
-          <div key={track.id}>
-            <p key={track.id}>
+  // const items: JSX.Element[] = [];
+  // if (tracks) {
+  //   console.info('tracks:');
+  //   console.table(tracks);
+  //   tracks.map((track, i) => {
+  //     if (track) {
+  //       items.push(
+  //         <div key={track.id}>
+  //           <p key={track.id}>
+  //             {track.id} {track.title} {i}
+  //           </p>
+  //         </div>
+  //       );
+  //     }
+  //   });
+  // }
+
+  const trackTable = tracks && (
+    <ul key={0}>
+      {tracks.map(
+        (track, i) =>
+          track && (
+            <li key={i}>
               {track.id} {track.title} {i}
-            </p>
-          </div>
-        );
-      }
-    });
-  }
+            </li>
+          )
+      )}
+    </ul>
+  );
 
   return (
     <>
       <PageContainer h2Text="Tracks">
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={fetchAudioMetaData}
-          hasMore={hasMoreTracks}
-          initialLoad={true}
-          loader={<CircularProgress key={0}></CircularProgress>}
-          useWindow={true}
-        >
-          items...
-          {items}
-        </InfiniteScroll>
-
-        {items}
+        <div className={classes.trackListWrapper}>
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={fetchAudioMetaDataAsync}
+            hasMore={!isFetching && hasMoreTracks}
+            initialLoad={true}
+            loader={
+              // <CircularProgress key={0}></CircularProgress>
+              <div key={0}>Loading ...</div>
+            }
+            useWindow={false}
+          >
+            items...
+            {trackTable}
+          </InfiniteScroll>
+        </div>
       </PageContainer>
     </>
   );
