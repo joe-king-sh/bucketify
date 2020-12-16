@@ -212,12 +212,12 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                     <ListItemText primary="Album" />
                   </ListItem>
 
-                  <Link to="/songs" className={classes.link}>
+                  <Link to="/tracks" className={classes.link}>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <Audiotrack />
                       </ListItemIcon>
-                      <ListItemText primary="Songs" />
+                      <ListItemText primary="Tracks" />
                     </ListItem>
                   </Link>
                 </List>
