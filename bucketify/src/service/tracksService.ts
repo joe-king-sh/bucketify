@@ -68,7 +68,7 @@ export const fetchAudiosAsync: (props: FetchAudiosInput) => Promise<FetchAudioOu
   };
 
   // Fetch audio id by username
-  console.info('fetch audioId by userid');
+  console.info('start to fetch audioId by userid');
   const fetchAudioIdByUseIdOutput: FetchAudioIdByUserIdOutput = await fetchAudioIdByUserIdAsync({
     username: username,
     limit: limit,
@@ -79,9 +79,9 @@ export const fetchAudiosAsync: (props: FetchAudiosInput) => Promise<FetchAudioOu
   }
 
   // Fetch audio metadata by audio id
-  console.info('fetch audioId by userid');
+  console.info('start to fetch audioId by userid');
   for (const audioId of fetchAudioIdByUseIdOutput.audioIds) {
-    const audioMetaData = await fetchAudioMetaDataByAudioId(audioId, username);
+    const audioMetaData = await fetchAudioMetaDataByAudioIdAsync(audioId, username);
     fetchAudioOutput.fetchAudioOutput.push(audioMetaData);
   }
 
@@ -93,7 +93,7 @@ export const fetchAudiosAsync: (props: FetchAudiosInput) => Promise<FetchAudioOu
   return fetchAudioOutput;
 };
 
-export const fetchAudioMetaDataByAudioId: (
+export const fetchAudioMetaDataByAudioIdAsync: (
   audioId: string,
   username: string
 ) => Promise<FetchAudioMetaDataByAudioIdOutput> = async (audioId, username) => {
@@ -158,6 +158,8 @@ export const fetchAudioMetaDataByAudioId: (
     }
   });
 
+  console.info('listAudioMetaData: ');
+  console.table(listAudioMetaData);
   console.groupEnd();
 
   return listAudioMetaData;
@@ -174,6 +176,8 @@ export const fetchAudioIdByUserIdAsync: (
   props: FetchAudiosInput
 ) => Promise<FetchAudioIdByUserIdOutput> = async ({ username, limit, prevNextToken }) => {
   console.group('FETCH_AUDIO_ID_BY_USERID');
+
+  console.info('prev nextToken: ' + prevNextToken);
 
   const audioIds: string[] = [];
   const fetchAudioIdByUserIdOutput = {
@@ -205,18 +209,22 @@ export const fetchAudioIdByUserIdAsync: (
   }
 
   // Set nextToken
-  if (audioIdByUserIdData.listAudioByDataValue.nextToken) {
-    fetchAudioIdByUserIdOutput.nextToken = audioIdByUserIdData.listAudioByDataValue.nextToken;
+  const nowNextToken = audioIdByUserIdData.listAudioByDataValue.nextToken;
+  if (nowNextToken) {
+    console.info('now nextToken: ' + nowNextToken);
+    fetchAudioIdByUserIdOutput.nextToken = nowNextToken;
   }
 
   // Set response data only audio id.
   audioIdByUserIdData.listAudioByDataValue.items.forEach((item) => {
     if (item !== null) {
-      console.log(item.id);
+      // console.log(item.id);
       fetchAudioIdByUserIdOutput.audioIds.push(item.id);
     }
   });
 
+  console.dir('fetchAudioIdByUserIdOutput');
+  console.dir(fetchAudioIdByUserIdOutput);
   console.groupEnd();
   return fetchAudioIdByUserIdOutput;
 };
