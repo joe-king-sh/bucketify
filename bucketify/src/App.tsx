@@ -11,7 +11,7 @@ import { AuthState } from '@aws-amplify/ui-components';
 import Landing from './components/04_pages/landing';
 import ScanBuckets from './components/04_pages/scanBuckets';
 import NotFound from './components/04_pages/404';
-import Songs from './components/04_pages/songs';
+import Tracks from './components/04_pages/tracks';
 // import SignIn from './components/05_pages/signIn'
 import SignUp from './components/04_pages/signUp';
 import Accounts from './components/04_pages/accounts';
@@ -78,13 +78,13 @@ const App: React.FC = () => {
             </Route>
 
             {/* Login required route */}
-            <Route exact path={['/accounts', '/bucket', '/songs', '/test', '/test2']}>
+            <Route exact path={['/accounts', '/bucket', '/tracks', '/test', '/test2']}>
               <Switch>
                 <GenericTemplate>
                   <LoginRequiredWrapper isLoginRequired={true}>
                     <Route exact path="/accounts" component={Accounts} />
                     <Route exact path="/bucket" component={ScanBuckets} />
-                    <Route exact path="/songs" component={Songs} />
+                    <Route exact path="/tracks" component={Tracks} />
 
                     <Route exact path="/test" component={GraphqlTest} />
                     <Route exact path="/test2" component={GraphqlAudioTest} />

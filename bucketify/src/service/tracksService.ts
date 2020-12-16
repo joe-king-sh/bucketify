@@ -27,7 +27,7 @@ Amplify.configure(awsExports);
 export interface FetchAudiosInput {
   username: string;
   limit: number;
-  prevNextToken: string;
+  prevNextToken: string | null | undefined;
 }
 export type FetchAudioMetaDataByAudioIdOutput =
   | {
@@ -46,7 +46,12 @@ export type FetchAudioMetaDataByAudioIdOutput =
   | undefined;
 export type FetchAudioOutput = {
   fetchAudioOutput: FetchAudioMetaDataByAudioIdOutput[];
-  nextToken: string | string[] | null;
+  nextToken: string | null | undefined;
+};
+
+export type FetchAudioIdByUserIdOutput = {
+  audioIds: string[];
+  nextToken: string | null | undefined;
 };
 
 export const fetchAudiosAsync: (props: FetchAudiosInput) => Promise<FetchAudioOutput> = async ({
@@ -56,31 +61,34 @@ export const fetchAudiosAsync: (props: FetchAudiosInput) => Promise<FetchAudioOu
 }) => {
   console.group('FETCH_AUDIO');
 
-  // Fetch audio id by username
-  console.info('fetch audioId by userid');
-  const [audioIds, nextToken] = await fetchAudioIdByUserIdAsync({
-    username: username,
-    limit: limit,
-    prevNextToken: prevNextToken,
-  });
-
-  // Fetch audio metadata by audio id
-  console.info('fetch metadata by audioId');
+  // Init output value.
   const fetchAudioOutput: FetchAudioOutput = {
     fetchAudioOutput: [],
     nextToken: '',
   };
-  if (audioIds === null) {
+
+  // Fetch audio id by username
+  console.info('fetch audioId by userid');
+  const fetchAudioIdByUseIdOutput: FetchAudioIdByUserIdOutput = await fetchAudioIdByUserIdAsync({
+    username: username,
+    limit: limit,
+    prevNextToken: prevNextToken,
+  });
+  if (fetchAudioIdByUseIdOutput.audioIds === null) {
     return fetchAudioOutput;
   }
-  for (const audioId of audioIds) {
+
+  // Fetch audio metadata by audio id
+  console.info('fetch audioId by userid');
+  for (const audioId of fetchAudioIdByUseIdOutput.audioIds) {
     const audioMetaData = await fetchAudioMetaDataByAudioId(audioId, username);
     fetchAudioOutput.fetchAudioOutput.push(audioMetaData);
   }
 
-  fetchAudioOutput.nextToken = nextToken;
+  fetchAudioOutput.nextToken = fetchAudioIdByUseIdOutput.nextToken;
 
   console.groupEnd();
+
   // return audioMetaData and nextToken
   return fetchAudioOutput;
 };
@@ -164,9 +172,15 @@ export const fetchAudioMetaDataByAudioId: (
  */
 export const fetchAudioIdByUserIdAsync: (
   props: FetchAudiosInput
-) => Promise<(string | string[] | null)[]> = async ({ username, limit, prevNextToken }) => {
+) => Promise<FetchAudioIdByUserIdOutput> = async ({ username, limit, prevNextToken }) => {
   console.group('FETCH_AUDIO_ID_BY_USERID');
-  const resultAudioIds: string[] = [];
+
+  const audioIds: string[] = [];
+  const fetchAudioIdByUserIdOutput = {
+    audioIds: audioIds,
+    nextToken: '',
+  };
+  // const resultAudioIds: string[] = [];
 
   // Get audioId by userName
   const searchCondition: ListAudioByDataValueQueryVariables = {
@@ -187,21 +201,22 @@ export const fetchAudioIdByUserIdAsync: (
     audioIdByUserIdData.listAudioByDataValue.items === null
   ) {
     console.info('Fetch audioId by userid result is nothing.');
-    return resultAudioIds;
+    return fetchAudioIdByUserIdOutput;
   }
 
-  let resultNextToken: string | null = null;
+  // Set nextToken
   if (audioIdByUserIdData.listAudioByDataValue.nextToken) {
-    resultNextToken = audioIdByUserIdData.listAudioByDataValue.nextToken;
+    fetchAudioIdByUserIdOutput.nextToken = audioIdByUserIdData.listAudioByDataValue.nextToken;
   }
 
+  // Set response data only audio id.
   audioIdByUserIdData.listAudioByDataValue.items.forEach((item) => {
     if (item !== null) {
       console.log(item.id);
-      resultAudioIds.push(item.id);
+      fetchAudioIdByUserIdOutput.audioIds.push(item.id);
     }
   });
 
   console.groupEnd();
-  return [resultAudioIds, resultNextToken];
+  return fetchAudioIdByUserIdOutput;
 };
