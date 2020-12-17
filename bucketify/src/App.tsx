@@ -78,13 +78,13 @@ const App: React.FC = () => {
             </Route>
 
             {/* Login required route */}
-            <Route exact path={['/accounts', '/bucket', '/tracks', '/test', '/test2']}>
+            <Route exact path={['/accounts', '/bucket', '/track', '/test', '/test2']}>
               <Switch>
                 <GenericTemplate>
                   <LoginRequiredWrapper isLoginRequired={true}>
                     <Route exact path="/accounts" component={Accounts} />
                     <Route exact path="/bucket" component={ScanBuckets} />
-                    <Route exact path="/tracks" component={Tracks} />
+                    <Route exact path="/track" component={Tracks} />
 
                     <Route exact path="/test" component={GraphqlTest} />
                     <Route exact path="/test2" component={GraphqlAudioTest} />
