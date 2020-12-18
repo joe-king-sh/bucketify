@@ -8,7 +8,7 @@ import MyTypographyH3 from '../01_atoms_and_molecules/myTypographyh3';
 
 const useStyles = makeStyles(() =>
   createStyles({
-    MyContainer: {
+    myContainer: {
       margin: '2rem auto 2rem auto',
       maxWidth: '1100px',
     },
@@ -25,7 +25,7 @@ const PageContainer: React.FC<IPageContainerProps> = ({ h2Text, h3Text, children
 
   return (
     <React.Fragment>
-      <Container fixed className={classes.MyContainer}>
+      <Container fixed className={classes.myContainer}>
         {h2Text && <MyTypographyH2>{h2Text}</MyTypographyH2>}
         {h3Text && <MyTypographyH3>{h3Text}</MyTypographyH3>}
 

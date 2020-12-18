@@ -202,14 +202,14 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                     <ListItemIcon>
                       <People />
                     </ListItemIcon>
-                    <ListItemText primary="Artist" />
+                    <ListItemText primary="Artists" />
                   </ListItem>
 
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>
                       <Album />
                     </ListItemIcon>
-                    <ListItemText primary="Album" />
+                    <ListItemText primary="Albums" />
                   </ListItem>
 
                   <Link to="/track" className={classes.link}>
@@ -217,7 +217,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                       <ListItemIcon>
                         <Audiotrack />
                       </ListItemIcon>
-                      <ListItemText primary="Track" />
+                      <ListItemText primary="Tracks" />
                     </ListItem>
                   </Link>
                 </List>
