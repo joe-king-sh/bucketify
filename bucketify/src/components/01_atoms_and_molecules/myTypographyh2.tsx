@@ -5,7 +5,7 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(() =>
   createStyles({
     typoGraphy2: {
-      paddingBottom: '2.5rem',
+      paddingBottom: '1.25rem',
     },
   })
 );
