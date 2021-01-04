@@ -29,12 +29,15 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
 import Zoom from '@material-ui/core/Zoom';
 
+// MyComponents
+import AlertField, { TAlert } from '../02_organisms/alert';
+
 // Icons
 import AddIcon from '@material-ui/icons/Add';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import CloseIcon from '@material-ui/icons/Close';
-import ShuffleIcon from '@material-ui/icons/Shuffle';
+// import ShuffleIcon from '@material-ui/icons/Shuffle';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
@@ -46,6 +49,11 @@ import { UserDataContext, IUserDataStateHooks } from '../../App';
 
 // Common
 import { sizeOfFetchingTrackDatAtOnce } from '../../common/const';
+import { msgNoTracksSelected } from '../../common/message';
+import { AppName } from '../../common/const';
+
+// Router
+import { useHistory } from 'react-router-dom';
 
 // Make custom styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -99,16 +107,16 @@ const useStyles = makeStyles((theme: Theme) =>
         right: theme.spacing(6),
       },
     },
+    // fabInFab3: {
+    //   position: 'absolute',
+    //   bottom: theme.spacing(26),
+    //   right: theme.spacing(2),
+    //   [theme.breakpoints.up('md')]: {
+    //     bottom: theme.spacing(30),
+    //     right: theme.spacing(6),
+    //   },
+    // },
     fabInFab2: {
-      position: 'absolute',
-      bottom: theme.spacing(26),
-      right: theme.spacing(2),
-      [theme.breakpoints.up('md')]: {
-        bottom: theme.spacing(30),
-        right: theme.spacing(6),
-      },
-    },
-    fabInFab3: {
       position: 'absolute',
       bottom: theme.spacing(18),
       right: theme.spacing(2),
@@ -145,6 +153,7 @@ export const Tracks: React.FC = () => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('md'));
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
+  const history = useHistory();
 
   /**
    *  States used in this component.
@@ -174,6 +183,14 @@ export const Tracks: React.FC = () => {
   const [tracksToBePlayedSet, setTracksToBePlayedSet] = useState<Set<string>>(new Set());
   // Whether is checked the checkbox that controls all ones.
   const [isCheckedHeaderCheckbox, setIsCheckedHeaderCheckbox] = useState<boolean>(false);
+  // Alert field.
+  const [alerts, setAlerts] = useState<TAlert[]>([]);
+  const handleAlerts = (alert: TAlert) => {
+    setAlerts((prevAlerts) => {
+      const alerts = [...prevAlerts, alert];
+      return alerts;
+    });
+  };
 
   /**
    * Handles sort operation by sort key.
@@ -283,6 +300,30 @@ export const Tracks: React.FC = () => {
 
     // Set checked status reversed.
     setIsCheckedHeaderCheckbox(!isCheckedHeaderCheckbox);
+  };
+
+  const handlePlayTracksFabOnClick: () => void = () => {
+    // Init alert field.
+    setAlerts([]);
+    // Init temporary playlist in local storage.
+    localStorage.setItem(AppName + 'TemporaryPlayList', '');
+
+    if (tracksToBePlayedSet.size === 0) {
+      console.warn('No audio file was found.');
+      const description = msgNoTracksSelected();
+      const alert: TAlert = {
+        severity: 'warning',
+        title: 'No tracks selected.',
+        description: description,
+      };
+      handleAlerts(alert);
+      return;
+    } else {
+      // Save temporary PlayList in local storage.
+      localStorage.setItem(AppName + 'TemporaryPlayList', [...tracksToBePlayedSet].join(','));
+      // Send to player page.
+      history.push('/player');
+    }
   };
 
   // Transition setting using in floationg action button.
@@ -489,7 +530,7 @@ export const Tracks: React.FC = () => {
       },
       color: 'primary',
       className: classes.fabInFab2,
-      onClick: handleControlActiveToggle,
+      onClick: handlePlayTracksFabOnClick,
       icon: (
         <>
           <span className={classes.fabButtonText}>Play tracks selected</span>
@@ -498,24 +539,24 @@ export const Tracks: React.FC = () => {
       ),
       variant: 'extended',
     },
-    {
-      key: 'fab-play-random',
-      in: isFabActive,
-      timeout: transitionDuration,
-      style: {
-        transitionDelay: `${isFabActive ? transitionDuration.exit + 35 : 0}ms`,
-      },
-      color: 'primary',
-      className: classes.fabInFab3,
-      onClick: handleControlActiveToggle,
-      icon: (
-        <>
-          <span className={classes.fabButtonText}>Play Random</span>
-          <ShuffleIcon />
-        </>
-      ),
-      variant: 'extended',
-    },
+    // {
+    //   key: 'fab-play-random',
+    //   in: isFabActive,
+    //   timeout: transitionDuration,
+    //   style: {
+    //     transitionDelay: `${isFabActive ? transitionDuration.exit + 35 : 0}ms`,
+    //   },
+    //   color: 'primary',
+    //   className: classes.fabInFab3,
+    //   onClick: handleControlActiveToggle,
+    //   icon: (
+    //     <>
+    //       <span className={classes.fabButtonText}>Play Random</span>
+    //       <ShuffleIcon />
+    //     </>
+    //   ),
+    //   variant: 'extended',
+    // },
     {
       key: 'fab-add-playlist',
       in: isFabActive,
@@ -538,8 +579,10 @@ export const Tracks: React.FC = () => {
 
   return (
     <>
-      {/* Fixed header(power is power) */}
+      {/* Fixed header */}
       <PageContainer h2Text="Tracks">
+        <AlertField alerts={alerts} />
+
         {/* Table header */}
         {trackTableHeader}
         {/* Table data with infinite scroller */}
@@ -549,7 +592,6 @@ export const Tracks: React.FC = () => {
             loadMore={fetchAudioMetaDataAsync}
             hasMore={!isFetching && hasMoreTracks}
             initialLoad={true}
-            // loader={<CircularProgress key={0} color="secondary" size={40} />}
             useWindow={false}
           >
             {trackTable}
