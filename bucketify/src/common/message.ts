@@ -77,3 +77,6 @@ export const msgProgressFailed: () => string = () =>
 If it wouldn't be resolved, please open the issue on GitHub.`;
 
 export const msgScaningSucceeded: () => string = () => `Successfully scanned your bucket.`;
+
+// Tracks
+export const msgNoTracksSelected: () => string = () => `Please select tracks at least one.`;
