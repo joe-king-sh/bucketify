@@ -1,4 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+
+// AWS SDK
+import AWS from 'aws-sdk';
+import { GetObjectRequest } from 'aws-sdk/clients/s3';
 
 // Styles
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -13,13 +17,26 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
+import PauseCircleFilled from '@material-ui/icons/PauseCircleFilled';
 
 // Router
 import { useHistory } from 'react-router-dom';
 
+// Contexts
+import { UserDataContext, IUserDataStateHooks } from '../../App';
+
 // Components
 import { Typography, Box } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
+
+// Service classes
+import {
+  fetchAudioMetaDataByAudioIdAsync,
+  FetchAudioMetaDataByAudioIdOutput,
+} from '../../service/tracksService';
+
+// Common
+import { AppName } from '../../common/const';
 
 // My components
 // import MyTypographyH3 from '../01_atoms_and_molecules/myTypographyh3';
@@ -76,6 +93,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '4px',
       background: 'linear-gradient(#ff6904, #ff6904) no-repeat #eee',
       backgroundSize: '0%',
+      cursor: 'pointer',
     },
     // timeWrapper: {
     // },
@@ -91,7 +109,40 @@ const useStyles = makeStyles((theme: Theme) =>
     controlButton: {
       display: 'inline-block',
       margin: '0 0.5rem 0 0.5rem',
+      cursor: 'pointer',
     },
+    controlButtonPause: {
+      boxShadow: '0 0 0 rgba(255,104,8, 0.4)',
+      animation: '$pulse 2s infinite',
+      borderRadius: '50%',
+    },
+
+    // Pulse animation for the pause button when playing tracks.
+    '@keyframes pulse': {
+      '0%': {
+        boxShadow: '0 0 0 0 rgba(255,104,8, 0.4)',
+      },
+      '70%': {
+        boxShadow: '0 0 0 10px rgba(255,104,8, 0)',
+      },
+      '100%': {
+        boxShadow: '0 0 0 0 rgba(255,104,8, 0)',
+      },
+    },
+    // @keyframes pulse {
+    //   0% {
+    //     -moz-box-shadow: '0 0 0 0 rgba(255,104,8, 0.4'),
+    //     box-shadow: '0 0 0 0 rgba(255,104,8, 0.4'),
+    //   }
+    //   70% {
+    //       -moz-box-shadow: '0 0 0 10px rgba(255,104,8, 0'),
+    //       box-shadow: '0 0 0 10px rgba(255,104,8, 0'),
+    //   }
+    //   100% {
+    //       -moz-box-shadow: '0 0 0 0 rgba(255,104,8, 0)',
+    //       box-shadow: '0 0 0 0 rgba(255,104,8, 0)',
+    //   }
+    // }
   })
 );
 
@@ -100,26 +151,198 @@ const Player: React.FC = () => {
   // const theme = useTheme();
   // const matches = useMediaQuery(theme.breakpoints.up('md'));
   const history = useHistory();
+  const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
+
+  // Get play list from localstorage.
+  const temporaryPlayListTracksIds = localStorage
+    .getItem(AppName + 'TemporaryPlayList')
+    ?.split(',');
+  if (temporaryPlayListTracksIds === undefined || temporaryPlayListTracksIds.length === 0) {
+    // When no tracks were selected.
+    history.goBack();
+    return <></>;
+  }
 
   /**
    *  States used in this component.
    */
   // Whether is fetching data now.
-  // const [isFetching, setIsFetching] = useState(false);
+  const [nowPlayingTracksId, setNowPlayingTracksId] = useState({
+    order: 0,
+    nowPlayingTrackId: temporaryPlayListTracksIds[0],
+  });
+  const [
+    nowPlayingTrackMetaData,
+    setNowPlayingTrackMetaData,
+  ] = useState<FetchAudioMetaDataByAudioIdOutput | null>(null);
 
   // Whether is fetching album cover.
   const [isFetchingAlbumCover, setIsFetchingAlbumCover] = useState(true);
-
-  // Get play list from localstorage.
+  const [isNowPlaying, setIsNowPlaying] = useState(false);
 
   // References to elements that controls audio player.
   const audio = useRef<HTMLAudioElement>(null);
 
+  // oncLick controls.
   const handleClickPlayButton: () => void = () => {
     if (!audio || !audio.current) {
       return;
     }
     audio.current.play();
+    setIsNowPlaying(!isNowPlaying);
+  };
+  const handleClickPauseButton: () => void = () => {
+    if (!audio || !audio.current) {
+      return;
+    }
+    audio.current.pause();
+    setIsNowPlaying(!isNowPlaying);
+  };
+  const handleClickNextButton: () => void = () => {
+    if (temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1) {
+      return;
+    } else {
+      const newOrder = nowPlayingTracksId.order++;
+      const newNowPlay = {
+        order: newOrder,
+        nowPlayingTrackId: temporaryPlayListTracksIds[newOrder - 1],
+      };
+      setNowPlayingTracksId(newNowPlay);
+    }
+  };
+  const handleClickPrevButton: () => void = () => {
+    if (nowPlayingTracksId.order == 1) {
+      return;
+    } else {
+      const newOrder = nowPlayingTracksId.order--;
+      const newNowPlay = {
+        order: newOrder,
+        nowPlayingTrackId: temporaryPlayListTracksIds[newOrder - 1],
+      };
+      setNowPlayingTracksId(newNowPlay);
+    }
+  };
+  /**
+   *  useEffect
+   */
+  // Set event listner to play tracks.
+  useEffect(() => {
+    if (!audio || !audio.current) {
+      return;
+    } else {
+      // Update duration displayed and seekBar.
+      audio.current.addEventListener('timeupdate', () => {
+        if (!audio || !audio.current) {
+          return;
+        }
+        const current = Math.floor(audio.current.currentTime);
+        const duration = Math.round(audio.current.duration);
+        // console.log(current, duration);
+        if (!isNaN(duration)) {
+          const currentDiv = document.getElementById('current');
+          const durationDiv = document.getElementById('duration');
+          const seakBar = document.getElementById('seekbar');
+          if (currentDiv && durationDiv && seakBar) {
+            currentDiv.innerHTML = playTimeFormatHelper(current);
+            durationDiv.innerHTML = playTimeFormatHelper(duration);
+            const percent =
+              Math.round((audio.current.currentTime / audio.current.duration) * 1000) / 10;
+            seakBar.style.backgroundSize = percent + '%';
+          }
+        }
+        // When end of track.
+        if (current === duration) {
+          setIsNowPlaying(false);
+        }
+      });
+
+      // Set duration to play a track until the end.
+      audio.current.addEventListener('durationchange', () => {
+        if (!audio || !audio.current) {
+          return;
+        }
+        const duration = Math.round(audio.current.duration);
+        if (!isNaN(duration)) {
+          const seakBar = document.getElementById('seekbar');
+          if (seakBar) {
+            seakBar.setAttribute('max', Math.round(audio.current.duration).toString());
+          }
+        }
+      });
+      // Changes position that now playing.
+      const seakBar = document.getElementById('seekbar');
+      if (!seakBar) {
+        return;
+      }
+      seakBar.addEventListener('click', (e) => {
+        if (!audio || !audio.current) {
+          return;
+        }
+        const duration = Math.round(audio.current.duration);
+        if (!isNaN(duration)) {
+          const mouse = e.pageX;
+          const rect = seakBar.getBoundingClientRect();
+          const position = rect.left + window.pageXOffset;
+          const offset = mouse - position;
+          const width = rect.right - rect.left;
+          audio.current.currentTime = Math.round(duration * (offset / width));
+        }
+      });
+    }
+  }, []);
+
+  // Fetch metadata from tracks.
+  useEffect(() => {
+    const fetchMetadataFromTrackId = async () => {
+      const audioMetaData = await fetchAudioMetaDataByAudioIdAsync(
+        nowPlayingTracksId.nowPlayingTrackId,
+        UserDataHooks.user.username
+      );
+      console.log(audioMetaData);
+      if (!audioMetaData || !audio.current) {
+        return;
+      }
+      const params: GetObjectRequest = {
+        Bucket: audioMetaData?.s3BucketName,
+        Key: audioMetaData?.s3ObjectKey,
+      };
+      // Init sdk.
+      const s3 = new AWS.S3({
+        // region: 'ap-northeast-1',
+        region: 'us-east-1',
+        maxRetries: 5,
+        accessKeyId: audioMetaData?.accessKey,
+        secretAccessKey: audioMetaData?.secretAccessKey,
+      });
+
+      // Get Signed url.
+      const s3SignedUrl = await s3.getSignedUrl('getObject', params);
+      audio.current.src = s3SignedUrl;
+      console.log(nowPlayingTrackMetaData);
+      setNowPlayingTrackMetaData(audioMetaData);
+      console.log(nowPlayingTrackMetaData);
+    };
+    fetchMetadataFromTrackId();
+  }, [nowPlayingTracksId]);
+
+  // Helper function to display time of tracks.
+  const playTimeFormatHelper: (t: number) => string = (t) => {
+    let hms = '';
+    const h = (t / 3600) | 0;
+    const m = ((t % 3600) / 60) | 0;
+    const s = t % 60;
+    const z2: (v: number) => string = (v) => {
+      const s = '00' + v;
+      return s.substr(s.length - 2, 2);
+    };
+    if (h != 0) {
+      hms = h + ':' + z2(m) + ':' + z2(s);
+    } else if (m != 0) {
+      hms = z2(m) + ':' + z2(s);
+    } else {
+      hms = '00:' + z2(s);
+    }
+    return hms;
   };
 
   return (
@@ -132,7 +355,7 @@ const Player: React.FC = () => {
           }}
         />
         <Typography variant="h5" component="h3" className={classes.albumTitle}>
-          Title
+          {nowPlayingTrackMetaData?.album}
         </Typography>
 
         <Box className={classes.albumArtWork}>
@@ -150,47 +373,60 @@ const Player: React.FC = () => {
 
         <section className={classes.alignLeft}>
           <p>
-            <b> tracks name </b>
+            <b> {nowPlayingTrackMetaData?.title}</b>
           </p>
 
-          <p>artist name</p>
+          <p>{nowPlayingTrackMetaData?.artist}</p>
         </section>
 
         <audio preload="true" ref={audio}>
           <source src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3" />
           <p>※ ご利用のブラウザでは再生することができません。</p>
         </audio>
+
         <div id="seekbar" className={classes.seekbar}></div>
 
-        <div id="time-wrapper">
+        <Box id="time-wrapper">
           <span id="current" className={classes.alignLeft + ' ' + classes.time}>
             00:00
           </span>
           <span id="duration" className={classes.alignRight + ' ' + classes.time}>
             00:00
           </span>
-        </div>
+        </Box>
 
-        <div id="control-button" className={classes.controlButtonWrapper}>
-          {/* <a className={classes.controlButton} id=""> */}
-          <SkipPreviousIcon fontSize="large" color="secondary" className={classes.controlButton} />
-          {/* </a> */}
-
-          {/* <a className={classes.controlButton} id="play"> */}
-          <PlayCircleFilledIcon
+        <Box id="control-button" className={classes.controlButtonWrapper}>
+          <SkipPreviousIcon
             fontSize="large"
             color="secondary"
             className={classes.controlButton}
-            onClick={handleClickPlayButton}
+            onClick={handleClickPrevButton}
           />
-          {/* </a> */}
-          {/* <a class="btn-floating btn-large pulse hide" id="stop">
-            <i class="medium material-icons">pause</i>
-          </a> */}
-          {/* <a className={classes.controlButton} id=""> */}
-          <SkipNextIcon fontSize="large" color="secondary" className={classes.controlButton} />
-          {/* </a> */}
-        </div>
+
+          {!isNowPlaying && (
+            <PlayCircleFilledIcon
+              fontSize="large"
+              color="secondary"
+              className={classes.controlButton}
+              onClick={handleClickPlayButton}
+            />
+          )}
+
+          {isNowPlaying && (
+            <PauseCircleFilled
+              fontSize="large"
+              color="secondary"
+              className={classes.controlButton + ' ' + classes.controlButtonPause}
+              onClick={handleClickPauseButton}
+            />
+          )}
+          <SkipNextIcon
+            fontSize="large"
+            color="secondary"
+            className={classes.controlButton}
+            onClick={handleClickNextButton}
+          />
+        </Box>
       </PageContainer>
     </>
   );
