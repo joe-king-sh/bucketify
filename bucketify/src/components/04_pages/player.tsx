@@ -4,7 +4,12 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import AWS from 'aws-sdk';
 import { GetObjectRequest } from 'aws-sdk/clients/s3';
 
+// 3rd party libs
+import * as musicMetadata from 'music-metadata-browser';
+import * as mm from 'music-metadata';
+
 // Styles
+import clsx from 'clsx';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 // import { useTheme } from '@material-ui/core/styles';
 // import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -74,10 +79,16 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '60%',
       },
     },
-    albumArtWorkImage: {
+    albumArtWorkSkelton: {
       margin: '1rem 0 1rem 0',
       width: '100%',
       paddingTop: '100%',
+      // height: '90%',
+      display: 'inline-block',
+    },
+    albumArtWorkImage: {
+      margin: '1rem 0 1rem 0',
+      width: '100%',
       // height: '90%',
       display: 'inline-block',
     },
@@ -116,7 +127,9 @@ const useStyles = makeStyles((theme: Theme) =>
       animation: '$pulse 2s infinite',
       borderRadius: '50%',
     },
-
+    displayNone: {
+      display: 'none',
+    },
     // Pulse animation for the pause button when playing tracks.
     '@keyframes pulse': {
       '0%': {
@@ -175,6 +188,7 @@ const Player: React.FC = () => {
     nowPlayingTrackMetaData,
     setNowPlayingTrackMetaData,
   ] = useState<FetchAudioMetaDataByAudioIdOutput | null>(null);
+  const [nowPlayingS3SignedUrl, setNowPlayingS3SignedUrl] = useState('');
 
   // Whether is fetching album cover.
   const [isFetchingAlbumCover, setIsFetchingAlbumCover] = useState(true);
@@ -182,6 +196,10 @@ const Player: React.FC = () => {
 
   // References to elements that controls audio player.
   const audio = useRef<HTMLAudioElement>(null);
+  const seakBar = useRef<HTMLDivElement>(null);
+  const currentSpan = useRef<HTMLSpanElement>(null);
+  const durationSpan = useRef<HTMLSpanElement>(null);
+  const albumArtWorkImage = useRef<HTMLImageElement>(null);
 
   // oncLick controls.
   const handleClickPlayButton: () => void = () => {
@@ -202,24 +220,28 @@ const Player: React.FC = () => {
     if (temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1) {
       return;
     } else {
-      const newOrder = nowPlayingTracksId.order++;
+      const newOrder = nowPlayingTracksId.order + 1;
       const newNowPlay = {
         order: newOrder,
-        nowPlayingTrackId: temporaryPlayListTracksIds[newOrder - 1],
+        nowPlayingTrackId: temporaryPlayListTracksIds[newOrder],
       };
       setNowPlayingTracksId(newNowPlay);
+      setIsFetchingAlbumCover(true);
+      resetAudioContorols();
     }
   };
   const handleClickPrevButton: () => void = () => {
     if (nowPlayingTracksId.order == 1) {
       return;
     } else {
-      const newOrder = nowPlayingTracksId.order--;
+      const newOrder = nowPlayingTracksId.order - 1;
       const newNowPlay = {
         order: newOrder,
         nowPlayingTrackId: temporaryPlayListTracksIds[newOrder - 1],
       };
       setNowPlayingTracksId(newNowPlay);
+      setIsFetchingAlbumCover(true);
+      resetAudioContorols();
     }
   };
   /**
@@ -239,20 +261,26 @@ const Player: React.FC = () => {
         const duration = Math.round(audio.current.duration);
         // console.log(current, duration);
         if (!isNaN(duration)) {
-          const currentDiv = document.getElementById('current');
-          const durationDiv = document.getElementById('duration');
-          const seakBar = document.getElementById('seekbar');
-          if (currentDiv && durationDiv && seakBar) {
-            currentDiv.innerHTML = playTimeFormatHelper(current);
-            durationDiv.innerHTML = playTimeFormatHelper(duration);
+          if (
+            currentSpan &&
+            currentSpan.current &&
+            durationSpan &&
+            durationSpan.current &&
+            seakBar &&
+            seakBar.current
+          ) {
+            currentSpan.current.innerHTML = playTimeFormatHelper(current);
+            durationSpan.current.innerHTML = playTimeFormatHelper(duration);
             const percent =
               Math.round((audio.current.currentTime / audio.current.duration) * 1000) / 10;
-            seakBar.style.backgroundSize = percent + '%';
+            seakBar.current.style.backgroundSize = percent + '%';
+
+            // When playing track was ended, reset seakbar and current duration.
+            // Also listening to 'ended' event, but it may be not working, so do the same things on here.
+            if (current === duration) {
+              resetAudioContorols();
+            }
           }
-        }
-        // When end of track.
-        if (current === duration) {
-          setIsNowPlaying(false);
         }
       });
 
@@ -263,25 +291,36 @@ const Player: React.FC = () => {
         }
         const duration = Math.round(audio.current.duration);
         if (!isNaN(duration)) {
-          const seakBar = document.getElementById('seekbar');
-          if (seakBar) {
-            seakBar.setAttribute('max', Math.round(audio.current.duration).toString());
+          if (!seakBar || !seakBar.current) {
+            return;
           }
+          seakBar.current.setAttribute('max', Math.round(audio.current.duration).toString());
         }
       });
-      // Changes position that now playing.
-      const seakBar = document.getElementById('seekbar');
-      if (!seakBar) {
+
+      // OnEnded play tracks, reset seakbar and current duration.
+      audio.current.addEventListener('ended', () => {
+        if (!audio || !audio.current) {
+          return;
+        }
+        resetAudioContorols();
+      });
+
+      // OnClick seakbar event to change now playing position.
+      if (!seakBar || !seakBar.current) {
         return;
       }
-      seakBar.addEventListener('click', (e) => {
+      seakBar.current.addEventListener('click', (e) => {
         if (!audio || !audio.current) {
           return;
         }
         const duration = Math.round(audio.current.duration);
         if (!isNaN(duration)) {
+          if (!seakBar || !seakBar.current) {
+            return;
+          }
           const mouse = e.pageX;
-          const rect = seakBar.getBoundingClientRect();
+          const rect = seakBar.current.getBoundingClientRect();
           const position = rect.left + window.pageXOffset;
           const offset = mouse - position;
           const width = rect.right - rect.left;
@@ -317,13 +356,42 @@ const Player: React.FC = () => {
 
       // Get Signed url.
       const s3SignedUrl = await s3.getSignedUrl('getObject', params);
-      audio.current.src = s3SignedUrl;
+      setNowPlayingS3SignedUrl(s3SignedUrl);
       console.log(nowPlayingTrackMetaData);
       setNowPlayingTrackMetaData(audioMetaData);
       console.log(nowPlayingTrackMetaData);
     };
     fetchMetadataFromTrackId();
   }, [nowPlayingTracksId]);
+
+  // Fetch album artwork from tracks
+  useEffect(() => {
+    const fetchAlbumArtWork = async () => {
+      console.log('signedurl:' + nowPlayingS3SignedUrl);
+      const metadata: musicMetadata.IAudioMetadata = await musicMetadata.fetchFromUrl(
+        nowPlayingS3SignedUrl
+      );
+
+      if (!albumArtWorkImage.current) {
+        return;
+      }
+      if (metadata.common.picture) {
+        console.info('album art cover was found.');
+        console.log(metadata.common.picture);
+        const cover = mm.selectCover(metadata.common.picture);
+        console.log(cover);
+        setIsFetchingAlbumCover(false);
+        if (cover) {
+          albumArtWorkImage.current.src = URL.createObjectURL(
+            new Blob([cover.data], { type: cover.format } /* (1) */)
+          );
+        }
+      }
+    };
+    if (nowPlayingS3SignedUrl !== '') {
+      fetchAlbumArtWork();
+    }
+  }, [nowPlayingS3SignedUrl]);
 
   // Helper function to display time of tracks.
   const playTimeFormatHelper: (t: number) => string = (t) => {
@@ -345,6 +413,16 @@ const Player: React.FC = () => {
     return hms;
   };
 
+  // Helper function reset controls when stop playing.
+  const resetAudioContorols: () => void = () => {
+    setIsNowPlaying(false);
+    if (!seakBar || !seakBar.current || !currentSpan || !currentSpan.current) {
+      return;
+    }
+    seakBar.current.style.backgroundSize = '0%';
+    currentSpan.current.innerHTML = '00:00';
+  };
+
   return (
     <>
       <PageContainer>
@@ -359,16 +437,15 @@ const Player: React.FC = () => {
         </Typography>
 
         <Box className={classes.albumArtWork}>
-          {isFetchingAlbumCover ? (
-            <Skeleton variant="rect" className={classes.albumArtWorkImage} />
-          ) : (
-            <img
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEX////Ly8vIyMjNzc3a2trU1NT7+/vy8vLg4ODr6+vX19fMzMz09PTu7u7e3t7R0dHl5eW0uPxiAAAETElEQVR4nO2Z65qjKhAAAxoVvOD7P+1yFxI1kxm/czazVX82G5FQ0jSNc7sBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPynrO0X6P7vUf6EVopXSPHZhi8FLZ9uaO5nmM83lMNpg0n+dsMew7+dbNgPi9pr8GsMWyml2VN8Npymqficr01qXdfpVtPFtuU99W25yfaLth+1dVvyFaNHoqGSQq67DZ4N71Lmn8oxPhnpMX3VVknpvxirTXWQcnuYZXeWVYSOUpkR/+u5v2vniIZaCL3fYMfQbjDpc5NiXMaRCDmXbZOhqR7gKDbDTlaZYIkdCdl0sa24xPD+MLIXhnm4ydCOaLGtusF+KFtvhmLMX66yMFxdUVVeGt2l6S7jY2yEmfrIT6J0qUPllWHWiIY27IY0RLnsG26PsBGFoasoZA7trWcd72zEt2ZuIxp25cqo2DO0UdbGwQYzs81QU0xWZZhH6nrMvzZJuY75ofT5Sd26dor95SXxPVIutZliv8FepmmXOPBoaNdSm67aS0XzzbARKUq0+5wM7ezbPJ4eyvocSpcZ2mHu73p7hvqWkk0wdBORrq5SFuk0G8rFxHl3jbeIcRlulimCl+dzzIWGB+wbrtEpGPaFoZJlztoMhzVO7iLHbU30vvWYgn7X8Jp1uIOSOoxhz9Clf/dtNsyreK5WdGF4C2usc4k4twkBmsW0GJ8Nm2EJfCuVHhu6GkAfG9pYa3cN+0NDu0JvPoqLvBZSVr7HLlH3T2ccjQmGeT882M++aajcNuVUDgxvIdm8Yzj5Ky5xZsM5Xk6JNhn6PT98toaNZxR1ufRDQxVebtgq4sgwJJtnQ3VoaLe4xjl1m2E0chnV/0Ybw9WWuMokw8vW4dBsUaDS2xs5Hxoql16ec6k6yKWDb9Zrd3My7OzczcoyxA7KTKOT4VW5dChKyix4ZuiTTdoPt0Km3tIqQ3uH8btiMnS/E8vZMFNDcfNdmEsNF7/u5gfBU8NJCh1GfitqcS12d3zfbo4mydBsRXW4q9xqYt10leES191cC54aummPz0fngmUS1bqpDd2hYt4MO7d/dJ4Y553MPqkquMhw2dZdJXhu6E82fuR2cuJhx4iqwH0wVGG40bAMaBOu6LRo5nTiuCbTFK+FpaleEZ8bzvlsZ3uQrVLudFcN6MEwEg1NMT3R1uYe2QxqveesYCv5u4mUp5a3DKtZe3jffWrozudx5G04uQpZH6STYbNjWGbgELGWafQdiaIm+PkJeF2O33bvGQ46j3bSOsVkr91I9EPdMWvtA3HR1eHMf6u0LjpedKxNV/c+pBnSpVZvnFfQJ4bDe4Yfxr9huLy3Dj8Ml2mmk7/N/J43wofMn2/4BT7b8PXfgD/ccBmb13y0IQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAj/kDuk4loESEngUAAAAASUVORK5CYII="
-              //TODO Change to album title at alt atribute.
-              alt="AlbumArtCover"
-              className={classes.albumArtWorkImage}
-            />
+          {isFetchingAlbumCover && (
+            <Skeleton variant="rect" className={classes.albumArtWorkSkelton} />
           )}
+          <img
+            alt="AlbumArtCover"
+            className={clsx(classes.albumArtWorkImage, isFetchingAlbumCover && classes.displayNone)}
+            ref={albumArtWorkImage}
+            src="images/noimage.png"
+          />
         </Box>
 
         <section className={classes.alignLeft}>
@@ -380,17 +457,21 @@ const Player: React.FC = () => {
         </section>
 
         <audio preload="true" ref={audio}>
-          <source src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3" />
+          <source src={nowPlayingS3SignedUrl} />
           <p>※ ご利用のブラウザでは再生することができません。</p>
         </audio>
 
-        <div id="seekbar" className={classes.seekbar}></div>
+        <div id="seekbar" className={classes.seekbar} ref={seakBar}></div>
 
         <Box id="time-wrapper">
-          <span id="current" className={classes.alignLeft + ' ' + classes.time}>
+          <span id="current" className={classes.alignLeft + ' ' + classes.time} ref={currentSpan}>
             00:00
           </span>
-          <span id="duration" className={classes.alignRight + ' ' + classes.time}>
+          <span
+            id="duration"
+            className={classes.alignRight + ' ' + classes.time}
+            ref={durationSpan}
+          >
             00:00
           </span>
         </Box>
@@ -398,9 +479,9 @@ const Player: React.FC = () => {
         <Box id="control-button" className={classes.controlButtonWrapper}>
           <SkipPreviousIcon
             fontSize="large"
-            color="secondary"
+            color={nowPlayingTracksId.order == 0 ? 'disabled' : 'secondary'}
             className={classes.controlButton}
-            onClick={handleClickPrevButton}
+            onClick={nowPlayingTracksId.order == 0 ? undefined : handleClickPrevButton}
           />
 
           {!isNowPlaying && (
@@ -422,9 +503,17 @@ const Player: React.FC = () => {
           )}
           <SkipNextIcon
             fontSize="large"
-            color="secondary"
+            color={
+              temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1
+                ? 'disabled'
+                : 'secondary'
+            }
             className={classes.controlButton}
-            onClick={handleClickNextButton}
+            onClick={
+              temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1
+                ? undefined
+                : handleClickNextButton
+            }
           />
         </Box>
       </PageContainer>
