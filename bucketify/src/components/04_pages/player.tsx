@@ -33,6 +33,13 @@ import { UserDataContext, IUserDataStateHooks } from '../../App';
 // Components
 import { Typography, Box } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 // Service classes
 import {
@@ -42,6 +49,9 @@ import {
 
 // Common
 import { AppName } from '../../common/const';
+
+// Image
+import noImage from '../../images/no-image-dark.png';
 
 // My components
 // import MyTypographyH3 from '../01_atoms_and_molecules/myTypographyh3';
@@ -207,19 +217,20 @@ const Player: React.FC = () => {
       return;
     }
     audio.current.play();
-    setIsNowPlaying(!isNowPlaying);
+    setIsNowPlaying(true);
   };
   const handleClickPauseButton: () => void = () => {
     if (!audio || !audio.current) {
       return;
     }
     audio.current.pause();
-    setIsNowPlaying(!isNowPlaying);
+    setIsNowPlaying(false);
   };
   const handleClickNextButton: () => void = () => {
     if (temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1) {
       return;
     } else {
+      resetAudioContorols();
       const newOrder = nowPlayingTracksId.order + 1;
       const newNowPlay = {
         order: newOrder,
@@ -227,13 +238,13 @@ const Player: React.FC = () => {
       };
       setNowPlayingTracksId(newNowPlay);
       setIsFetchingAlbumCover(true);
-      resetAudioContorols();
     }
   };
   const handleClickPrevButton: () => void = () => {
     if (nowPlayingTracksId.order == 1) {
       return;
     } else {
+      resetAudioContorols();
       const newOrder = nowPlayingTracksId.order - 1;
       const newNowPlay = {
         order: newOrder,
@@ -241,7 +252,6 @@ const Player: React.FC = () => {
       };
       setNowPlayingTracksId(newNowPlay);
       setIsFetchingAlbumCover(true);
-      resetAudioContorols();
     }
   };
   /**
@@ -304,6 +314,14 @@ const Player: React.FC = () => {
           return;
         }
         resetAudioContorols();
+      });
+
+      // OnPlay tracks, set state of isNowPlaying true.
+      audio.current.addEventListener('play', () => {
+        if (!audio || !audio.current) {
+          return;
+        }
+        setIsNowPlaying(true);
       });
 
       // OnClick seakbar event to change now playing position.
@@ -383,10 +401,15 @@ const Player: React.FC = () => {
         setIsFetchingAlbumCover(false);
         if (cover) {
           albumArtWorkImage.current.src = URL.createObjectURL(
-            new Blob([cover.data], { type: cover.format } /* (1) */)
+            new Blob([cover.data], { type: cover.format })
           );
+          return;
         }
       }
+      // When album art work was not found.
+      console.info('album art cover was not found.');
+      setIsFetchingAlbumCover(false);
+      albumArtWorkImage.current.src = noImage;
     };
     if (nowPlayingS3SignedUrl !== '') {
       fetchAlbumArtWork();
@@ -423,6 +446,45 @@ const Player: React.FC = () => {
     currentSpan.current.innerHTML = '00:00';
   };
 
+  // Table data components of the temporary playlist.
+  const temporaryPlayList = temporaryPlayListTracksIds && (
+    <TableContainer component={Paper}>
+      <Table aria-label="tracks table">
+        <TableHead>
+          <TableRow>
+            <TableCell>#</TableCell>
+            <TableCell>Titile</TableCell>
+            <TableCell>Artist</TableCell>
+            <TableCell>Album</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {temporaryPlayListTracksIds.map(
+            (id, index) =>
+              // Get metadata.
+              id && (
+                <TableRow
+                  hover
+                  // role="checkbox"
+                  tabIndex={-1}
+                  key={id}
+                  // onClick={() => setNowPlayingTracksId(track.id)}
+                >
+                  <TableCell>{index}</TableCell>
+                  {/* <TableCell component="th" scope="row" className={classes.tableCellTitle}>
+                    {track.title}
+                  </TableCell>
+                  <TableCell className={classes.tableCellArtist}>{track.artist}</TableCell>
+                  <TableCell className={classes.tableCellAlbum}>{track.album}</TableCell>
+                  {/* <TableCell className={classes.tableCellTrack}>{track.track}</TableCell> */}
+                </TableRow>
+              )
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+
   return (
     <>
       <PageContainer>
@@ -435,7 +497,6 @@ const Player: React.FC = () => {
         <Typography variant="h5" component="h3" className={classes.albumTitle}>
           {nowPlayingTrackMetaData?.album}
         </Typography>
-
         <Box className={classes.albumArtWork}>
           {isFetchingAlbumCover && (
             <Skeleton variant="rect" className={classes.albumArtWorkSkelton} />
@@ -444,10 +505,8 @@ const Player: React.FC = () => {
             alt="AlbumArtCover"
             className={clsx(classes.albumArtWorkImage, isFetchingAlbumCover && classes.displayNone)}
             ref={albumArtWorkImage}
-            src="images/noimage.png"
           />
         </Box>
-
         <section className={classes.alignLeft}>
           <p>
             <b> {nowPlayingTrackMetaData?.title}</b>
@@ -455,14 +514,10 @@ const Player: React.FC = () => {
 
           <p>{nowPlayingTrackMetaData?.artist}</p>
         </section>
-
-        <audio preload="true" ref={audio}>
-          <source src={nowPlayingS3SignedUrl} />
+        <audio preload="true" ref={audio} src={nowPlayingS3SignedUrl} autoPlay>
           <p>※ ご利用のブラウザでは再生することができません。</p>
         </audio>
-
         <div id="seekbar" className={classes.seekbar} ref={seakBar}></div>
-
         <Box id="time-wrapper">
           <span id="current" className={classes.alignLeft + ' ' + classes.time} ref={currentSpan}>
             00:00
@@ -475,7 +530,6 @@ const Player: React.FC = () => {
             00:00
           </span>
         </Box>
-
         <Box id="control-button" className={classes.controlButtonWrapper}>
           <SkipPreviousIcon
             fontSize="large"
@@ -516,6 +570,8 @@ const Player: React.FC = () => {
             }
           />
         </Box>
+        <Typography>Play List</Typography>
+        {temporaryPlayList}
       </PageContainer>
     </>
   );
