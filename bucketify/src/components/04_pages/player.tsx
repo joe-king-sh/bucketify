@@ -152,20 +152,19 @@ const useStyles = makeStyles((theme: Theme) =>
         boxShadow: '0 0 0 0 rgba(255,104,8, 0)',
       },
     },
-    // @keyframes pulse {
-    //   0% {
-    //     -moz-box-shadow: '0 0 0 0 rgba(255,104,8, 0.4'),
-    //     box-shadow: '0 0 0 0 rgba(255,104,8, 0.4'),
-    //   }
-    //   70% {
-    //       -moz-box-shadow: '0 0 0 10px rgba(255,104,8, 0'),
-    //       box-shadow: '0 0 0 10px rgba(255,104,8, 0'),
-    //   }
-    //   100% {
-    //       -moz-box-shadow: '0 0 0 0 rgba(255,104,8, 0)',
-    //       box-shadow: '0 0 0 0 rgba(255,104,8, 0)',
-    //   }
-    // }
+
+    tableCellTitle: {
+      width: '39%',
+      [theme.breakpoints.up('md')]: {
+        width: '35%',
+      },
+    },
+    tableCellArtist: {
+      width: '20%',
+    },
+    tableCellAlbum: {
+      width: '25%',
+    },
   })
 );
 
@@ -177,14 +176,17 @@ const Player: React.FC = () => {
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
   // Get play list from localstorage.
-  const temporaryPlayListTracksIds = localStorage
-    .getItem(AppName + 'TemporaryPlayList')
-    ?.split(',');
-  if (temporaryPlayListTracksIds === undefined || temporaryPlayListTracksIds.length === 0) {
+  const playListJsonString = localStorage.getItem(AppName + 'TemporaryPlayList');
+  if (!playListJsonString) {
     // When no tracks were selected.
     history.goBack();
     return <></>;
   }
+  const playListItems = JSON.parse(playListJsonString);
+  const playListMap = new Map<string, { title: string; artist: string; album: string }>(
+    playListItems
+  );
+  const temporaryPlayListTracksIds = [...playListMap.keys()];
 
   /**
    *  States used in this component.
@@ -211,7 +213,7 @@ const Player: React.FC = () => {
   const durationSpan = useRef<HTMLSpanElement>(null);
   const albumArtWorkImage = useRef<HTMLImageElement>(null);
 
-  // oncLick controls.
+  // onClick controls.
   const handleClickPlayButton: () => void = () => {
     if (!audio || !audio.current) {
       return;
@@ -460,7 +462,7 @@ const Player: React.FC = () => {
         </TableHead>
         <TableBody>
           {temporaryPlayListTracksIds.map(
-            (id, index) =>
+            (id: string, index) =>
               // Get metadata.
               id && (
                 <TableRow
@@ -470,13 +472,16 @@ const Player: React.FC = () => {
                   key={id}
                   // onClick={() => setNowPlayingTracksId(track.id)}
                 >
-                  <TableCell>{index}</TableCell>
-                  {/* <TableCell component="th" scope="row" className={classes.tableCellTitle}>
-                    {track.title}
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell component="th" scope="row" className={classes.tableCellTitle}>
+                    {playListMap.get(id) !== undefined && playListMap.get(id)?.title}
                   </TableCell>
-                  <TableCell className={classes.tableCellArtist}>{track.artist}</TableCell>
-                  <TableCell className={classes.tableCellAlbum}>{track.album}</TableCell>
-                  {/* <TableCell className={classes.tableCellTrack}>{track.track}</TableCell> */}
+                  <TableCell className={classes.tableCellArtist}>
+                    {playListMap.get(id) !== undefined && playListMap.get(id)?.artist}
+                  </TableCell>
+                  <TableCell className={classes.tableCellAlbum}>
+                    {playListMap.get(id) !== undefined && playListMap.get(id)?.album}
+                  </TableCell>
                 </TableRow>
               )
           )}

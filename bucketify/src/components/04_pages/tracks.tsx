@@ -180,7 +180,8 @@ export const Tracks: React.FC = () => {
     setIsFabActive(!isFabActive);
   };
   // AudioIds to play in player page.
-  const [tracksToBePlayedSet, setTracksToBePlayedSet] = useState<Set<string>>(new Set());
+  const [tracksToBePlayedMap, setTracksToBePlayedMap] = useState(new Map());
+  // const tracksToBePlayedMap = new Map();
   // Whether is checked the checkbox that controls all ones.
   const [isCheckedHeaderCheckbox, setIsCheckedHeaderCheckbox] = useState<boolean>(false);
   // Alert field.
@@ -267,36 +268,44 @@ export const Tracks: React.FC = () => {
     }
   };
 
-  const handleCheckboxChange: (checkedTrackId: string) => void = (checkedTrackId) => {
+  const handleCheckboxChange: (track: TracksListProps) => void = (track) => {
+    const newTracksToBePlayedMap = new Map(tracksToBePlayedMap);
     // const checkedTrackId = e.currentTarget.childNodes[0].childNodes[0].defaultValue;
-    const newTracksToBePlayedSet = new Set([...tracksToBePlayedSet]);
-    if (tracksToBePlayedSet.has(checkedTrackId)) {
+    if (newTracksToBePlayedMap.has(track.id)) {
       // If the track id checked is already existed in the playlist, remove it from the one.
-      newTracksToBePlayedSet.delete(checkedTrackId);
+      newTracksToBePlayedMap.delete(track.id);
     } else {
       // If the track id checked is missing in the play list, append it in the one.
-      newTracksToBePlayedSet.add(checkedTrackId);
+      newTracksToBePlayedMap.set(track.id, {
+        title: track.title,
+        album: track.album,
+        artist: track.artist,
+      });
     }
-    setTracksToBePlayedSet(newTracksToBePlayedSet);
+    setTracksToBePlayedMap(newTracksToBePlayedMap);
   };
 
   // Handles checked or unchecked of all checkboxes.
   const handleAllCheckBoxChange: () => void = () => {
+    const newTracksToBePlayedMap = new Map(tracksToBePlayedMap);
     if (isCheckedHeaderCheckbox) {
       // Uncheck all
-      setTracksToBePlayedSet(new Set());
+      newTracksToBePlayedMap.clear();
     } else {
       // Check all
       if (tracks) {
-        const trackIds: string[] = [];
         tracks.forEach((track) => {
-          if (track) trackIds.push(track.id);
+          if (track) {
+            newTracksToBePlayedMap.set(track.id, {
+              title: track.title,
+              album: track.album,
+              artist: track.artist,
+            });
+          }
         });
-        if (trackIds) {
-          setTracksToBePlayedSet(new Set(trackIds));
-        }
       }
     }
+    setTracksToBePlayedMap(newTracksToBePlayedMap);
 
     // Set checked status reversed.
     setIsCheckedHeaderCheckbox(!isCheckedHeaderCheckbox);
@@ -308,7 +317,7 @@ export const Tracks: React.FC = () => {
     // Init temporary playlist in local storage.
     localStorage.setItem(AppName + 'TemporaryPlayList', '');
 
-    if (tracksToBePlayedSet.size === 0) {
+    if (tracksToBePlayedMap.size === 0) {
       console.warn('No audio file was found.');
       const description = msgNoTracksSelected();
       const alert: TAlert = {
@@ -320,7 +329,7 @@ export const Tracks: React.FC = () => {
       return;
     } else {
       // Save temporary PlayList in local storage.
-      localStorage.setItem(AppName + 'TemporaryPlayList', [...tracksToBePlayedSet].join(','));
+      localStorage.setItem(AppName + 'TemporaryPlayList', JSON.stringify([...tracksToBePlayedMap]));
       // Send to player page.
       history.push('/player');
     }
@@ -458,13 +467,13 @@ export const Tracks: React.FC = () => {
                   role="checkbox"
                   tabIndex={-1}
                   key={track.id}
-                  onClick={() => handleCheckboxChange(track.id)}
+                  onClick={() => handleCheckboxChange(track)}
                 >
                   <TableCell className={classes.tableCellCheckbox}>
                     <Checkbox
                       size="small"
                       inputProps={{ 'aria-label': 'primary checkbox' }}
-                      checked={tracksToBePlayedSet.has(track.id)}
+                      checked={tracksToBePlayedMap.has(track.id)}
                       value={track.id}
                     />
                   </TableCell>
