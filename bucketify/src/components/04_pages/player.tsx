@@ -23,6 +23,9 @@ import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import PauseCircleFilled from '@material-ui/icons/PauseCircleFilled';
+import ShuffleIcon from '@material-ui/icons/Shuffle';
+import RepeatIcon from '@material-ui/icons/Repeat';
+import RepeatOneIcon from '@material-ui/icons/RepeatOne';
 
 // Router
 import { useHistory } from 'react-router-dom';
@@ -102,6 +105,14 @@ const useStyles = makeStyles((theme: Theme) =>
       // height: '90%',
       display: 'inline-block',
     },
+    artistField: {
+      display: 'inline-block',
+      width: '60%',
+    },
+    playModeField: {
+      display: 'inline-block',
+      width: '40%',
+    },
     alignLeft: {
       textAlign: 'left',
     },
@@ -116,8 +127,6 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundSize: '0%',
       cursor: 'pointer',
     },
-    // timeWrapper: {
-    // },
     time: {
       display: 'inline-block',
       width: '50%',
@@ -152,7 +161,9 @@ const useStyles = makeStyles((theme: Theme) =>
         boxShadow: '0 0 0 0 rgba(255,104,8, 0)',
       },
     },
-
+    playListWrapper: {
+      marginTop: '1rem',
+    },
     tableCellTitle: {
       width: '39%',
       [theme.breakpoints.up('md')]: {
@@ -191,10 +202,10 @@ const Player: React.FC = () => {
   /**
    *  States used in this component.
    */
-  // Whether is fetching data now.
-  const [nowPlayingTracksId, setNowPlayingTracksId] = useState({
+  // Now playing track.
+  const [nowPlayingTrack, setNowPlayingTrack] = useState({
     order: 0,
-    nowPlayingTrackId: temporaryPlayListTracksIds[0],
+    id: temporaryPlayListTracksIds[0],
   });
   const [
     nowPlayingTrackMetaData,
@@ -204,14 +215,20 @@ const Player: React.FC = () => {
 
   // Whether is fetching album cover.
   const [isFetchingAlbumCover, setIsFetchingAlbumCover] = useState(true);
+
   const [isNowPlaying, setIsNowPlaying] = useState(false);
+
+  const [albumArtWorkUrl, setAlbumArtWorkUrl] = useState(noImage);
+
+  const [isShuffleMode, setIsShuffleMode] = useState(false);
+  const [repeatMode, setRepeatMode] = useState<'all' | 'one' | 'none'>('all');
 
   // References to elements that controls audio player.
   const audio = useRef<HTMLAudioElement>(null);
   const seakBar = useRef<HTMLDivElement>(null);
   const currentSpan = useRef<HTMLSpanElement>(null);
   const durationSpan = useRef<HTMLSpanElement>(null);
-  const albumArtWorkImage = useRef<HTMLImageElement>(null);
+  // const albumArtWorkImage = useRef<HTMLImageElement>(null);
 
   // onClick controls.
   const handleClickPlayButton: () => void = () => {
@@ -229,33 +246,46 @@ const Player: React.FC = () => {
     setIsNowPlaying(false);
   };
   const handleClickNextButton: () => void = () => {
-    if (temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1) {
+    if (temporaryPlayListTracksIds.length == nowPlayingTrack.order + 1) {
       return;
     } else {
       resetAudioContorols();
-      const newOrder = nowPlayingTracksId.order + 1;
+      const newOrder = nowPlayingTrack.order + 1;
       const newNowPlay = {
         order: newOrder,
-        nowPlayingTrackId: temporaryPlayListTracksIds[newOrder],
+        id: temporaryPlayListTracksIds[newOrder],
       };
-      setNowPlayingTracksId(newNowPlay);
+      setNowPlayingTrack(newNowPlay);
       setIsFetchingAlbumCover(true);
     }
   };
   const handleClickPrevButton: () => void = () => {
-    if (nowPlayingTracksId.order == 1) {
+    if (nowPlayingTrack.order == 1) {
       return;
     } else {
       resetAudioContorols();
-      const newOrder = nowPlayingTracksId.order - 1;
+      const newOrder = nowPlayingTrack.order - 1;
       const newNowPlay = {
         order: newOrder,
-        nowPlayingTrackId: temporaryPlayListTracksIds[newOrder - 1],
+        id: temporaryPlayListTracksIds[newOrder - 1],
       };
-      setNowPlayingTracksId(newNowPlay);
+      setNowPlayingTrack(newNowPlay);
       setIsFetchingAlbumCover(true);
     }
   };
+  const handleCliskTrackInPlayList: (index: number) => void = (index) => {
+    if (index == nowPlayingTrack.order) {
+      return;
+    }
+
+    const newNowPlay = {
+      order: index,
+      id: temporaryPlayListTracksIds[index],
+    };
+    setNowPlayingTrack(newNowPlay);
+    setIsFetchingAlbumCover(true);
+  };
+
   /**
    *  useEffect
    */
@@ -354,7 +384,7 @@ const Player: React.FC = () => {
   useEffect(() => {
     const fetchMetadataFromTrackId = async () => {
       const audioMetaData = await fetchAudioMetaDataByAudioIdAsync(
-        nowPlayingTracksId.nowPlayingTrackId,
+        nowPlayingTrack.id,
         UserDataHooks.user.username
       );
       console.log(audioMetaData);
@@ -382,7 +412,7 @@ const Player: React.FC = () => {
       console.log(nowPlayingTrackMetaData);
     };
     fetchMetadataFromTrackId();
-  }, [nowPlayingTracksId]);
+  }, [nowPlayingTrack]);
 
   // Fetch album artwork from tracks
   useEffect(() => {
@@ -392,9 +422,9 @@ const Player: React.FC = () => {
         nowPlayingS3SignedUrl
       );
 
-      if (!albumArtWorkImage.current) {
-        return;
-      }
+      // if (!albumArtWorkImage.current) {
+      //   return;
+      // }
       if (metadata.common.picture) {
         console.info('album art cover was found.');
         console.log(metadata.common.picture);
@@ -402,16 +432,14 @@ const Player: React.FC = () => {
         console.log(cover);
         setIsFetchingAlbumCover(false);
         if (cover) {
-          albumArtWorkImage.current.src = URL.createObjectURL(
-            new Blob([cover.data], { type: cover.format })
-          );
+          setAlbumArtWorkUrl(URL.createObjectURL(new Blob([cover.data], { type: cover.format })));
           return;
         }
       }
       // When album art work was not found.
       console.info('album art cover was not found.');
       setIsFetchingAlbumCover(false);
-      albumArtWorkImage.current.src = noImage;
+      setAlbumArtWorkUrl(noImage);
     };
     if (nowPlayingS3SignedUrl !== '') {
       fetchAlbumArtWork();
@@ -450,44 +478,51 @@ const Player: React.FC = () => {
 
   // Table data components of the temporary playlist.
   const temporaryPlayList = temporaryPlayListTracksIds && (
-    <TableContainer component={Paper}>
-      <Table aria-label="tracks table">
-        <TableHead>
-          <TableRow>
-            <TableCell>#</TableCell>
-            <TableCell>Titile</TableCell>
-            <TableCell>Artist</TableCell>
-            <TableCell>Album</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {temporaryPlayListTracksIds.map(
-            (id: string, index) =>
-              // Get metadata.
-              id && (
-                <TableRow
-                  hover
-                  // role="checkbox"
-                  tabIndex={-1}
-                  key={id}
-                  // onClick={() => setNowPlayingTracksId(track.id)}
-                >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell component="th" scope="row" className={classes.tableCellTitle}>
-                    {playListMap.get(id) !== undefined && playListMap.get(id)?.title}
-                  </TableCell>
-                  <TableCell className={classes.tableCellArtist}>
-                    {playListMap.get(id) !== undefined && playListMap.get(id)?.artist}
-                  </TableCell>
-                  <TableCell className={classes.tableCellAlbum}>
-                    {playListMap.get(id) !== undefined && playListMap.get(id)?.album}
-                  </TableCell>
-                </TableRow>
-              )
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box className={classes.playListWrapper}>
+      <Typography variant="h6" component="h6">
+        PlayList
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table aria-label="tracks table">
+          <TableHead>
+            <TableRow>
+              <TableCell>#</TableCell>
+              <TableCell>Titile</TableCell>
+              <TableCell>Artist</TableCell>
+              <TableCell>Album</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {temporaryPlayListTracksIds.map(
+              (id: string, index) =>
+                // Get metadata.
+                id && (
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={id}
+                    selected={nowPlayingTrack.id == id}
+                    onClick={() => {
+                      handleCliskTrackInPlayList(index);
+                    }}
+                  >
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell component="th" scope="row" className={classes.tableCellTitle}>
+                      {playListMap.get(id) !== undefined && playListMap.get(id)?.title}
+                    </TableCell>
+                    <TableCell className={classes.tableCellArtist}>
+                      {playListMap.get(id) !== undefined && playListMap.get(id)?.artist}
+                    </TableCell>
+                    <TableCell className={classes.tableCellAlbum}>
+                      {playListMap.get(id) !== undefined && playListMap.get(id)?.album}
+                    </TableCell>
+                  </TableRow>
+                )
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 
   return (
@@ -509,7 +544,7 @@ const Player: React.FC = () => {
           <img
             alt="AlbumArtCover"
             className={clsx(classes.albumArtWorkImage, isFetchingAlbumCover && classes.displayNone)}
-            ref={albumArtWorkImage}
+            src={albumArtWorkUrl}
           />
         </Box>
         <section className={classes.alignLeft}>
@@ -517,7 +552,36 @@ const Player: React.FC = () => {
             <b> {nowPlayingTrackMetaData?.title}</b>
           </p>
 
-          <p>{nowPlayingTrackMetaData?.artist}</p>
+          <p>
+            <span className={clsx(classes.alignLeft, classes.artistField)}>
+              {nowPlayingTrackMetaData?.artist}
+            </span>
+            <span className={clsx(classes.alignRight, classes.playModeField)}>
+              {(repeatMode == 'all' || repeatMode == 'none') && (
+                <RepeatIcon
+                  className={classes.controlButton}
+                  color={repeatMode == 'all' ? 'secondary' : undefined}
+                  onClick={() =>
+                    repeatMode == 'all' ? setRepeatMode('one') : setRepeatMode('all')
+                  }
+                />
+              )}
+              {repeatMode == 'one' && (
+                <RepeatOneIcon
+                  className={classes.controlButton}
+                  color="secondary"
+                  onClick={() => setRepeatMode('none')}
+                />
+              )}
+              {repeatMode !== 'one' && (
+                <ShuffleIcon
+                  className={classes.controlButton}
+                  color={isShuffleMode ? 'secondary' : undefined}
+                  onClick={() => setIsShuffleMode(!isShuffleMode)}
+                />
+              )}
+            </span>
+          </p>
         </section>
         <audio preload="true" ref={audio} src={nowPlayingS3SignedUrl} autoPlay>
           <p>※ ご利用のブラウザでは再生することができません。</p>
@@ -538,9 +602,9 @@ const Player: React.FC = () => {
         <Box id="control-button" className={classes.controlButtonWrapper}>
           <SkipPreviousIcon
             fontSize="large"
-            color={nowPlayingTracksId.order == 0 ? 'disabled' : 'secondary'}
+            color={nowPlayingTrack.order == 0 ? 'disabled' : 'secondary'}
             className={classes.controlButton}
-            onClick={nowPlayingTracksId.order == 0 ? undefined : handleClickPrevButton}
+            onClick={nowPlayingTrack.order == 0 ? undefined : handleClickPrevButton}
           />
 
           {!isNowPlaying && (
@@ -563,19 +627,19 @@ const Player: React.FC = () => {
           <SkipNextIcon
             fontSize="large"
             color={
-              temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1
+              temporaryPlayListTracksIds.length == nowPlayingTrack.order + 1
                 ? 'disabled'
                 : 'secondary'
             }
             className={classes.controlButton}
             onClick={
-              temporaryPlayListTracksIds.length == nowPlayingTracksId.order + 1
+              temporaryPlayListTracksIds.length == nowPlayingTrack.order + 1
                 ? undefined
                 : handleClickNextButton
             }
           />
         </Box>
-        <Typography>Play List</Typography>
+
         {temporaryPlayList}
       </PageContainer>
     </>
