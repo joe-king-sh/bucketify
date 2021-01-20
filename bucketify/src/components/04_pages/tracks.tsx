@@ -31,6 +31,7 @@ import Zoom from '@material-ui/core/Zoom';
 
 // MyComponents
 import AlertField, { TAlert } from '../02_organisms/alert';
+import { CustomizedSnackBar } from '../02_organisms/snackBar';
 
 // Icons
 import AddIcon from '@material-ui/icons/Add';
@@ -49,7 +50,7 @@ import { UserDataContext, IUserDataStateHooks } from '../../App';
 
 // Common
 import { sizeOfFetchingTrackDatAtOnce } from '../../common/const';
-import { msgNoTracksSelected } from '../../common/message';
+import { msgNoTracksSelected, msgUnderConstruction } from '../../common/message';
 import { AppName } from '../../common/const';
 
 // Router
@@ -192,6 +193,8 @@ export const Tracks: React.FC = () => {
       return alerts;
     });
   };
+  // Snack bar to notify under construction page.
+  const [showSnackBar, setShowSnackBar] = useState(false);
 
   /**
    * Handles sort operation by sort key.
@@ -575,7 +578,7 @@ export const Tracks: React.FC = () => {
       },
       color: 'primary',
       className: classes.fabInFab1,
-      onClick: handleControlActiveToggle,
+      onClick: () => setShowSnackBar(true),
       icon: (
         <>
           <span className={classes.fabButtonText}>Add to Playlist</span>
@@ -625,6 +628,21 @@ export const Tracks: React.FC = () => {
           </Zoom>
         );
       })}
+
+      <CustomizedSnackBar
+        alert={{
+          severity: 'info',
+          title: '',
+          description: msgUnderConstruction(),
+        }}
+        isSnackBarOpen={showSnackBar}
+        handleClose={(event?: React.SyntheticEvent, reason?: string) => {
+          if (reason === 'clickaway') {
+            return;
+          }
+          setShowSnackBar(false);
+        }}
+      />
     </>
   );
 };

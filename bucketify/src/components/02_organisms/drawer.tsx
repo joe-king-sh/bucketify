@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -49,6 +49,12 @@ import {
 } from '../../App';
 import { AuthState } from '@aws-amplify/ui-components';
 import { Auth } from 'aws-amplify';
+
+// Common
+import { msgUnderConstruction } from '../../common/message';
+
+// MyComponents
+import { CustomizedSnackBar } from './snackBar';
 
 // Constant setting
 const drawerWidth = 240;
@@ -141,6 +147,9 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
     setSNSOpen(!isSNSOpen);
   };
 
+  // Snack bar to notify under construction page.
+  const [showSnackBar, setShowSnackBar] = useState(false);
+
   return (
     <>
       <Drawer
@@ -198,14 +207,14 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
 
               <Collapse in={isLibraryOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItem button className={classes.nested}>
+                  <ListItem button className={classes.nested} onClick={() => setShowSnackBar(true)}>
                     <ListItemIcon>
                       <People />
                     </ListItemIcon>
                     <ListItemText primary="Artists" />
                   </ListItem>
 
-                  <ListItem button className={classes.nested}>
+                  <ListItem button className={classes.nested} onClick={() => setShowSnackBar(true)}>
                     <ListItemIcon>
                       <Album />
                     </ListItemIcon>
@@ -223,14 +232,14 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 </List>
               </Collapse>
 
-              <Link to="/" className={classes.link}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <QueueMusic />
-                  </ListItemIcon>
-                  <ListItemText primary="PlayList" />
-                </ListItem>
-              </Link>
+              {/* <Link to="/" className={classes.link}> */}
+              <ListItem button onClick={() => setShowSnackBar(true)}>
+                <ListItemIcon>
+                  <QueueMusic />
+                </ListItemIcon>
+                <ListItemText primary="PlayList" />
+              </ListItem>
+              {/* </Link> */}
             </>
           ) : (
             // When not authorized.
@@ -334,6 +343,21 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
           )}
         </List>
       </Drawer>
+
+      <CustomizedSnackBar
+        alert={{
+          severity: 'info',
+          title: '',
+          description: msgUnderConstruction(),
+        }}
+        isSnackBarOpen={showSnackBar}
+        handleClose={(event?: React.SyntheticEvent, reason?: string) => {
+          if (reason === 'clickaway') {
+            return;
+          }
+          setShowSnackBar(false);
+        }}
+      />
     </>
   );
 };
