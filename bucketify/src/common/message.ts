@@ -80,3 +80,7 @@ export const msgScaningSucceeded: () => string = () => `Successfully scanned you
 
 // Tracks
 export const msgNoTracksSelected: () => string = () => `Please select tracks at least one.`;
+
+// Common
+export const msgUnderConstruction: () => string = () =>
+  `This feature is under construction. Coming soon!`;
