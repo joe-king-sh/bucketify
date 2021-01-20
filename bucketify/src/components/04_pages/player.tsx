@@ -164,6 +164,7 @@ const useStyles = makeStyles((theme: Theme) =>
     playListWrapper: {
       marginTop: '1rem',
     },
+
     tableCellTitle: {
       width: '39%',
       [theme.breakpoints.up('md')]: {
@@ -203,10 +204,16 @@ const Player: React.FC = () => {
    *  States used in this component.
    */
   // Now playing track.
-  const [nowPlayingTrack, setNowPlayingTrack] = useState({
+  const [nowPlayingTrack, _setNowPlayingTrack] = useState({
     order: 0,
     id: temporaryPlayListTracksIds[0],
   });
+  const setNowPlayingTrack: (_nowPlayingTrack: { order: number; id: string }) => void = (
+    _nowPlayingTrack
+  ) => {
+    nowPlayingTrackOrderRef.current = _nowPlayingTrack.order;
+    _setNowPlayingTrack(_nowPlayingTrack);
+  };
   const [
     nowPlayingTrackMetaData,
     setNowPlayingTrackMetaData,
@@ -220,8 +227,16 @@ const Player: React.FC = () => {
 
   const [albumArtWorkUrl, setAlbumArtWorkUrl] = useState(noImage);
 
-  const [isShuffleMode, setIsShuffleMode] = useState(false);
-  const [repeatMode, setRepeatMode] = useState<'all' | 'one' | 'none'>('all');
+  const [isShuffleMode, _setIsShuffleMode] = useState(false);
+  const setIsShuffleMode = (shuffleMode: boolean) => {
+    shuffleModeRef.current = shuffleMode;
+    _setIsShuffleMode(shuffleMode);
+  };
+  const [repeatMode, _setRepeatMode] = useState<'all' | 'one' | 'none'>('all');
+  const setRepeatMode = (mode: 'all' | 'one' | 'none') => {
+    repeatModeRef.current = mode;
+    _setRepeatMode(mode);
+  };
 
   // References to elements that controls audio player.
   const audio = useRef<HTMLAudioElement>(null);
@@ -229,6 +244,9 @@ const Player: React.FC = () => {
   const currentSpan = useRef<HTMLSpanElement>(null);
   const durationSpan = useRef<HTMLSpanElement>(null);
   // const albumArtWorkImage = useRef<HTMLImageElement>(null);
+  const nowPlayingTrackOrderRef = useRef(0);
+  const repeatModeRef = useRef<'all' | 'one' | 'none'>('all');
+  const shuffleModeRef = useRef<boolean>(false);
 
   // onClick controls.
   const handleClickPlayButton: () => void = () => {
@@ -249,28 +267,14 @@ const Player: React.FC = () => {
     if (temporaryPlayListTracksIds.length == nowPlayingTrack.order + 1) {
       return;
     } else {
-      resetAudioContorols();
-      const newOrder = nowPlayingTrack.order + 1;
-      const newNowPlay = {
-        order: newOrder,
-        id: temporaryPlayListTracksIds[newOrder],
-      };
-      setNowPlayingTrack(newNowPlay);
-      setIsFetchingAlbumCover(true);
+      handleTrackChange(nowPlayingTrack.order + 1);
     }
   };
   const handleClickPrevButton: () => void = () => {
     if (nowPlayingTrack.order == 1) {
       return;
     } else {
-      resetAudioContorols();
-      const newOrder = nowPlayingTrack.order - 1;
-      const newNowPlay = {
-        order: newOrder,
-        id: temporaryPlayListTracksIds[newOrder - 1],
-      };
-      setNowPlayingTrack(newNowPlay);
-      setIsFetchingAlbumCover(true);
+      handleTrackChange(nowPlayingTrack.order - 1);
     }
   };
   const handleCliskTrackInPlayList: (index: number) => void = (index) => {
@@ -278,12 +282,7 @@ const Player: React.FC = () => {
       return;
     }
 
-    const newNowPlay = {
-      order: index,
-      id: temporaryPlayListTracksIds[index],
-    };
-    setNowPlayingTrack(newNowPlay);
-    setIsFetchingAlbumCover(true);
+    handleTrackChange(index);
   };
 
   /**
@@ -346,6 +345,37 @@ const Player: React.FC = () => {
           return;
         }
         setIsNowPlaying(true);
+      });
+
+      // OnEnded play tracks.
+      audio.current.addEventListener('ended', () => {
+        // reset seakbar and current duration
+        resetAudioContorols();
+        if (!audio || !audio.current) {
+          return;
+        }
+        if (repeatModeRef.current == 'one') {
+          audio.current.play();
+          return;
+        }
+        // When shuffle mode is turned on.
+        if (shuffleModeRef.current) {
+          // select the next song randomly. // TODO improve the select logic to do not play track already played.
+          handleTrackChange(Math.floor(Math.random() * temporaryPlayListTracksIds.length));
+        }
+        // When be playing the last track on a temporary playlist.
+        if (nowPlayingTrackOrderRef.current + 1 == temporaryPlayListTracksIds.length) {
+          if (repeatModeRef.current === 'all') {
+            // play first track on a temporary playlist.
+            handleTrackChange(0);
+          } else {
+            // do nothing.
+            return;
+          }
+        } else {
+          // play next song on a temporary playlist.
+          handleTrackChange(nowPlayingTrackOrderRef.current + 1);
+        }
       });
 
       // OnClick seakbar event to change now playing position.
@@ -438,58 +468,6 @@ const Player: React.FC = () => {
     }
   }, [nowPlayingS3SignedUrl]);
 
-  // Handles event listener controls play mode.
-  useEffect(() => {
-    //Type guard.
-    if (!audio || !audio.current) {
-      return;
-    }
-
-    // OnEnded play tracks, reset seakbar and current duration.
-    audio.current.addEventListener('ended', () => {
-      resetAudioContorols();
-      if (!audio || !audio.current) {
-        return;
-      }
-      if (repeatMode == 'one') {
-        audio.current.play();
-        return;
-      }
-      // When shuffle mode is turned on.
-      if (isShuffleMode) {
-        // select the next song randomly. // TODO improve the select logic to do not play track already played.
-        const nextOrder = Math.floor(Math.random() * temporaryPlayListTracksIds.length);
-        const nextTrackInShuffleMode = {
-          order: nextOrder,
-          id: temporaryPlayListTracksIds[nextOrder],
-        };
-        setNowPlayingTrack(nextTrackInShuffleMode);
-        setIsFetchingAlbumCover(true);
-        return;
-      }
-      // When be playing the last track on a temporary playlist.
-      if (nowPlayingTrack.order == temporaryPlayListTracksIds.length) {
-        if (repeatMode === 'all') {
-          // play first track on a temporary playlist.
-          setNowPlayingTrack({
-            order: 0,
-            id: temporaryPlayListTracksIds[0],
-          });
-          setIsFetchingAlbumCover(true);
-        }
-      } else {
-        // play next song on a temporary playlist.
-        const newOrder = nowPlayingTrack.order + 1;
-        const newNowPlay = {
-          order: newOrder,
-          id: temporaryPlayListTracksIds[newOrder],
-        };
-        setNowPlayingTrack(newNowPlay);
-        setIsFetchingAlbumCover(true);
-      }
-    });
-  }, [repeatMode, isShuffleMode]);
-
   // Helper function to display time of tracks.
   const playTimeFormatHelper: (t: number) => string = (t) => {
     let hms = '';
@@ -518,6 +496,18 @@ const Player: React.FC = () => {
     }
     seakBar.current.style.backgroundSize = '0%';
     currentSpan.current.innerHTML = '00:00';
+  };
+
+  // Helper function to handle common code when changes track.
+  const handleTrackChange: (nextOrder: number) => void = (nextOrder) => {
+    resetAudioContorols();
+
+    const nextTrack = {
+      order: nextOrder,
+      id: temporaryPlayListTracksIds[nextOrder],
+    };
+    setNowPlayingTrack(nextTrack);
+    setIsFetchingAlbumCover(true);
   };
 
   // Table data components of the temporary playlist.
