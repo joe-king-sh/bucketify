@@ -16,7 +16,7 @@ const awsmobile = {
             "profile",
             "aws.cognito.signin.user.admin"
         ],
-        "redirectSignIn": "https://www.bucketify.net/accounts",
+        "redirectSignIn": "https://www.bucketify.net",
         "redirectSignOut": "https://www.bucketify.net",
         "responseType": "code"
     },
