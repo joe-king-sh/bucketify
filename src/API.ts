@@ -2,19 +2,18 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateTodoInput = {
+export type CreateAudioMetaDataInput = {
   id?: string | null,
-  name: string,
-  description: string,
-  owner?: string | null,
+  dataType: string,
+  dataValue: string,
+  owner: string,
 };
 
-export type ModelTodoConditionInput = {
-  name?: ModelStringInput | null,
-  description?: ModelStringInput | null,
-  and?: Array< ModelTodoConditionInput | null > | null,
-  or?: Array< ModelTodoConditionInput | null > | null,
-  not?: ModelTodoConditionInput | null,
+export type ModelAudioMetaDataConditionInput = {
+  dataValue?: ModelStringInput | null,
+  and?: Array< ModelAudioMetaDataConditionInput | null > | null,
+  or?: Array< ModelAudioMetaDataConditionInput | null > | null,
+  not?: ModelAudioMetaDataConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -57,31 +56,6 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type UpdateTodoInput = {
-  id: string,
-  name?: string | null,
-  description?: string | null,
-  owner?: string | null,
-};
-
-export type DeleteTodoInput = {
-  id: string,
-};
-
-export type CreateAudioMetaDataInput = {
-  id?: string | null,
-  dataType: string,
-  dataValue: string,
-  owner: string,
-};
-
-export type ModelAudioMetaDataConditionInput = {
-  dataValue?: ModelStringInput | null,
-  and?: Array< ModelAudioMetaDataConditionInput | null > | null,
-  or?: Array< ModelAudioMetaDataConditionInput | null > | null,
-  not?: ModelAudioMetaDataConditionInput | null,
-};
-
 export type UpdateAudioMetaDataInput = {
   id: string,
   dataType: string,
@@ -94,14 +68,24 @@ export type DeleteAudioMetaDataInput = {
   dataType: string,
 };
 
-export type ModelTodoFilterInput = {
+export type ModelStringKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export type ModelAudioMetaDataFilterInput = {
   id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
-  description?: ModelStringInput | null,
+  dataType?: ModelStringInput | null,
+  dataValue?: ModelStringInput | null,
   owner?: ModelStringInput | null,
-  and?: Array< ModelTodoFilterInput | null > | null,
-  or?: Array< ModelTodoFilterInput | null > | null,
-  not?: ModelTodoFilterInput | null,
+  and?: Array< ModelAudioMetaDataFilterInput | null > | null,
+  or?: Array< ModelAudioMetaDataFilterInput | null > | null,
+  not?: ModelAudioMetaDataFilterInput | null,
 };
 
 export type ModelIDInput = {
@@ -125,77 +109,6 @@ export enum ModelSortDirection {
   DESC = "DESC",
 }
 
-
-export type ModelStringKeyConditionInput = {
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-};
-
-export type ModelAudioMetaDataFilterInput = {
-  id?: ModelIDInput | null,
-  dataType?: ModelStringInput | null,
-  dataValue?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
-  and?: Array< ModelAudioMetaDataFilterInput | null > | null,
-  or?: Array< ModelAudioMetaDataFilterInput | null > | null,
-  not?: ModelAudioMetaDataFilterInput | null,
-};
-
-export type CreateTodoMutationVariables = {
-  input: CreateTodoInput,
-  condition?: ModelTodoConditionInput | null,
-};
-
-export type CreateTodoMutation = {
-  createTodo:  {
-    __typename: "Todo",
-    id: string,
-    name: string,
-    description: string,
-    owner: string | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type UpdateTodoMutationVariables = {
-  input: UpdateTodoInput,
-  condition?: ModelTodoConditionInput | null,
-};
-
-export type UpdateTodoMutation = {
-  updateTodo:  {
-    __typename: "Todo",
-    id: string,
-    name: string,
-    description: string,
-    owner: string | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type DeleteTodoMutationVariables = {
-  input: DeleteTodoInput,
-  condition?: ModelTodoConditionInput | null,
-};
-
-export type DeleteTodoMutation = {
-  deleteTodo:  {
-    __typename: "Todo",
-    id: string,
-    name: string,
-    description: string,
-    owner: string | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
 
 export type CreateAudioMetaDataMutationVariables = {
   input: CreateAudioMetaDataInput,
@@ -248,46 +161,6 @@ export type DeleteAudioMetaDataMutation = {
   } | null,
 };
 
-export type GetTodoQueryVariables = {
-  id: string,
-};
-
-export type GetTodoQuery = {
-  getTodo:  {
-    __typename: "Todo",
-    id: string,
-    name: string,
-    description: string,
-    owner: string | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type ListTodosQueryVariables = {
-  id?: string | null,
-  filter?: ModelTodoFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-  sortDirection?: ModelSortDirection | null,
-};
-
-export type ListTodosQuery = {
-  listTodos:  {
-    __typename: "ModelTodoConnection",
-    items:  Array< {
-      __typename: "Todo",
-      id: string,
-      name: string,
-      description: string,
-      owner: string | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null > | null,
-    nextToken: string | null,
-  } | null,
-};
-
 export type GetAudioMetaDataQueryVariables = {
   id: string,
   dataType: string,
@@ -323,30 +196,6 @@ export type ListAudioMetaDatasQuery = {
       dataType: string,
       dataValue: string,
       owner: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null > | null,
-    nextToken: string | null,
-  } | null,
-};
-
-export type TodoByNameQueryVariables = {
-  name?: string | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelTodoFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type TodoByNameQuery = {
-  todoByName:  {
-    __typename: "ModelTodoConnection",
-    items:  Array< {
-      __typename: "Todo",
-      id: string,
-      name: string,
-      description: string,
-      owner: string | null,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -401,54 +250,6 @@ export type ListAudioByOwnerQuery = {
       updatedAt: string,
     } | null > | null,
     nextToken: string | null,
-  } | null,
-};
-
-export type OnCreateTodoSubscriptionVariables = {
-  owner: string,
-};
-
-export type OnCreateTodoSubscription = {
-  onCreateTodo:  {
-    __typename: "Todo",
-    id: string,
-    name: string,
-    description: string,
-    owner: string | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnUpdateTodoSubscriptionVariables = {
-  owner: string,
-};
-
-export type OnUpdateTodoSubscription = {
-  onUpdateTodo:  {
-    __typename: "Todo",
-    id: string,
-    name: string,
-    description: string,
-    owner: string | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnDeleteTodoSubscriptionVariables = {
-  owner: string,
-};
-
-export type OnDeleteTodoSubscription = {
-  onDeleteTodo:  {
-    __typename: "Todo",
-    id: string,
-    name: string,
-    description: string,
-    owner: string | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
