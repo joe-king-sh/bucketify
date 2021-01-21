@@ -21,10 +21,6 @@ import Accounts from './components/04_pages/accounts';
 import GenericTemplate from './components/03_templates/genericTemplate';
 import LoginRequiredWrapper from './components/03_templates/loginRequiredWrapper';
 
-// TestPage
-import GraphqlTest from './components/04_pages/graphqlTest';
-import GraphqlAudioTest from './components/04_pages/graphqlAudioTest';
-
 // Auth Status
 export interface IAuthStateHooks {
   authState: AuthState | undefined;
@@ -79,7 +75,7 @@ const App: React.FC = () => {
             </Route>
 
             {/* Login required route */}
-            <Route exact path={['/accounts', '/bucket', '/track', '/player', '/test', '/test2']}>
+            <Route exact path={['/accounts', '/bucket', '/track', '/player']}>
               <Switch>
                 <GenericTemplate>
                   <LoginRequiredWrapper isLoginRequired={true}>
@@ -87,9 +83,6 @@ const App: React.FC = () => {
                     <Route exact path="/bucket" component={ScanBuckets} />
                     <Route exact path="/track" component={Tracks} />
                     <Route exact path="/player" component={Player} />
-
-                    <Route exact path="/test" component={GraphqlTest} />
-                    <Route exact path="/test2" component={GraphqlAudioTest} />
                   </LoginRequiredWrapper>
                 </GenericTemplate>
               </Switch>
