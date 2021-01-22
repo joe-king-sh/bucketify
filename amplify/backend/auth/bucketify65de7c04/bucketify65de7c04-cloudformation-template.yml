@@ -121,6 +121,18 @@ Parameters:
   usernameAttributes:
     Type: CommaDelimitedList
       
+        
+  userPoolGroupList:
+    Type: CommaDelimitedList
+      
+  serviceName:
+    Type: String
+  
+            
+        
+  dependsOn:
+    Type: CommaDelimitedList
+      
   hostedUIDomainName:
     Type: String
   
@@ -141,19 +153,7 @@ Parameters:
     Type: String
   
             
-        
-  userPoolGroupList:
-    Type: CommaDelimitedList
-      
             
-  serviceName:
-    Type: String
-  
-            
-        
-  dependsOn:
-    Type: CommaDelimitedList
-      
 Conditions:
   ShouldNotCreateEnvResources: !Equals [ !Ref env, NONE ]
 
