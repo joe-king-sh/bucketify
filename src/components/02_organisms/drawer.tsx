@@ -153,7 +153,11 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
   return (
     <>
       <Drawer
-        variant={isMatchesOverMd ? 'permanent' : 'temporary'}
+        variant={
+          isMatchesOverMd && AuthStateHooks.authState === AuthState.SignedIn
+            ? 'permanent'
+            : 'temporary'
+        }
         classes={{
           paper: clsx(
             classes.drawerPaper,
