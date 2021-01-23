@@ -153,7 +153,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
   return (
     <>
       <Drawer
-        variant="permanent"
+        variant="temporary"
         classes={{
           paper: clsx(
             classes.drawerPaper,
