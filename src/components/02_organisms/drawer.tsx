@@ -125,7 +125,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up('md'));
+  const isMatchesOverMd = useMediaQuery(theme.breakpoints.up('md'));
   const AuthStateHooks: IAuthStateHooks = useContext(AuthContext);
   // const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
@@ -153,21 +153,21 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
   return (
     <>
       <Drawer
-        variant="temporary"
+        variant={isMatchesOverMd ? 'permanent' : 'temporary'}
         classes={{
           paper: clsx(
             classes.drawerPaper,
             // This drawer must be showned when width higher than md and signed in.
             !isDrawerOpen &&
-              !(matches && AuthStateHooks.authState === AuthState.SignedIn) &&
+              !(isMatchesOverMd && AuthStateHooks.authState === AuthState.SignedIn) &&
               classes.drawerPaperClose
           ),
         }}
-        open={isDrawerOpen || (matches && AuthStateHooks.authState === AuthState.SignedIn)}
+        open={isDrawerOpen || (isMatchesOverMd && AuthStateHooks.authState === AuthState.SignedIn)}
       >
         {
           //Show "<" Icon only when width lower than md, because this drawer is always shown in widescreen.
-          !matches && (
+          !isMatchesOverMd && (
             <div className={classes.toolbarIcon}>
               <IconButton onClick={handleDrawerClose}>
                 <ChevronLeftIcon />
