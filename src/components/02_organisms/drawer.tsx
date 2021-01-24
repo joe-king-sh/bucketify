@@ -184,7 +184,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
           {AuthStateHooks.authState === AuthState.SignedIn ? (
             // When authorized.
             <>
-              <Link to="/accounts" className={classes.link}>
+              <Link to="/accounts" className={classes.link} onClick={() => handleDrawerClose()}>
                 <ListItem button>
                   <ListItemIcon>
                     <AccountCircle />
@@ -192,7 +192,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   <ListItemText primary="Account" />
                 </ListItem>
               </Link>
-              <Link to="/bucket" className={classes.link}>
+              <Link to="/bucket" className={classes.link} onClick={() => handleDrawerClose()}>
                 <ListItem button>
                   <ListItemIcon>
                     <Search />
@@ -225,7 +225,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                     <ListItemText primary="Albums" />
                   </ListItem>
 
-                  <Link to="/track" className={classes.link}>
+                  <Link to="/track" className={classes.link} onClick={() => handleDrawerClose()}>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <Audiotrack />
@@ -249,7 +249,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
             // When not authorized.
             <>
               {/* Sign in button links to login require pages. */}
-              <Link to="/accounts" className={classes.link}>
+              <Link to="/accounts" className={classes.link} onClick={() => handleDrawerClose()}>
                 <ListItem button>
                   <ListItemIcon>
                     <Icon className="fa fa-sign-in-alt small" />
@@ -257,7 +257,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   <ListItemText primary="SignIn" />
                 </ListItem>
               </Link>
-              <Link to="/signup" className={classes.link}>
+              <Link to="/signup" className={classes.link} onClick={() => handleDrawerClose()}>
                 <ListItem button>
                   <ListItemIcon>
                     <PersonAdd />
@@ -279,14 +279,12 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
 
           <Collapse in={isSettingOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <Link to="/" className={classes.link}>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <Language />
-                  </ListItemIcon>
-                  <ListItemText primary="Language" />
-                </ListItem>
-              </Link>
+              <ListItem button className={classes.nested} onClick={() => setShowSnackBar(true)}>
+                <ListItemIcon>
+                  <Language />
+                </ListItemIcon>
+                <ListItemText primary="Language" />
+              </ListItem>
 
               <ListItem
                 button
