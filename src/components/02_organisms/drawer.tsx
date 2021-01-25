@@ -7,6 +7,8 @@ import Collapse from '@material-ui/core/Collapse';
 // Style
 import clsx from 'clsx';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 // Router
 import { Link } from 'react-router-dom';
@@ -36,9 +38,6 @@ import Settings from '@material-ui/icons/Settings';
 import Share from '@material-ui/icons/Share';
 import GitHub from '@material-ui/icons/GitHub';
 import Twitter from '@material-ui/icons/Twitter';
-
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 // Authorization
 import {
