@@ -36,7 +36,7 @@ docker-compose up
 
 普段/zshなので
 /bin/zshで.zshrcを読み込む
-
+<!-- →Dockerやめる -->
 
 npm install -g react && \ 
 
@@ -90,6 +90,22 @@ type AudioMetaData
 }
 ```
 
+```
+type AudioMetaData
+  @model
+  @auth(rules: [{ allow: owner }])
+  @key(fields: ["id","dataType"])
+  @key(name: "dataValueIndex", fields: ["dataValue", "dataType"], queryField: "listAudioByDataValue")
+  @key(name: "ownerIndex", fields: ["owner", "dataType"], queryField: "listAudioByOwner")
+{
+  id: ID!
+  dataType: String!
+  dataValue: String!
+  owner: String!
+}
+```
+
+
 Scanはクライアントサイドで行うことにする<-これ悩ましい。
 クライアントサイドだと、一度全容量ローカルのDLしてくるのでかっこ悪い、けど進捗はわkる
 サーバーサイドだと容量は気にしなくていんだけど、進捗がわからない、取れなかったこととかもわからない・・、あとLambdaだと１５分制限があるさら、添付のストレージが512MBしかない。
@@ -113,3 +129,17 @@ Dynamodbに登録
 ランディングはStepperStepperを使う
 Stepper
 https://material-ui.com/components/steppers/#stepper
+
+
+## amplifyの構築
+```
+amplify init
+
+amplify add auth
+# Social loginの実装
+マネジメントコンソールでIdPごとに属性のマッピングをする必要あり
+
+amplify add api
+
+# Social loginの実装
+```
