@@ -404,7 +404,9 @@ const ScanBuckets: React.FC = () => {
           </Box>
 
           <Box className={classes.button}>
-            <ResponsiveButton onClick={scanBuckets}>Start Scan</ResponsiveButton>
+            <ResponsiveButton onClick={scanBuckets} variant="contained" color="secondary">
+              Start Scan
+            </ResponsiveButton>
           </Box>
         </form>
       </PageContainer>
