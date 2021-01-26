@@ -6,9 +6,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     responsiveButton: {
       [theme.breakpoints.down('xs')]: {
-        width: '100%',
+        width: '90%',
       },
-      color: 'white',
+      // color: 'white',
     },
   })
 );
@@ -16,18 +16,15 @@ const useStyles = makeStyles((theme: Theme) =>
 export interface IResponsiveButton {
   children: React.ReactNode;
   onClick: () => void;
+  variant: 'text' | 'outlined' | 'contained';
+  color: 'inherit' | 'default' | 'primary' | 'secondary' | undefined;
 }
 
-const ResponsiveButton: React.FC<IResponsiveButton> = ({ children, onClick }) => {
+const ResponsiveButton: React.FC<IResponsiveButton> = ({ children, onClick, variant, color }) => {
   const classes = useStyles();
 
   return (
-    <Button
-      variant="contained"
-      color="secondary"
-      className={classes.responsiveButton}
-      onClick={onClick}
-    >
+    <Button variant={variant} color={color} className={classes.responsiveButton} onClick={onClick}>
       {children}
     </Button>
   );
