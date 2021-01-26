@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'inline-block',
     },
     introductionText: {
-      padding: '1rem 1.5rem 1rem 1.5rem',
+      padding: '1.75rem 1.5rem 1.75rem 1.5rem',
     },
     howToUseWrapper: {
       backgroundColor: '#805E73',
@@ -134,9 +134,15 @@ const Landing: React.FC = () => {
                 <Grid item xs={12} sm={6}>
                   <Paper className={clsx(classes.introductionText)} elevation={3} square={false}>
                     <Typography variant="h5" component="h5">
-                      Bucketify is a cloud music player. <br />
-                      This makes you can play your favorite music stored in <b>Amazon S3</b>,
-                      anytime, anywhere.
+                      Bucketify is a cloud music player.
+                      <br />
+                      This makes you can play your favorite music stored in Amazon S3, anytime,
+                      anywhere.
+                      <br />
+                      <br />
+                      It is free to use. <br />
+                      You have to pay only billing of your AWS accounts such as S3 storage or
+                      Network transfer.
                     </Typography>
                   </Paper>
                 </Grid>
