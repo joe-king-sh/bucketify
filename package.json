@@ -44,6 +44,7 @@
     "typescript": "^4.0.3",
     "typescript-fsa": "^3.0.0",
     "typescript-fsa-reducers": "^1.2.2",
+    "use-3d-effect": "^1.1.0",
     "uuid": "^8.3.2",
     "web-vitals": "^0.2.4"
   },

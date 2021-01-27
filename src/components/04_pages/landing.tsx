@@ -9,8 +9,11 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 // import { useTheme } from '@material-ui/core/styles';
 // import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-// Parallax
+// react-spring
 import { Parallax, ParallaxLayer } from 'react-spring/renderprops-addons';
+import { useSpring, animated } from 'react-spring';
+
+// Material-ui
 import { Container, Paper, Typography } from '@material-ui/core';
 
 // Image
@@ -36,14 +39,21 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundImage: 'url("images/bg-landing.jpg")',
       backgroundSize: 'cover',
       height: '100%',
+      // width: '100%',
       backgroundPosition: '50% 50%',
-      // [theme.breakpoints.down('lg')]: {
-      //   backgroundImage: 'url("images/bg-landing-tablet.jpg")',
-      // },
-      // [theme.breakpoints.down('md')]: {
-      //   backgroundImage: 'url("images/bg-landing-mobile.jpg")',
-      // },
     },
+    landingMiddleParallaxLayer: {
+      zIndex: -2,
+    },
+    landingMiddleWrapper: {
+      backgroundImage: 'url("images/bg-landing5.jpg")',
+      backgroundSize: 'cover',
+      width: '100%',
+      height: '100%',
+      backgroundPosition: '50% 50%',
+      // zIndex: -1,
+    },
+
     topWrapperCatchCopy: {
       color: 'white',
       textShadow: '1px 2px 3px #4b4b4b',
@@ -78,13 +88,15 @@ const useStyles = makeStyles((theme: Theme) =>
     introductionText: {
       padding: '1.75rem 1.5rem 1.75rem 1.5rem',
     },
-
+    transParentBackground: {
+      backgroundColor: 'transparent',
+    },
     howItWorksWrapperEdgeTop: {
       paddingBottom: 'calc(10vw + 10px)',
       position: 'relative',
       overflow: 'hidden',
-      backgroundColor: theme.palette.background.default,
-
+      // backgroundColor: theme.palette.background.default,
+      zIndex: 5,
       '&::before': {
         content: '""',
         position: 'absolute',
@@ -96,27 +108,48 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     howItWorksWrapper: {
       backgroundColor: theme.palette.secondary.main,
-      paddingBottom: 'calc(10vw + 10px)',
+      zIndex: 5,
+    },
+    howItWorksWrapperEdgeBottom: {
+      paddingTop: 'calc(10vw)',
       position: 'relative',
       overflow: 'hidden',
+      // backgroundColor: theme.palette.background.default,
+      zIndex: 5,
       '&::before': {
-        content: '"aa"',
+        content: '""',
         position: 'absolute',
         bottom: '0',
         left: '0',
-        borderBottom: '10vw solid ' + theme.palette.background.default,
-        borderLeft: '100vw solid transparent',
+        borderTop: '10vw solid ' + theme.palette.secondary.main,
+        borderRight: '100vw solid transparent',
       },
     },
     howItWorksImageWrapper: {
       textAlign: 'center',
+      margin: 'auto',
+    },
+    threeDirectionCard: {
+      width: '80%',
+      height: 'auto',
+      background: '#f0f8ff',
+      borderRadius: '10px',
+      boxShadow: '0px 10px 30px -5px rgba(0, 0, 0, 0.3)',
+      transition: 'box-shadow 0.5s',
+      willChange: 'transform',
+      border: '15px solid #FFC045',
+      margin: 'auto',
+      '&:hover': {
+        boxShadow: '0px 30px 100px -10px rgba(0, 0, 0, 0.4)',
+      },
     },
     howItWorksImage: {
-      width: '95%',
-      borderRadius: '15px',
+      width: '100%',
       backgroundColor: '#f0f8ff',
-      padding: '35px',
+      padding: '20px',
+      borderRadius: '10px',
     },
+
     howToUseWrapper: {
       backgroundColor: '#f0f8ff',
       // height: '75%',
@@ -141,6 +174,19 @@ const Landing: React.FC = () => {
 
   // const theme = useTheme();
   // const isMatchesOverMd = useMediaQuery(theme.breakpoints.up('md'));
+
+  const calc = (x: number, y: number): number[] => [
+    -(y - window.innerHeight / 2) / 90, // degree
+    (x - window.innerWidth / 2) / 90, // degree
+    1.05, // expand rate
+  ];
+  const trans = (x: number, y: number, s: number): string =>
+    `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
+
+  const [props, setSpringImage] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: { mass: 5, tension: 350, friction: 40 },
+  }));
 
   return (
     <Box>
@@ -217,29 +263,29 @@ const Landing: React.FC = () => {
                     </Typography>
                   </Paper>
                 </Grid>
+                <Grid item xs={12}>
+                  <Box className={clsx(classes.buttonWrapper)}>
+                    <ResponsiveButton
+                      onClick={() => {
+                        if (parallaxRef !== null && parallaxRef.current !== null) {
+                          parallaxRef.current.scrollTo(2);
+                        }
+                      }}
+                      variant="outlined"
+                      color="secondary"
+                    >
+                      How It Works
+                    </ResponsiveButton>
+                  </Box>
+                </Grid>
               </Grid>
             </Container>
           </Box>
         </ParallaxLayer>
-        <ParallaxLayer offset={1.7} speed={1} factor={0.75}>
-          <Box className={clsx(classes.buttonWrapper)}>
-            <ResponsiveButton
-              onClick={() => {
-                if (parallaxRef !== null && parallaxRef.current !== null) {
-                  parallaxRef.current.scrollTo(2);
-                }
-              }}
-              variant="outlined"
-              color="secondary"
-            >
-              How It Works?
-            </ResponsiveButton>
-          </Box>
-        </ParallaxLayer>
 
-        {/* HowItWorks */}
-        <ParallaxLayer offset={2} speed={1.5}>
-          <Box>
+        {/* How It Works */}
+        <ParallaxLayer offset={2} speed={0.5}>
+          <Box className={clsx(classes.transParentBackground)}>
             <Box className={clsx(classes.howItWorksWrapperEdgeTop)}></Box>
             <Box className={clsx(classes.howItWorksWrapper)}>
               <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
@@ -247,7 +293,17 @@ const Landing: React.FC = () => {
                   How It Works
                 </Typography>
                 <Box className={clsx(classes.howItWorksImageWrapper)}>
-                  <img src={architecture} className={classes.howItWorksImage} />
+                  <animated.div
+                    className={clsx(classes.threeDirectionCard)}
+                    onMouseMove={({ clientX: x, clientY: y }) =>
+                      setSpringImage({ xys: calc(x, y) })
+                    }
+                    onMouseLeave={() => setSpringImage({ xys: [0, 0, 1] })}
+                    // @ts-ignore
+                    style={{ transform: props.xys.interpolate(trans) }}
+                  >
+                    <img src={architecture} className={classes.howItWorksImage} />
+                  </animated.div>
                 </Box>
                 <Box className={clsx(classes.buttonWrapper)}>
                   <ResponsiveButton
@@ -259,18 +315,32 @@ const Landing: React.FC = () => {
                     variant="outlined"
                     color="primary"
                   >
-                    How To Use?
+                    How To Use
                   </ResponsiveButton>
                 </Box>
               </Container>
             </Box>
+            <Box className={clsx(classes.howItWorksWrapperEdgeBottom)}></Box>
           </Box>
-          {/* <Box className={clsx(classes.howItWorksWrapperEdgeBottom)}></Box> */}
         </ParallaxLayer>
 
-        <ParallaxLayer offset={3} speed={2}>
+        {/* How to use */}
+        <ParallaxLayer
+          offset={2.5}
+          speed={0}
+          factor={1.25}
+          // @ts-ignore
+          class={clsx(classes.landingMiddleParallaxLayer)}
+        >
+          <Box className={clsx(classes.landingMiddleWrapper)}></Box>
+        </ParallaxLayer>
+        <ParallaxLayer offset={3} speed={4}>
           <Box className={clsx(classes.defaultBackGroundWrapper)}>
-            <Typography>Layers3 Third contents.</Typography>
+            <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
+              <Typography variant="h3" component="h3" className={classes.sectionHeader}>
+                How To Use
+              </Typography>
+            </Container>
           </Box>
         </ParallaxLayer>
         {/* 
