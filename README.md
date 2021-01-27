@@ -76,59 +76,7 @@ Docker内でtsのコンパイルが遅すぎるのでDockerやめる
 - 検索機能
 - 
 
-grahqlschemaの退避
 
-```
-type AudioMetaData
-  @model
-  @auth(rules: [{ allow: owner }]) {
-  id: ID!
-  dataType: String!
-  dataValue1: String
-  dataValue2: String
-  owner: String!
-}
-```
-
-```
-type AudioMetaData
-  @model
-  @auth(rules: [{ allow: owner }])
-  @key(fields: ["id","dataType"])
-  @key(name: "dataValueIndex", fields: ["dataValue", "dataType"], queryField: "listAudioByDataValue")
-  @key(name: "ownerIndex", fields: ["owner", "dataType"], queryField: "listAudioByOwner")
-{
-  id: ID!
-  dataType: String!
-  dataValue: String!
-  owner: String!
-}
-```
-
-
-Scanはクライアントサイドで行うことにする<-これ悩ましい。
-クライアントサイドだと、一度全容量ローカルのDLしてくるのでかっこ悪い、けど進捗はわkる
-サーバーサイドだと容量は気にしなくていんだけど、進捗がわからない、取れなかったこととかもわからない・・、あとLambdaだと１５分制限があるさら、添付のストレージが512MBしかない。
-よってローカルでやるしかないねこれは。、、
-
-
-容量を気にせずに、進捗もわかる形でスキャンができれば一番いいんだけど・・
-あと、Labmdaのローカルのストレージの容量って・・？
-
-https://www.npmjs.com/package/mp4js
-と
-https://github.com/creeperyang/id3-parser
-を使って、
-mp3とmp4をやる
-
-SSから取得
-メタデータ取得
-ImageはS3にアップロード
-Dynamodbに登録
-
-ランディングはStepperStepperを使う
-Stepper
-https://material-ui.com/components/steppers/#stepper
 
 
 ## amplifyの構築

@@ -14,7 +14,16 @@ import { Parallax, ParallaxLayer } from 'react-spring/renderprops-addons';
 import { useSpring, animated } from 'react-spring';
 
 // Material-ui
-import { Container, Paper, Typography } from '@material-ui/core';
+import {
+  Container,
+  Paper,
+  Step,
+  Stepper,
+  StepLabel,
+  StepContent,
+  Typography,
+  Button,
+} from '@material-ui/core';
 
 // Image
 import demoGifPC from '../../images/bucketify_demo_pc.gif';
@@ -74,6 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     defaultBackGroundWrapper: {
       backgroundColor: theme.palette.background.default,
+      whiteSpace: 'pre-wrap',
     },
     introductionDemoWrapper: {
       textAlign: 'center',
@@ -154,8 +164,78 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: '#f0f8ff',
       // height: '75%',
     },
+    button: {
+      marginTop: theme.spacing(1),
+      marginRight: theme.spacing(1),
+    },
+    actionsContainer: {
+      marginBottom: theme.spacing(2),
+    },
+    resetContainer: {
+      padding: theme.spacing(3),
+    },
   })
 );
+
+//How To Use StepperContent
+const getStep = () => {
+  return [
+    'Create Your AWS account',
+    'Create your S3 bucket',
+    'Create IAM user',
+    'SignUp to bucketify',
+    'Scan your bucket',
+    'Enjoy!',
+  ];
+};
+const corsPolicy = `[
+  {
+      "AllowedHeaders": [
+          "*"
+      ],
+      "AllowedMethods": [
+          "GET"
+      ],
+      "AllowedOrigins": [
+          "https://bucketify.net"
+      ],
+      "ExposeHeaders": []
+  }
+]`;
+const getStepContent = (step: number) => {
+  switch (step) {
+    case 0:
+      return (
+        <>
+          If you don't have own aws accounts, please create from&nbsp;
+          <a href="https://portal.aws.amazon.com/billing/signup#/start" target="_blank">
+            HERE
+          </a>
+          .
+        </>
+      );
+    case 1:
+      return (
+        <>
+          Create bucket to store your audio files from&nbsp;
+          <a href="https://s3.console.aws.amazon.com/s3/home" target="_blank">
+            AWS Management Console
+          </a>
+          .<br />
+          You have to turn of the all <strong>Block public access (bucket settings)</strong>, <br />
+          and Add <strong>Cross-origin resource sharing (CORS)</strong> settings <br />
+          Like below:
+          <br />
+          {corsPolicy}
+        </>
+      );
+    case 2:
+      return <></>;
+    default:
+      return <>'Unknown step'</>;
+  }
+};
+
 const Landing: React.FC = () => {
   const classes = useStyles();
   const parallaxRef = useRef<Parallax>(null);
@@ -172,9 +252,10 @@ const Landing: React.FC = () => {
     }
   }, [history, AuthStateHooks.authState]);
 
-  // const theme = useTheme();
-  // const isMatchesOverMd = useMediaQuery(theme.breakpoints.up('md'));
+  // State
+  const [activeStep, setActiveStep] = React.useState(0);
 
+  // Effect when hover on 3d card.
   const calc = (x: number, y: number): number[] => [
     -(y - window.innerHeight / 2) / 90, // degree
     (x - window.innerWidth / 2) / 90, // degree
@@ -187,6 +268,18 @@ const Landing: React.FC = () => {
     xys: [0, 0, 1],
     config: { mass: 5, tension: 350, friction: 40 },
   }));
+
+  //How to use stepper
+  const steps = getStep();
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+  const handleReset = () => {
+    setActiveStep(0);
+  };
 
   return (
     <Box>
@@ -340,26 +433,53 @@ const Landing: React.FC = () => {
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
                 How To Use
               </Typography>
+
+              <Stepper activeStep={activeStep} orientation="vertical">
+                {steps.map((label, index) => (
+                  <Step key={label}>
+                    <StepLabel>
+                      <Typography variant="h5" component="h4">
+                        {label}
+                      </Typography>
+                    </StepLabel>
+                    <StepContent>
+                      <Typography variant="body1" component="span">
+                        {getStepContent(index)}
+                      </Typography>
+                      <div className={classes.actionsContainer}>
+                        {/* <div> */}
+                        <Button
+                          disabled={activeStep === 0}
+                          onClick={handleBack}
+                          className={classes.button}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleNext}
+                          className={classes.button}
+                        >
+                          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                        </Button>
+                      </div>
+                    </StepContent>
+                  </Step>
+                ))}
+              </Stepper>
+              {activeStep === steps.length && (
+                <Paper square elevation={0} className={classes.resetContainer}>
+                  <Typography>Reconfirm from first.</Typography>
+                  <Button onClick={handleReset} className={classes.button}>
+                    Reset
+                  </Button>
+                </Paper>
+              )}
             </Container>
           </Box>
         </ParallaxLayer>
-        {/* 
-        <ParallaxLayer offset={0} speed={0.5}>
-          <span onClick={() => this.parallax.scrollTo(1)}>Layers can contain anything</span>
-        </ParallaxLayer> */}
       </Parallax>
-
-      {/* <Box>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        Under construction...
-        <br />
-        <br />
-      </Box> */}
     </Box>
   );
 };
