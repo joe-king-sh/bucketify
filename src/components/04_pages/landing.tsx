@@ -23,11 +23,13 @@ import {
   StepContent,
   Typography,
   Button,
+  Link,
 } from '@material-ui/core';
 
 // Image
 import demoGifPC from '../../images/bucketify_demo_pc.gif';
 import architecture from '../../images/architecture.drawio.svg';
+import scanBucketImage from '../../images/scan-bucket-image.png';
 
 // MyComponents
 import ResponsiveButton from '../01_atoms_and_molecules/responsiveButton';
@@ -120,6 +122,9 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.secondary.main,
       zIndex: 5,
     },
+    howItWorksText: {
+      paddingBottom: theme.spacing(3),
+    },
     howItWorksWrapperEdgeBottom: {
       paddingTop: 'calc(10vw)',
       position: 'relative',
@@ -161,8 +166,20 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     howToUseWrapper: {
-      backgroundColor: '#f0f8ff',
+      // backgroundColor: '#f0f8ff',
       // height: '75%',
+    },
+    howToUseCodeBlock: {
+      margin: theme.spacing(2),
+      padding: theme.spacing(3),
+      backgroundColor: '#f0f8ff',
+      color: theme.palette.primary.main,
+    },
+    howToUseImage: {
+      margin: theme.spacing(2),
+      width: '80%',
+      borderRadius: theme.spacing(2),
+      boxShadow: '0px 10px 30px -5px rgba(0, 0, 0, 0.3)',
     },
     button: {
       marginTop: theme.spacing(1),
@@ -174,67 +191,11 @@ const useStyles = makeStyles((theme: Theme) =>
     resetContainer: {
       padding: theme.spacing(3),
     },
+    linkText: {
+      color: theme.palette.secondary.main,
+    },
   })
 );
-
-//How To Use StepperContent
-const getStep = () => {
-  return [
-    'Create Your AWS account',
-    'Create your S3 bucket',
-    'Create IAM user',
-    'SignUp to bucketify',
-    'Scan your bucket',
-    'Enjoy!',
-  ];
-};
-const corsPolicy = `[
-  {
-      "AllowedHeaders": [
-          "*"
-      ],
-      "AllowedMethods": [
-          "GET"
-      ],
-      "AllowedOrigins": [
-          "https://bucketify.net"
-      ],
-      "ExposeHeaders": []
-  }
-]`;
-const getStepContent = (step: number) => {
-  switch (step) {
-    case 0:
-      return (
-        <>
-          If you don't have own aws accounts, please create from&nbsp;
-          <a href="https://portal.aws.amazon.com/billing/signup#/start" target="_blank">
-            HERE
-          </a>
-          .
-        </>
-      );
-    case 1:
-      return (
-        <>
-          Create bucket to store your audio files from&nbsp;
-          <a href="https://s3.console.aws.amazon.com/s3/home" target="_blank">
-            AWS Management Console
-          </a>
-          .<br />
-          You have to turn of the all <strong>Block public access (bucket settings)</strong>, <br />
-          and Add <strong>Cross-origin resource sharing (CORS)</strong> settings <br />
-          Like below:
-          <br />
-          {corsPolicy}
-        </>
-      );
-    case 2:
-      return <></>;
-    default:
-      return <>'Unknown step'</>;
-  }
-};
 
 const Landing: React.FC = () => {
   const classes = useStyles();
@@ -269,8 +230,7 @@ const Landing: React.FC = () => {
     config: { mass: 5, tension: 350, friction: 40 },
   }));
 
-  //How to use stepper
-  const steps = getStep();
+  //How To Use StepperContent
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -279,6 +239,127 @@ const Landing: React.FC = () => {
   };
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const corsPolicy = `[
+  {
+      "AllowedHeaders": [
+          "*"
+      ],
+      "AllowedMethods": [
+          "GET"
+      ],
+      "AllowedOrigins": [
+          "https://bucketify.net"
+      ],
+      "ExposeHeaders": []
+  }
+]`;
+  const iamPolicy = `{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Sid": "VisualEditor0",
+          "Effect": "Allow",
+          "Action": [
+              "s3:ListBucket",
+              "s3:ListBucketVersions",
+              "s3:GetObject"
+          ],
+          "Resource": [
+              "arn:aws:s3:::<Your bucket name>",
+              "arn:aws:s3:::<Your bucket name>/*"
+          ]
+      }
+  ]
+}
+`;
+  const steps = [
+    'Create Your AWS account',
+    'Create your S3 bucket',
+    'Create IAM user',
+    'SignUp and SignIn to Bucketify',
+    'Scan your bucket',
+  ];
+
+  const getStepContent = (step: number) => {
+    switch (step) {
+      case 0:
+        return (
+          <>
+            If you don't have own aws accounts, please create from&nbsp;
+            <Link
+              href="https://portal.aws.amazon.com/billing/signup#/start"
+              target="_blank"
+              className={clsx(classes.linkText)}
+            >
+              HERE
+            </Link>
+            .
+          </>
+        );
+      case 1:
+        return (
+          <>
+            If you don't have S3 bucket, create bucket to store your audio files from&nbsp;
+            <Link
+              href="https://s3.console.aws.amazon.com/s3/home"
+              target="_blank"
+              className={clsx(classes.linkText)}
+            >
+              AWS Management Console
+            </Link>
+            .<br />
+            You have to turn of the all <strong>Block public access (bucket settings)</strong>, and
+            Add <strong>Cross-origin resource sharing (CORS)</strong> settings <br />
+            <br />
+            Like below:
+            <br />
+            <Paper elevation={3} className={clsx(classes.howToUseCodeBlock)}>
+              {corsPolicy}
+            </Paper>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            Create IAM User and attach a policy to be able to access your bucket. <br />
+            <br />
+            Like below:
+            <br />
+            <Paper elevation={3} className={clsx(classes.howToUseCodeBlock)}>
+              {' '}
+              {iamPolicy}
+            </Paper>
+          </>
+        );
+      case 3:
+        return (
+          <>
+            You can use a social accounts to sign up Bucketify such as Google, Facebook, Amazon.
+            <br />
+            If you create own account ,sign up bucketify from&nbsp;
+            <Link
+              href="https://www.bucketify.net/accounts"
+              target="_blank"
+              className={clsx(classes.linkText)}
+            >
+              HERE
+            </Link>
+            .<br />
+          </>
+        );
+      case 4:
+        return (
+          <>
+            Enter your bucket name, access key, and secret access key, and Hit a Scan Bucket button.
+            <br />
+            <img src={scanBucketImage} className={clsx(classes.howToUseImage)} />
+          </>
+        );
+      default:
+        return <>'Unknown step'</>;
+    }
   };
 
   return (
@@ -385,6 +466,9 @@ const Landing: React.FC = () => {
                 <Typography variant="h3" component="h3" className={classes.sectionHeader}>
                   How It Works
                 </Typography>
+                <Typography variant="body1" className={clsx(classes.howItWorksText)}>
+                  Bucketify manages only your audio file metadata.
+                </Typography>
                 <Box className={clsx(classes.howItWorksImageWrapper)}>
                   <animated.div
                     className={clsx(classes.threeDirectionCard)}
@@ -427,7 +511,7 @@ const Landing: React.FC = () => {
         >
           <Box className={clsx(classes.landingMiddleWrapper)}></Box>
         </ParallaxLayer>
-        <ParallaxLayer offset={3} speed={4}>
+        <ParallaxLayer offset={3} speed={4} factor={2}>
           <Box className={clsx(classes.defaultBackGroundWrapper)}>
             <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
@@ -437,7 +521,11 @@ const Landing: React.FC = () => {
               <Stepper activeStep={activeStep} orientation="vertical">
                 {steps.map((label, index) => (
                   <Step key={label}>
-                    <StepLabel>
+                    <StepLabel
+                      onClick={() => {
+                        setActiveStep(index);
+                      }}
+                    >
                       <Typography variant="h5" component="h4">
                         {label}
                       </Typography>
@@ -470,7 +558,7 @@ const Landing: React.FC = () => {
               </Stepper>
               {activeStep === steps.length && (
                 <Paper square elevation={0} className={classes.resetContainer}>
-                  <Typography>Reconfirm from first.</Typography>
+                  <Typography>You are ready to use Bucketify. Enjoy!!</Typography>
                   <Button onClick={handleReset} className={classes.button}>
                     Reset
                   </Button>
