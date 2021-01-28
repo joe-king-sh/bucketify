@@ -57,7 +57,6 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundImage: 'url("images/bg-landing-resized.jpeg")',
       backgroundSize: 'cover',
       height: '100%',
-      // width: '100%',
       backgroundPosition: '50% 50%',
     },
     landingMiddleParallaxLayer: {
@@ -69,7 +68,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       backgroundPosition: '50% 50%',
-      // zIndex: -1,
     },
 
     topWrapperCatchCopy: {
@@ -101,9 +99,6 @@ const useStyles = makeStyles((theme: Theme) =>
     introductionDemo: {
       width: '95%',
       borderRadius: '7px',
-      // margin: 'auto',
-      // display: 'inline-block',
-      // textAlign: 'center',
     },
     introductionText: {
       padding: '1.75rem 1.5rem 1.75rem 1.5rem',
@@ -118,7 +113,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: 'calc(10vw + 10px)',
       position: 'relative',
       overflow: 'hidden',
-      // backgroundColor: theme.palette.background.default,
       zIndex: 5,
       '&::before': {
         content: '""',
@@ -140,7 +134,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: 'calc(10vw)',
       position: 'relative',
       overflow: 'hidden',
-      // backgroundColor: theme.palette.background.default,
       zIndex: 5,
       '&::before': {
         content: '""',
