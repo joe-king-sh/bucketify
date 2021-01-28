@@ -6,8 +6,8 @@ import Box from '@material-ui/core/Box';
 // Style
 import clsx from 'clsx';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-// import { useTheme } from '@material-ui/core/styles';
-// import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 // react-spring
 import { Parallax, ParallaxLayer } from 'react-spring/renderprops-addons';
@@ -54,7 +54,7 @@ import { AuthContext } from '../../App';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     landingTopWrapper: {
-      backgroundImage: 'url("images/bg-landing.jpg")',
+      backgroundImage: 'url("images/bg-landing-resized.jpeg")',
       backgroundSize: 'cover',
       height: '100%',
       // width: '100%',
@@ -224,6 +224,9 @@ const Landing: React.FC = () => {
     }
   }, [history, AuthStateHooks.authState]);
 
+  const theme = useTheme();
+  const isMatchesDownSm = useMediaQuery(theme.breakpoints.down('sm'));
+
   // State
   const [activeStep, setActiveStep] = React.useState(0);
 
@@ -376,7 +379,7 @@ const Landing: React.FC = () => {
     <Box>
       {/* https://www.react-spring.io/docs/props/parallax */}
 
-      <Parallax pages={4} ref={parallaxRef}>
+      <Parallax pages={!isMatchesDownSm ? 4.125 : 4.125 + 1.25} ref={parallaxRef}>
         {/* Top Wrapper */}
         <ParallaxLayer offset={0} speed={0} factor={1.25}>
           <Box className={clsx(classes.landingTopWrapper)}></Box>
@@ -490,7 +493,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
                     <ResponsiveButton
                       onClick={() => {
                         if (parallaxRef !== null && parallaxRef.current !== null) {
-                          parallaxRef.current.scrollTo(2);
+                          parallaxRef.current.scrollTo(!isMatchesDownSm ? 2 : 2 + 1);
                         }
                       }}
                       variant="outlined"
@@ -506,7 +509,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
         </ParallaxLayer>
 
         {/* How It Works */}
-        <ParallaxLayer offset={2} speed={0.5}>
+        <ParallaxLayer offset={!isMatchesDownSm ? 2 : 2 + 1} speed={0.5}>
           <Box className={clsx(classes.transParentBackground)}>
             <Box className={clsx(classes.howItWorksWrapperEdgeTop)}></Box>
             <Box className={clsx(classes.howItWorksWrapper)}>
@@ -534,7 +537,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
                   <ResponsiveButton
                     onClick={() => {
                       if (parallaxRef !== null && parallaxRef.current !== null) {
-                        parallaxRef.current.scrollTo(3);
+                        parallaxRef.current.scrollTo(!isMatchesDownSm ? 3 : 3 + 1);
                       }
                     }}
                     variant="outlined"
@@ -551,7 +554,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
 
         {/* How to use */}
         <ParallaxLayer
-          offset={2.5}
+          offset={!isMatchesDownSm ? 2.5 : 2.5 + 1}
           speed={0}
           factor={1.25}
           // @ts-ignore
@@ -559,7 +562,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
         >
           <Box className={clsx(classes.landingMiddleWrapper)}></Box>
         </ParallaxLayer>
-        <ParallaxLayer offset={3} speed={3} factor={4}>
+        <ParallaxLayer offset={!isMatchesDownSm ? 3 : 3 + 1} speed={3} factor={1}>
           <Box className={clsx(classes.defaultBackGroundWrapper)}>
             <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
