@@ -24,7 +24,14 @@ import {
   Typography,
   Button,
   Link,
+  ListItem,
+  ListItemIcon,
+  List,
+  ListItemText,
 } from '@material-ui/core';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
+import QueueMusicIcon from '@material-ui/icons/QueueMusic';
 
 // Image
 import demoGifPC from '../../images/bucketify_demo_pc.gif';
@@ -68,6 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
     topWrapperCatchCopy: {
       color: 'white',
       textShadow: '1px 2px 3px #4b4b4b',
+      fontFamily: 'Oswald',
     },
     buttonWrapper: {
       textAlign: 'center',
@@ -99,6 +107,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     introductionText: {
       padding: '1.75rem 1.5rem 1.75rem 1.5rem',
+    },
+    introductionFeaturesList: {
+      backgroundColor: theme.palette.background.paper,
     },
     transParentBackground: {
       backgroundColor: 'transparent',
@@ -240,7 +251,6 @@ const Landing: React.FC = () => {
   const handleReset = () => {
     setActiveStep(0);
   };
-
   const corsPolicy = `[
   {
       "AllowedHeaders": [
@@ -250,7 +260,7 @@ const Landing: React.FC = () => {
           "GET"
       ],
       "AllowedOrigins": [
-          "https://bucketify.net"
+          "https://www.bucketify.net"
       ],
       "ExposeHeaders": []
   }
@@ -373,7 +383,7 @@ const Landing: React.FC = () => {
         </ParallaxLayer>
         <ParallaxLayer offset={0.25} speed={0.75}>
           <Typography
-            variant="h2"
+            variant="h1"
             component="h2"
             align="center"
             className={clsx(classes.topWrapperCatchCopy)}
@@ -436,6 +446,45 @@ const Landing: React.FC = () => {
                       Network transfer.
                     </Typography>
                   </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h4" className={classes.sectionHeader}>
+                    Features
+                  </Typography>
+                  <div>
+                    <List className={clsx(classes.introductionFeaturesList)}>
+                      <ListItem>
+                        <ListItemIcon>
+                          <CloudDownloadIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Streaming playback"
+                          secondary={`Makes you can streaming playback your favorite music in s3 bucket. 
+It is also can mobile background playing.`}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <LibraryMusicIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Auto generated libraries"
+                          secondary={`Generates libraries by tracks, artist(🚧), album(🚧).
+Allowed file extensions are only "mp3" or "m4a".`}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <QueueMusicIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Playlists stored on the cloud(🚧)"
+                          secondary={`Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.`}
+                        />
+                      </ListItem>
+                      ;
+                    </List>
+                  </div>
                 </Grid>
                 <Grid item xs={12}>
                   <Box className={clsx(classes.buttonWrapper)}>
@@ -511,7 +560,7 @@ const Landing: React.FC = () => {
         >
           <Box className={clsx(classes.landingMiddleWrapper)}></Box>
         </ParallaxLayer>
-        <ParallaxLayer offset={3} speed={4} factor={2}>
+        <ParallaxLayer offset={3} speed={3} factor={4}>
           <Box className={clsx(classes.defaultBackGroundWrapper)}>
             <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
@@ -558,7 +607,7 @@ const Landing: React.FC = () => {
               </Stepper>
               {activeStep === steps.length && (
                 <Paper square elevation={0} className={classes.resetContainer}>
-                  <Typography>You are ready to use Bucketify. Enjoy!!</Typography>
+                  <Typography>🎉You are ready to use Bucketify. Enjoy!!</Typography>
                   <Button onClick={handleReset} className={classes.button}>
                     Reset
                   </Button>

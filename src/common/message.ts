@@ -24,7 +24,7 @@ Like below:
             "GET"
         ],
         "AllowedOrigins": [
-            "https://bucketify.net"
+            "https://www.bucketify.net"
         ],
         "ExposeHeaders": []
     }
