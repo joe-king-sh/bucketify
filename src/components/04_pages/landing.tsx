@@ -482,7 +482,6 @@ Allowed file extensions are only "mp3" or "m4a".`}
                           secondary={`Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.`}
                         />
                       </ListItem>
-                      ;
                     </List>
                   </div>
                 </Grid>
