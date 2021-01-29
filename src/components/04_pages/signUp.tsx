@@ -10,6 +10,7 @@ import MyAuthenticator from '../02_organisms/authenticator';
 // Router
 import { useHistory } from 'react-router-dom';
 
+// Context
 import { AuthContext } from '../../App';
 
 const SignUp: React.FC = () => {

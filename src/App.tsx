@@ -21,15 +21,15 @@ import Accounts from './components/04_pages/accounts';
 import GenericTemplate from './components/03_templates/genericTemplate';
 import LoginRequiredWrapper from './components/03_templates/loginRequiredWrapper';
 
+// common
+import { useTracking } from './common/useTracking';
+
 // Auth Status
 export interface IAuthStateHooks {
   authState: AuthState | undefined;
   setAuthState: React.Dispatch<React.SetStateAction<AuthState | undefined>>;
 }
-// const defaultAuthStateHooks: IAuthStateHooks = {
-//   authState: AuthState.SignOut,
-//   setAuthState: React.Dispatch(),
-// };
+
 export const AuthContext = React.createContext<IAuthStateHooks>({} as IAuthStateHooks);
 
 // Cognito UserData
@@ -39,13 +39,53 @@ export interface IUserDataStateHooks {
   // eslint-disable-next-line
   setUser: React.Dispatch<React.SetStateAction<any | undefined>>;
 }
-// const defaultUserDataStateHooks = {
-//   user: undefined,
-//   setUser: () => {},
-// };
+
 export const UserDataContext = React.createContext<IUserDataStateHooks>({} as IUserDataStateHooks);
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
+  useTracking('G-1XT7WKVHT9');
+
+  return (
+    <Switch>
+      {/* Login not required route */}
+      <Route exact path={['/', '/signup']}>
+        <GenericTemplate>
+          <LoginRequiredWrapper isLoginRequired={false}>
+            <Route exact path="/" component={Landing} />
+            {/* <Route exact path="/signin" component={SignIn} /> */}
+            <Route exact path="/signup" component={SignUp} />
+          </LoginRequiredWrapper>
+        </GenericTemplate>
+      </Route>
+
+      {/* Login required route */}
+      <Route exact path={['/accounts', '/bucket', '/track', '/player']}>
+        <Switch>
+          <GenericTemplate>
+            <LoginRequiredWrapper isLoginRequired={true}>
+              <Route exact path="/accounts" component={Accounts} />
+              <Route exact path="/bucket" component={ScanBuckets} />
+              <Route exact path="/track" component={Tracks} />
+              <Route exact path="/player" component={Player} />
+            </LoginRequiredWrapper>
+          </GenericTemplate>
+        </Switch>
+      </Route>
+
+      {/* Wrong url route */}
+      <Route
+        render={() => (
+          <GenericTemplate>
+            <NotFound />
+          </GenericTemplate>
+        )}
+      />
+    </Switch>
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export default () => {
   const [authState, setAuthState] = React.useState<AuthState>();
   const AuthStateHooks: IAuthStateHooks = {
     authState: authState,
@@ -57,51 +97,13 @@ const App: React.FC = () => {
     user: user,
     setUser: setUser,
   };
-
   return (
     <AuthContext.Provider value={AuthStateHooks}>
       <UserDataContext.Provider value={UserDataStateHooks}>
         <Router>
-          <Switch>
-            {/* Login not required route */}
-            <Route exact path={['/', '/signup']}>
-              <GenericTemplate>
-                <LoginRequiredWrapper isLoginRequired={false}>
-                  <Route exact path="/" component={Landing} />
-                  {/* <Route exact path="/signin" component={SignIn} /> */}
-                  <Route exact path="/signup" component={SignUp} />
-                </LoginRequiredWrapper>
-              </GenericTemplate>
-            </Route>
-
-            {/* Login required route */}
-            <Route exact path={['/accounts', '/bucket', '/track', '/player']}>
-              <Switch>
-                <GenericTemplate>
-                  <LoginRequiredWrapper isLoginRequired={true}>
-                    <Route exact path="/accounts" component={Accounts} />
-                    <Route exact path="/bucket" component={ScanBuckets} />
-                    <Route exact path="/track" component={Tracks} />
-                    <Route exact path="/player" component={Player} />
-                  </LoginRequiredWrapper>
-                </GenericTemplate>
-              </Switch>
-            </Route>
-
-            {/* Wrong url route */}
-            <Route
-              render={() => (
-                <GenericTemplate>
-                  <NotFound />
-                </GenericTemplate>
-              )}
-            />
-          </Switch>
+          <App />
         </Router>
       </UserDataContext.Provider>
     </AuthContext.Provider>
   );
 };
-
-// export default withAuthenticator(App);
-export default App;
