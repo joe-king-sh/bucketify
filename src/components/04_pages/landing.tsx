@@ -54,7 +54,7 @@ import { AuthContext } from '../../App';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     landingTopWrapper: {
-      backgroundImage: 'url("images/bg-landing-resized.jpeg")',
+      backgroundImage: 'url("images/bg-landing-resized.jpg")',
       backgroundSize: 'cover',
       height: '100%',
       backgroundPosition: '50% 50%',
