@@ -84,12 +84,12 @@ const useStyles = makeStyles((theme: Theme) =>
     albumArtWork: {
       margin: '0 auto 0 auto',
       textAlign: 'center',
-      width: '90%',
+      width: '85%',
       [theme.breakpoints.up('sm')]: {
-        width: '75%',
+        width: '58%',
       },
       [theme.breakpoints.up('md')]: {
-        width: '60%',
+        width: '43%',
       },
     },
     albumArtWorkSkelton: {
@@ -267,7 +267,13 @@ const Player: React.FC = () => {
     if (temporaryPlayListTracksIds.length == nowPlayingTrack.order + 1) {
       return;
     } else {
-      handleTrackChange(nowPlayingTrack.order + 1);
+      if (shuffleModeRef.current) {
+        // select the next song randomly. // TODO improve the select logic to do not play track already played.
+        const nextOrderShuffled = Math.floor(Math.random() * temporaryPlayListTracksIds.length);
+        handleTrackChange(nextOrderShuffled);
+      } else {
+        handleTrackChange(nowPlayingTrack.order + 1);
+      }
     }
   };
   const handleClickPrevButton: () => void = () => {
@@ -361,7 +367,8 @@ const Player: React.FC = () => {
         // When shuffle mode is turned on.
         if (shuffleModeRef.current) {
           // select the next song randomly. // TODO improve the select logic to do not play track already played.
-          handleTrackChange(Math.floor(Math.random() * temporaryPlayListTracksIds.length));
+          const nextOrderShuffled = Math.floor(Math.random() * temporaryPlayListTracksIds.length);
+          handleTrackChange(nextOrderShuffled);
         }
         // When be playing the last track on a temporary playlist.
         if (nowPlayingTrackOrderRef.current + 1 == temporaryPlayListTracksIds.length) {
@@ -467,6 +474,18 @@ const Player: React.FC = () => {
       fetchAlbumArtWork();
     }
   }, [nowPlayingS3SignedUrl]);
+
+  // Reset to pause when a player has stopped unexpectedly.
+  useEffect(() => {
+    setInterval(() => {
+      if (!audio || !audio.current) {
+        return;
+      }
+      if (audio.current.paused && isNowPlaying) {
+        setIsNowPlaying(false);
+      }
+    }, 2000);
+  }, []);
 
   // Helper function to display time of tracks.
   const playTimeFormatHelper: (t: number) => string = (t) => {
