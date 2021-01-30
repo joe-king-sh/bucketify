@@ -307,24 +307,24 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
             {isSNSOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={isSNSOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <Link to="/" className={classes.link}>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <GitHub />
-                  </ListItemIcon>
-                  <ListItemText primary="GitHub" />
-                </ListItem>
-              </Link>
+            <List component="div" disablePadding onClick={() => setShowSnackBar(true)}>
+              {/* <Link to="/" className={classes.link}> */}
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <GitHub />
+                </ListItemIcon>
+                <ListItemText primary="GitHub" />
+              </ListItem>
+              {/* </Link> */}
 
-              <Link to="/" className={classes.link}>
+              <a href="https://twitter.com/joe_king_sh" className={classes.link} target="_blank">
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <Twitter />
                   </ListItemIcon>
                   <ListItemText primary="Twitter" />
                 </ListItem>
-              </Link>
+              </a>
             </List>
           </Collapse>
 
