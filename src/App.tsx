@@ -13,9 +13,9 @@ import ScanBuckets from './components/04_pages/scanBuckets';
 import NotFound from './components/04_pages/404';
 import Tracks from './components/04_pages/tracks';
 import Player from './components/04_pages/player';
-// import SignIn from './components/05_pages/signIn'
 import SignUp from './components/04_pages/signUp';
 import Accounts from './components/04_pages/accounts';
+import PrivacyPolicy from './components/04_pages/privacyPolicy';
 
 // template
 import GenericTemplate from './components/03_templates/genericTemplate';
@@ -48,12 +48,13 @@ export const App: React.FC = () => {
   return (
     <Switch>
       {/* Login not required route */}
-      <Route exact path={['/', '/signup']}>
+      <Route exact path={['/', '/signup', '/privacy']}>
         <GenericTemplate>
           <LoginRequiredWrapper isLoginRequired={false}>
             <Route exact path="/" component={Landing} />
             {/* <Route exact path="/signin" component={SignIn} /> */}
             <Route exact path="/signup" component={SignUp} />
+            <Route exact path="/privacy" component={PrivacyPolicy} />
           </LoginRequiredWrapper>
         </GenericTemplate>
       </Route>
