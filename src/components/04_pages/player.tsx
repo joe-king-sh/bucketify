@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '58%',
       },
       [theme.breakpoints.up('md')]: {
-        width: '43%',
+        width: '55%',
       },
     },
     albumArtWorkSkelton: {
@@ -162,7 +162,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     playListWrapper: {
-      marginTop: '1rem',
+      marginTop: theme.spacing(3.5),
     },
 
     tableCellTitle: {
