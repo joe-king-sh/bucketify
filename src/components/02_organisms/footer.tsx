@@ -1,7 +1,8 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { Author } from '../../common/const';
 
@@ -12,7 +13,17 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     footer: {
       backgroundColor: theme.palette.primary.main,
-      minHeight: '2rem',
+      // minHeight: theme.spacing(6),
+      // [theme.breakpoints.down('md')]: {
+      //   minHeight: theme.spacing(3),
+      zIndex: 100,
+      // },
+    },
+    linkTextSecondary: {
+      color: theme.palette.secondary.main,
+    },
+    linkTextPrimary: {
+      color: theme.palette.text.primary,
     },
   })
 );
@@ -22,15 +33,20 @@ export const Footer: React.FC = () => {
 
   return (
     <Box className={clsx(classes.footer)}>
-      <Typography variant="body2" color="textSecondary" align="center">
+      <Typography variant="body2" color="textPrimary" align="center">
         {'© '}
         {new Date().getFullYear()}
         {' Copyright '}
-        <Link color="inherit" to="/">
+        <a href="https://twitter.com/joe_king_sh" className={clsx(classes.linkTextSecondary)}>
           {Author}
-        </Link>
+        </a>
         {'.'}
       </Typography>
+      {/* <Typography variant="body2" color="textPrimary" align="center">
+        <Link to="/privacy" className={clsx(classes.linkTextPrimary)}>
+          Privacy Policy
+        </Link>
+      </Typography> */}
     </Box>
   );
 };
