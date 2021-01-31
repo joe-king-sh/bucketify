@@ -198,9 +198,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     linkText: {
       color: theme.palette.secondary.main,
+      textDecoration: 'none',
     },
     stepperSpacert: {
       marginBottom: theme.spacing(4),
+    },
+    linkTextDecoration: {
+      textDecoration: 'none',
     },
   })
 );
@@ -627,7 +631,9 @@ Allowed file extensions are only "mp3" or "m4a".`}
                     return;
                   }}
                 >
-                  <LinkRouter to="/accounts">Start now</LinkRouter>
+                  <LinkRouter to="/accounts" className={clsx(classes.linkTextDecoration)}>
+                    Start now
+                  </LinkRouter>
                 </ResponsiveButton>
               </Box>
             </Container>
