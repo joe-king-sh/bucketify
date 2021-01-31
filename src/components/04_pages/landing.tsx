@@ -648,7 +648,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
 
               <Paper className={clsx(classes.paperPadding)}>
                 <Typography variant="body1" component="div">
-                  Last updated: 2020-01-30
+                  Last updated: 2021-01-31
                   <br />
                   <br />
                   We operates http://www.bucketify.net (the "Site"). This page informs you of our
@@ -664,6 +664,24 @@ Allowed file extensions are only "mp3" or "m4a".`}
                   <LinkRouter to="/privacy" className={clsx(classes.linkText)}>
                     Show more information.
                   </LinkRouter>
+                </Typography>
+              </Paper>
+
+              <Typography variant="h3" component="h3" className={classes.sectionHeader}>
+                Disclaimer
+              </Typography>
+              <Paper className={clsx(classes.paperPadding)}>
+                <Typography variant="body1" component="div">
+                  Last updated: 2021-01-31
+                  <br />
+                  Use of this site is at your sole risk. Bucketify makes no warranty or guarantees
+                  that this web site will be uninterrupted, timely, secure, or error-free.
+                  <br />
+                  <br />
+                  In no event will Bucketify be reliable to any party for any direct, indirect,
+                  incidental, special, exemplary, or consequential damages of any type whatsoever
+                  related to or arising from this web site or any use of this web site.
+                  <br />
                 </Typography>
               </Paper>
             </Container>
