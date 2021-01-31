@@ -380,7 +380,7 @@ const Landing: React.FC = () => {
     <Box>
       {/* https://www.react-spring.io/docs/props/parallax */}
 
-      <Parallax pages={!isMatchesDownSm ? 5 : 5 + 1.35} ref={parallaxRef}>
+      <Parallax pages={!isMatchesDownSm ? 5 : 5 + 1.4} ref={parallaxRef}>
         {/* Top Wrapper */}
         <ParallaxLayer offset={0} speed={0} factor={1.25}>
           <Box className={clsx(classes.landingTopWrapper)}></Box>
