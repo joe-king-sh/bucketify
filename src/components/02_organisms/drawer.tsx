@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -39,18 +39,15 @@ import Share from '@material-ui/icons/Share';
 import GitHub from '@material-ui/icons/GitHub';
 import Twitter from '@material-ui/icons/Twitter';
 
-// Authorization
-import {
-  AuthContext,
-  IAuthStateHooks,
-  // UserDataContext,
-  // IUserDataStateHooks,
-} from '../../App';
+// import i18next for translation.
+import { useTranslation } from 'react-i18next';
+
+// Context
+import { AuthContext, IAuthStateHooks, LanguageContext } from '../../App';
+
+// Authentification
 import { AuthState } from '@aws-amplify/ui-components';
 import { Auth } from 'aws-amplify';
-
-// Common
-import { msgUnderConstruction } from '../../common/message';
 
 // MyComponents
 import { CustomizedSnackBar } from './snackBar';
@@ -122,9 +119,19 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
   isDarkMode,
   handleDarkModeToggle,
 }) => {
+  // TranslationSetting
+  const LanguageContextHooks = useContext(LanguageContext);
+  const [t, i18n] = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(LanguageContextHooks.languageState);
+  }, [LanguageContextHooks.languageState, i18n]);
+
+  // Styles
   const classes = useStyles();
   const theme = useTheme();
   const isMatchesOverMd = useMediaQuery(theme.breakpoints.up('md'));
+
+  // Authentification
   const AuthStateHooks: IAuthStateHooks = useContext(AuthContext);
   // const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
 
@@ -188,7 +195,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   <ListItemIcon>
                     <AccountCircle />
                   </ListItemIcon>
-                  <ListItemText primary="Account" />
+                  <ListItemText primary={t('Account')} />
                 </ListItem>
               </Link>
               <Link to="/bucket" className={classes.link} onClick={() => handleDrawerClose()}>
@@ -196,7 +203,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   <ListItemIcon>
                     <Search />
                   </ListItemIcon>
-                  <ListItemText primary="ScanBucket" />
+                  <ListItemText primary={t('ScanBucket')} />
                 </ListItem>
               </Link>
 
@@ -204,7 +211,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 <ListItemIcon>
                   <LibraryMusic />
                 </ListItemIcon>
-                <ListItemText primary="Library" />
+                <ListItemText primary={t('Library')} />
                 {isLibraryOpen ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
 
@@ -214,14 +221,14 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                     <ListItemIcon>
                       <People />
                     </ListItemIcon>
-                    <ListItemText primary="Artists" />
+                    <ListItemText primary={t('Artists')} />
                   </ListItem>
 
                   <ListItem button className={classes.nested} onClick={() => setShowSnackBar(true)}>
                     <ListItemIcon>
                       <Album />
                     </ListItemIcon>
-                    <ListItemText primary="Albums" />
+                    <ListItemText primary={t('Albums')} />
                   </ListItem>
 
                   <Link to="/track" className={classes.link} onClick={() => handleDrawerClose()}>
@@ -229,7 +236,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                       <ListItemIcon>
                         <Audiotrack />
                       </ListItemIcon>
-                      <ListItemText primary="Tracks" />
+                      <ListItemText primary={t('Tracks')} />
                     </ListItem>
                   </Link>
                 </List>
@@ -240,7 +247,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 <ListItemIcon>
                   <QueueMusic />
                 </ListItemIcon>
-                <ListItemText primary="PlayList" />
+                <ListItemText primary={t('PlayList')} />
               </ListItem>
               {/* </Link> */}
             </>
@@ -253,7 +260,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   <ListItemIcon>
                     <Icon className="fa fa-sign-in-alt small" />
                   </ListItemIcon>
-                  <ListItemText primary="SignIn" />
+                  <ListItemText primary={t('SignIn')} />
                 </ListItem>
               </Link>
               <Link to="/signup" className={classes.link} onClick={() => handleDrawerClose()}>
@@ -261,7 +268,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   <ListItemIcon>
                     <PersonAdd />
                   </ListItemIcon>
-                  <ListItemText primary="SignUp" />
+                  <ListItemText primary={t('SignUp')} />
                 </ListItem>
               </Link>
             </>
@@ -272,17 +279,23 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
             <ListItemIcon>
               <Settings />
             </ListItemIcon>
-            <ListItemText primary="Setting" />
+            <ListItemText primary={t('Setting')} />
             {isSettingOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
 
           <Collapse in={isSettingOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button className={classes.nested} onClick={() => setShowSnackBar(true)}>
+              <ListItem
+                button
+                className={classes.nested}
+                onClick={() =>
+                  LanguageContextHooks.toggleLanguage(LanguageContextHooks.languageState)
+                }
+              >
                 <ListItemIcon>
                   <Language />
                 </ListItemIcon>
-                <ListItemText primary="Language" />
+                <ListItemText primary={t('Language')} />
               </ListItem>
 
               <ListItem
@@ -293,7 +306,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 <ListItemIcon>
                   {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
                 </ListItemIcon>
-                <ListItemText primary="Contrast" />
+                <ListItemText primary={t('Contrast')} />
               </ListItem>
             </List>
           </Collapse>
@@ -303,7 +316,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
             <ListItemIcon>
               <Share />
             </ListItemIcon>
-            <ListItemText primary="SNS" />
+            <ListItemText primary={t('SNS')} />
             {isSNSOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={isSNSOpen} timeout="auto" unmountOnExit>
@@ -313,7 +326,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 <ListItemIcon>
                   <GitHub />
                 </ListItemIcon>
-                <ListItemText primary="GitHub" />
+                <ListItemText primary={t('GitHub')} />
               </ListItem>
               {/* </Link> */}
 
@@ -322,7 +335,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   <ListItemIcon>
                     <Twitter />
                   </ListItemIcon>
-                  <ListItemText primary="Twitter" />
+                  <ListItemText primary={t('Twitter')} />
                 </ListItem>
               </a>
             </List>
@@ -338,7 +351,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                   {/* </IconButton> */}
                   {/* <Icon className="small fab fa-bitbucket" /> */}
                 </ListItemIcon>
-                <ListItemText primary="SignOut" />
+                <ListItemText primary={t('SignOut')} />
               </ListItem>
             </>
           )}
@@ -349,7 +362,7 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
         alert={{
           severity: 'info',
           title: '',
-          description: msgUnderConstruction(),
+          description: t('Under construction'),
         }}
         isSnackBarOpen={showSnackBar}
         handleClose={(event?: React.SyntheticEvent, reason?: string) => {

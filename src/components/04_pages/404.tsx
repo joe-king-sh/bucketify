@@ -1,29 +1,46 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Container, Typography } from '@material-ui/core';
 
-// template
-// import GenericTemplate from '../04_templates/genericTemplate';
-// import LoginRequiredWrapper from '../04_templates/loginRequiredWrapper';
+// Context
+import { LanguageContext } from '../../App';
 
-const NotFound: React.FC = () => (
-  <React.Fragment>
-    {/* <GenericTemplate> */}
-    {/* <LoginRequiredWrapper isLoginRequired={false}> */}
+// Translation
+import { useTranslation } from 'react-i18next';
 
-    <Container>
-      <Typography variant="h2" component="h2">
-        Not Found
-      </Typography>
-      <Typography>
-        Sorry..
+const NotFound: React.FC = () => {
+  // translation
+  const LanguageContextHooks = useContext(LanguageContext);
+  const [t, i18n] = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(LanguageContextHooks.languageState);
+  }, [LanguageContextHooks.languageState, i18n]);
+
+  return (
+    <React.Fragment>
+      {/* <GenericTemplate> */}
+      {/* <LoginRequiredWrapper isLoginRequired={false}> */}
+
+      <Container>
+        <Typography variant="h2" component="h2">
+          {t('Not Found')}
+        </Typography>
         <br />
-        This page has been deleted or not exists.
-      </Typography>
-    </Container>
+        <Typography>
+          {t('Not Found Message')
+            .split('\n')
+            .map((str, index) => (
+              <React.Fragment key={index}>
+                {str}
+                <br />
+              </React.Fragment>
+            ))}
+        </Typography>
+      </Container>
 
-    {/* </LoginRequiredWrapper> */}
-    {/* </GenericTemplate> */}
-  </React.Fragment>
-);
+      {/* </LoginRequiredWrapper> */}
+      {/* </GenericTemplate> */}
+    </React.Fragment>
+  );
+};
 
 export default NotFound;

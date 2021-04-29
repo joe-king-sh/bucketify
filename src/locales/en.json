@@ -1,0 +1,88 @@
+{
+    "Choose language": "日本語表示",
+    "Contrast": "Contrast",
+    "Switch to Light mode": "Switch to Light mode",
+    "Switch to Dark mode": "Switch to Dark mode",
+    "Under construction": "This feature is under construction 🚧. Coming soon!",
+    "Account": "Account",
+    "ScanBucket": "ScanBucket",
+    "Library": "Library",
+    "Artists": "Artists",
+    "Albums": "Albums",
+    "Tracks": "Tracks",
+    "PlayList": "PlayList",
+    "SignIn": "SignIn",
+    "SignUp": "SignUp",
+    "SignOut": "SignOut", 
+    "Setting": "Setting",
+    "Language": "Language",
+    "SNS": "SNS",
+    "GitHub": "GitHub",
+    "Twitter": "Twitter",
+
+    "Not Found": "Not Found",
+    "Not Found Message": "Sorry.. \n\n This page has been deleted or not exists.",
+
+    "Account overview": "Account overview",
+    "Profile": "Profile",
+
+    "Create Your AWS account" : "Create Your AWS account",    
+    "Create your S3 bucket": "Create your S3 bucket",
+    "Create IAM user": "Create IAM User",
+    "SignUp and SignIn to Bucketify": "SignUp and SignIn to Bucketify",
+    "Scan your bucket": "Scan your bucket",
+
+    "Create Your AWS account detail": "If you don't have own aws accounts, please create from ",
+    "Create Your AWS account link text": "HERE",
+
+    "Create Your S3 bucket detail": "If you don't have S3 bucket, create bucket to store your audio files from ",
+    "Create Your S3 bucket link text": "AWS Management Console",
+    "Create Your S3 bucket detail2": "You have to turn off all <strong>Block public access (bucket settings)</strong> and Add <strong>Cross-origin resource sharing (CORS)</strong> settings. \n\nLike below:\n",
+
+    "Create Your IAM user detail": "Create IAM User and attach a policy to be able to access your bucket. <br /> <br />Like below: <br />",
+ 
+    "SignUp and SignIn to Bucketify detail": "You can use a social accounts to sign up Bucketify such as Google, Facebook, Amazon. <br />If you create own account ,sign up bucketify from ",
+    "SignUp and SignIn to Bucketify link text": "HERE",
+
+    "Scan your bucket detail": "Enter your bucket name, access key, and secret access key, and Hit a Scan Bucket button.",
+    "Your are ready" : "You are ready to use Bucketify🎉 <br />Enjoy!!",
+
+    "Learn More": "Learn More",
+    "Introduction": "About this",
+    "Introduction detail": "Bucketify is a cloud Web music player.<br />This makes you can play your favorite music stored in <strong>Amazon S3</strong> anytime, anywhere.<br /><br /><strong>It is FREE TO USE</strong>. <br />You have to pay only billing of your AWS accounts such as S3 storage or Network transfer.",
+
+    "Features": "Features",
+
+    "Streaming playback": "Streaming playback",
+    "Streaming playback detail": "Makes you can streaming playback your favorite music in s3 bucket. \nIt is also can mobile background playing.",
+
+    "Auto generated libraries": "Auto generated libraries",
+    "Auto generated libraries detail": "Generates libraries by tracks, artist(🚧), album(🚧).\nAllowed file extensions are only 'mp3' or 'm4a'.",
+
+    "Playlists stored on the cloud": "Playlists stored on the cloud(🚧)",
+    "Playlists stored on the cloud detail": "Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.",
+
+    "How It Works button": "How It Works",
+    "How It Works": "How It Works",
+    "How It Works detail": "Bucketify manages only your audio file metadata.",
+
+    "How To Use button": "How To Use",
+    "How To Use": "How To Use",
+
+    "Back": "Back",
+    "Next": "Next",
+    "Finish": "Finish",
+    "Reset": "Reset",
+
+    "Start now": "Start now",
+
+    "Privacy Policy": "Privacy Policy",
+    "Privacy Policy detail": "Last updated: 2021-04-29<br /><br />I operate http://www.bucketify.net (the 'Bucketify'). This section informs you of our policies regarding the collection, use, and disclosure of Personal Information we receive from users of Bucketify.<br /><br/>I use your Personal Information only for providing and improving Bucketify. By using Bucketify, you agree to the collection and use of information in accordance with this policy.",
+    "Privacy Policy link": "Show more information.",
+    
+    "Disclaimer": "Disclaimer",
+    "Disclaimer detail": "Last updated: 2021-04-29<br /><br />Use of this site is at your sole risk.<br />Bucketify makes no warranty or guarantees that this website will be uninterrupted, timely, secure, or error-free.<br /><br />In no event will Bucketify be reliable to any party for any direct, indirect, incidental, special, exemplary, or consequential damages of any type whatsoever related to or arising from this website or any use of this website.",
+
+    "Play List": "Play List"
+
+}

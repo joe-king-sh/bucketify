@@ -31,7 +31,7 @@ import RepeatOneIcon from '@material-ui/icons/RepeatOne';
 import { useHistory } from 'react-router-dom';
 
 // Contexts
-import { UserDataContext, IUserDataStateHooks } from '../../App';
+import { UserDataContext, IUserDataStateHooks, LanguageContext } from '../../App';
 
 // Components
 import { Typography, Box } from '@material-ui/core';
@@ -55,6 +55,9 @@ import { AppName } from '../../common/const';
 
 // Image
 import noImage from '../../images/no-image-dark.png';
+
+// Translation
+import { useTranslation } from 'react-i18next';
 
 // My components
 // import MyTypographyH3 from '../01_atoms_and_molecules/myTypographyh3';
@@ -186,6 +189,13 @@ const Player: React.FC = () => {
   // const matches = useMediaQuery(theme.breakpoints.up('md'));
   const history = useHistory();
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
+
+  // translation
+  const LanguageContextHooks = useContext(LanguageContext);
+  const [t, i18n] = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(LanguageContextHooks.languageState);
+  }, [LanguageContextHooks.languageState, i18n]);
 
   // Get play list from localstorage.
   const playListJsonString = localStorage.getItem(AppName + 'TemporaryPlayList');
@@ -533,7 +543,7 @@ const Player: React.FC = () => {
   const temporaryPlayList = temporaryPlayListTracksIds && (
     <Box className={classes.playListWrapper}>
       <Typography variant="h6" component="h6">
-        PlayList
+        {t('Play List')}
       </Typography>
       <TableContainer component={Paper}>
         <Table aria-label="tracks table">

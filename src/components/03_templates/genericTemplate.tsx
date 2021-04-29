@@ -14,6 +14,28 @@ import { Footer } from '../02_organisms/footer';
 import { MyAppBar } from '../02_organisms/appBar';
 import { MyDrawer } from '../02_organisms/drawer';
 
+// Language Settings
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import enJson from '../../locales/en.json';
+import jaJson from '../../locales/ja.json';
+
+// Translate
+i18n.use(initReactI18next).init({
+  resources: {
+    en: {
+      translation: enJson,
+    },
+    ja: {
+      translation: jaJson,
+    },
+  },
+  lng: 'ja',
+  fallbackLng: 'ja',
+  interpolation: { escapeValue: false },
+});
+
+// Styles
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

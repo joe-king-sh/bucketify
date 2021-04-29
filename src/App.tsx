@@ -42,6 +42,15 @@ export interface IUserDataStateHooks {
 
 export const UserDataContext = React.createContext<IUserDataStateHooks>({} as IUserDataStateHooks);
 
+// Context for language setting
+export interface ILanguageContext {
+  languageState: string | undefined;
+  setLanguage: React.Dispatch<React.SetStateAction<string>>;
+  toggleLanguage: (language: string | undefined) => void;
+}
+
+export const LanguageContext = React.createContext<ILanguageContext>({} as ILanguageContext);
+
 export const App: React.FC = () => {
   useTracking('G-1XT7WKVHT9');
 
@@ -98,12 +107,25 @@ export default () => {
     user: user,
     setUser: setUser,
   };
+
+  const [languageState, setLanguage] = React.useState<string>('en');
+  const toggleLanguage = (language: string | undefined) => {
+    const newLanguage = language == 'ja' ? 'en' : 'ja';
+    setLanguage(newLanguage);
+  };
+  const LanguageContextHooks: ILanguageContext = {
+    languageState: languageState,
+    setLanguage: setLanguage,
+    toggleLanguage: toggleLanguage,
+  };
   return (
     <AuthContext.Provider value={AuthStateHooks}>
       <UserDataContext.Provider value={UserDataStateHooks}>
-        <Router>
-          <App />
-        </Router>
+        <LanguageContext.Provider value={LanguageContextHooks}>
+          <Router>
+            <App />
+          </Router>
+        </LanguageContext.Provider>
       </UserDataContext.Provider>
     </AuthContext.Provider>
   );

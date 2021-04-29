@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       //   minHeight: theme.spacing(3),
       zIndex: 100,
       // },
+      color: 'white',
     },
     linkTextSecondary: {
       color: theme.palette.secondary.main,
@@ -33,10 +34,10 @@ export const Footer: React.FC = () => {
 
   return (
     <Box className={clsx(classes.footer)}>
-      <Typography variant="body2" color="textPrimary" align="center">
+      <Typography variant="body2" color="initial" align="center">
         {'© '}
         {new Date().getFullYear()}
-        {' Copyright '}
+        {' Copyright  '}
         <a href="https://twitter.com/joe_king_sh" className={clsx(classes.linkTextSecondary)}>
           {Author}
         </a>

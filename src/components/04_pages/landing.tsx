@@ -49,7 +49,10 @@ import { useHistory } from 'react-router-dom';
 import { Link as LinkRouter } from 'react-router-dom';
 
 // Context
-import { AuthContext } from '../../App';
+import { AuthContext, LanguageContext } from '../../App';
+
+// Translation
+import { useTranslation } from 'react-i18next';
 
 //Styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -213,6 +216,13 @@ const Landing: React.FC = () => {
   const classes = useStyles();
   const parallaxRef = useRef<Parallax>(null);
 
+  // translation
+  const LanguageContextHooks = useContext(LanguageContext);
+  const [t, i18n] = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(LanguageContextHooks.languageState);
+  }, [LanguageContextHooks.languageState, i18n]);
+
   const AuthStateHooks = useContext(AuthContext);
   const history = useHistory();
   useEffect(() => {
@@ -289,11 +299,11 @@ const Landing: React.FC = () => {
 }
 `;
   const steps = [
-    'Create Your AWS account',
-    'Create your S3 bucket',
-    'Create IAM user',
-    'SignUp and SignIn to Bucketify',
-    'Scan your bucket',
+    t('Create Your AWS account'),
+    t('Create your S3 bucket'),
+    t('Create IAM user'),
+    t('SignUp and SignIn to Bucketify'),
+    t('Scan your bucket'),
   ];
 
   const getStepContent = (step: number) => {
@@ -301,13 +311,13 @@ const Landing: React.FC = () => {
       case 0:
         return (
           <>
-            If you don't have own aws accounts, please create from&nbsp;
+            {t('Create Your AWS account detail')}
             <Link
               href="https://portal.aws.amazon.com/billing/signup#/start"
               target="_blank"
               className={clsx(classes.linkText)}
             >
-              HERE
+              {t('Create Your AWS account link text')}
             </Link>
             .
           </>
@@ -315,20 +325,20 @@ const Landing: React.FC = () => {
       case 1:
         return (
           <>
-            If you don't have S3 bucket, create bucket to store your audio files from&nbsp;
+            {t('Create Your S3 bucket detail')}
             <Link
               href="https://s3.console.aws.amazon.com/s3/home"
               target="_blank"
               className={clsx(classes.linkText)}
             >
-              AWS Management Console
+              {t('Create Your S3 bucket link text')}
             </Link>
             .<br />
-            You have to turn of the all <strong>Block public access (bucket settings)</strong>, and
-            Add <strong>Cross-origin resource sharing (CORS)</strong> settings <br />
-            <br />
-            Like below:
-            <br />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: t('Create Your S3 bucket detail2'),
+              }}
+            />
             <Paper elevation={3} className={clsx(classes.howToUseCodeBlock)}>
               {corsPolicy}
             </Paper>
@@ -337,10 +347,12 @@ const Landing: React.FC = () => {
       case 2:
         return (
           <>
-            Create IAM User and attach a policy to be able to access your bucket. <br />
-            <br />
-            Like below:
-            <br />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: t('Create Your IAM user detail'),
+              }}
+            />
+
             <Paper elevation={3} className={clsx(classes.howToUseCodeBlock)}>
               {' '}
               {iamPolicy}
@@ -350,15 +362,17 @@ const Landing: React.FC = () => {
       case 3:
         return (
           <>
-            You can use a social accounts to sign up Bucketify such as Google, Facebook, Amazon.
-            <br />
-            If you create own account ,sign up bucketify from&nbsp;
+            <span
+              dangerouslySetInnerHTML={{
+                __html: t('SignUp and SignIn to Bucketify detail'),
+              }}
+            />
             <Link
               href="https://www.bucketify.net/accounts"
               target="_blank"
               className={clsx(classes.linkText)}
             >
-              HERE
+              {t('SignUp and SignIn to Bucketify link text')}
             </Link>
             .<br />
           </>
@@ -366,7 +380,7 @@ const Landing: React.FC = () => {
       case 4:
         return (
           <>
-            Enter your bucket name, access key, and secret access key, and Hit a Scan Bucket button.
+            {t('Scan your bucket detail')}
             <br />
             <img src={scanBucketImage} className={clsx(classes.howToUseImage)} />
           </>
@@ -410,7 +424,7 @@ const Landing: React.FC = () => {
               variant="contained"
               color="secondary"
             >
-              Learn More
+              {t('Learn More')}
             </ResponsiveButton>
           </Box>
         </ParallaxLayer>
@@ -420,7 +434,7 @@ const Landing: React.FC = () => {
           <Box className={clsx(classes.defaultBackGroundWrapper)}>
             <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
-                Introduction
+                {t('Introduction')}
               </Typography>
 
               <Grid container spacing={3} alignItems="center" justify="center">
@@ -439,21 +453,17 @@ const Landing: React.FC = () => {
                 <Grid item xs={12} sm={6}>
                   <Paper className={clsx(classes.paperPadding)} elevation={3} square={false}>
                     <Typography variant="h5" component="h5">
-                      Bucketify is a cloud music player.
-                      <br />
-                      This makes you can play your favorite music stored in{' '}
-                      <strong>Amazon S3</strong> anytime, anywhere.
-                      <br />
-                      <br />
-                      <strong>It is FREE TO USE</strong>. <br />
-                      You have to pay only billing of your AWS accounts such as S3 storage or
-                      Network transfer.
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: t('Introduction detail'),
+                        }}
+                      />
                     </Typography>
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="h4" className={classes.sectionHeader}>
-                    Features
+                    {t('Features')}
                   </Typography>
                   <div>
                     <List className={clsx(classes.introductionFeaturesList)}>
@@ -462,9 +472,8 @@ const Landing: React.FC = () => {
                           <CloudDownloadIcon />
                         </ListItemIcon>
                         <ListItemText
-                          primary="Streaming playback"
-                          secondary={`Makes you can streaming playback your favorite music in s3 bucket. 
-It is also can mobile background playing.`}
+                          primary={t('Streaming playback')}
+                          secondary={t('Streaming playback detail')}
                         />
                       </ListItem>
                       <ListItem>
@@ -472,9 +481,8 @@ It is also can mobile background playing.`}
                           <LibraryMusicIcon />
                         </ListItemIcon>
                         <ListItemText
-                          primary="Auto generated libraries"
-                          secondary={`Generates libraries by tracks, artist(🚧), album(🚧).
-Allowed file extensions are only "mp3" or "m4a".`}
+                          primary={t('Auto generated libraries')}
+                          secondary={t('Auto generated libraries detail')}
                         />
                       </ListItem>
                       <ListItem>
@@ -482,8 +490,8 @@ Allowed file extensions are only "mp3" or "m4a".`}
                           <QueueMusicIcon />
                         </ListItemIcon>
                         <ListItemText
-                          primary="Playlists stored on the cloud(🚧)"
-                          secondary={`Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.`}
+                          primary={t('Playlists stored on the cloud')}
+                          secondary={t('Playlists stored on the cloud detail')}
                         />
                       </ListItem>
                     </List>
@@ -500,7 +508,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
                       variant="outlined"
                       color="secondary"
                     >
-                      How It Works
+                      {t('How It Works button')}
                     </ResponsiveButton>
                   </Box>
                 </Grid>
@@ -516,10 +524,10 @@ Allowed file extensions are only "mp3" or "m4a".`}
             <Box className={clsx(classes.howItWorksWrapper)}>
               <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
                 <Typography variant="h3" component="h3" className={classes.sectionHeader}>
-                  How It Works
+                  {t('How It Works')}
                 </Typography>
                 <Typography variant="body1" className={clsx(classes.howItWorksText)}>
-                  Bucketify manages only your audio file metadata.
+                  {t('How It Works detail')}
                 </Typography>
                 <Box className={clsx(classes.howItWorksImageWrapper)}>
                   <animated.div
@@ -544,7 +552,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
                     variant="outlined"
                     color="primary"
                   >
-                    How To Use
+                    {t('How To Use button')}
                   </ResponsiveButton>
                 </Box>
               </Container>
@@ -570,7 +578,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
               className={clsx(classes.sectionWrapper, classes.stepperSpacert)}
             >
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
-                How To Use
+                {t('How To Use')}
               </Typography>
 
               <Stepper activeStep={activeStep} orientation="vertical">
@@ -596,7 +604,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
                           onClick={handleBack}
                           className={classes.button}
                         >
-                          Back
+                          {t('Back')}
                         </Button>
                         <Button
                           variant="contained"
@@ -604,7 +612,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
                           onClick={handleNext}
                           className={classes.button}
                         >
-                          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                          {activeStep === steps.length - 1 ? t('Finish') : t('Next')}
                         </Button>
                       </div>
                     </StepContent>
@@ -614,11 +622,14 @@ Allowed file extensions are only "mp3" or "m4a".`}
               {activeStep === steps.length && (
                 <Paper square elevation={0} className={classes.resetContainer}>
                   <Typography>
-                    You are ready to use Bucketify🎉 <br />
-                    Enjoy!!
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: t('Your are ready'),
+                      }}
+                    />
                   </Typography>
                   <Button onClick={handleReset} className={classes.button}>
-                    Reset
+                    {t('Reset')}
                   </Button>
                 </Paper>
               )}
@@ -632,7 +643,7 @@ Allowed file extensions are only "mp3" or "m4a".`}
                   }}
                 >
                   <LinkRouter to="/accounts" className={clsx(classes.linkTextDecoration)}>
-                    Start now
+                    {t('Start now')}
                   </LinkRouter>
                 </ResponsiveButton>
               </Box>
@@ -643,45 +654,33 @@ Allowed file extensions are only "mp3" or "m4a".`}
           <Box className={clsx(classes.defaultBackGroundWrapper)}>
             <Container maxWidth="lg" className={clsx(classes.sectionWrapper)}>
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
-                Privacy Policy
+                {t('Privacy Policy')}
               </Typography>
 
               <Paper className={clsx(classes.paperPadding)}>
                 <Typography variant="body1" component="div">
-                  Last updated: 2021-01-31
-                  <br />
-                  <br />
-                  We operates http://www.bucketify.net (the "Site"). This page informs you of our
-                  policies regarding the collection, use and disclosure of Personal Information we
-                  receive from users of the Site.
-                  <br />
-                  <br />
-                  We use your Personal Information only for providing and improving the Site. By
-                  using the Site, you agree to the collection and use of information in accordance
-                  with this policy.
-                  <br />
-                  <br />
-                  <LinkRouter to="/privacy" className={clsx(classes.linkText)}>
-                    Show more information.
-                  </LinkRouter>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: t('Privacy Policy detail'),
+                    }}
+                  />
+
+                  {/* <LinkRouter to="/privacy" className={clsx(classes.linkText)}>
+                    {t('Privacy Policy link')}
+                  </LinkRouter> */}
                 </Typography>
               </Paper>
 
               <Typography variant="h3" component="h3" className={classes.sectionHeader}>
-                Disclaimer
+                {t('Disclaimer')}
               </Typography>
               <Paper className={clsx(classes.paperPadding)}>
                 <Typography variant="body1" component="div">
-                  Last updated: 2021-01-31
-                  <br />
-                  Use of this site is at your sole risk. Bucketify makes no warranty or guarantees
-                  that this web site will be uninterrupted, timely, secure, or error-free.
-                  <br />
-                  <br />
-                  In no event will Bucketify be reliable to any party for any direct, indirect,
-                  incidental, special, exemplary, or consequential damages of any type whatsoever
-                  related to or arising from this web site or any use of this web site.
-                  <br />
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: t('Disclaimer detail'),
+                    }}
+                  />
                 </Typography>
               </Paper>
             </Container>
