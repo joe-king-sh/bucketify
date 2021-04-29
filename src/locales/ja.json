@@ -1,0 +1,88 @@
+{
+    "Choose language": "In English",
+    "Contrast": "表示モード選択",
+    "Switch to Light mode": "Lightモードに切り替え",
+    "Switch to Dark mode": "Darkモードに切り替え",
+    "Under construction": "この機能は開発中です🚧",
+    "Account": "アカウント",
+    "ScanBucket": "バケットをスキャン",
+    "Library": "ライブラリ",
+    "Artists": "アーティスト",
+    "Albums": "アルバム",
+    "Tracks": "トラック",
+    "PlayList": "プレイリスト",
+    "SignIn": "サインイン",
+    "SignUp": "登録する",
+    "SignOut": "サインアウト", 
+    "Setting": "設定",
+    "Language": "表示言語",
+    "SNS": "SNS",
+    "GitHub": "GitHub",
+    "Twitter": "Twitter",
+
+    "Not Found": "ページが見つかりません",
+    "Not Found Message": "このページは削除されたか存在しません",
+
+    "Account overview": "アカウント概要",
+    "Profile": "プロフィール",
+
+    "Create Your AWS account" : "AWSアカウントを作成する",    
+    "Create your S3 bucket": "S3 Bucketを作成する",
+    "Create IAM user": "IAM Userを作成する",
+    "SignUp and SignIn to Bucketify": "Bucketifyに登録、サインインする",
+    "Scan your bucket": "バケットをスキャンする",
+
+    "Create Your AWS account detail": "AWSアカウントをまだお持ちで無い場合、",
+    "Create Your AWS account link text": "こちらから作成してください",
+
+    "Create Your S3 bucket detail": "まだS3バケットをお持ちでない場合は、音楽ファイルを保存するためのS３バケットを、",
+    "Create Your S3 bucket link text": "AWS Management Consoleから作成してください",
+    "Create Your S3 bucket detail2": "作成時には全ての <strong>Block public access (bucket settings)</strong> をオフにする必要があります. そして<strong>Cross-origin resource sharing (CORS)</strong> を、 <br />以下のように設定してください",
+
+    "Create Your IAM user detail": "IAMユーザを作成し、作成したS3バケットにアクセスできるようにするため、<br />以下のようにポリシーを設定してください.<br />",
+
+    "SignUp and SignIn to Bucketify detail": "Google, Facebook, Amazonなどのアカウントを使用して、Bucketifyにサインインすることができます. <br />個別にアカウントを作成する場合は、",
+    "SignUp and SignIn to Bucketify link text": "こちらからアカウント登録してください",
+
+    "Scan your bucket detail": "バケット名、アクセスキー、シークレットアクセスキーを入力し、 スキャンを開始してください.",
+    "Your are ready" : "Bucketifyを使用する準備が整いました🎉<br />好きな音楽を楽しんでください！",
+
+    "Learn More": "Bucketifyとは",
+    "Introduction": "Bucketifyとは",
+    "Introduction detail": "Bucketifyはクラウド時代のWebミュージックプレイヤーです.<br />あなたが<strong>Amazon S3</strong>に保存している気に入りの音楽を、いつ、どこからでも再生できます.<br /><br /><strong>Bucketifyは無料で利用可能です</strong>.<br />※あなたのAWSアカウントの、S3ストレージ使用料やネットワーク転送料のコストのみがかかります.",
+
+    "Features": "機能",
+
+    "Streaming playback": "ストリーミング再生",
+    "Streaming playback detail": "S3バケットに保管した音楽ファイルをストリーミング再生できます. \nスマートフォンでバックグラウンド再生にも対応しています.",
+
+    "Auto generated libraries": "自動生成されるライブラリ",
+    "Auto generated libraries detail": "トラック別、アーティスト別(🚧)、アルバム別(🚧)でライブラリを自動生成します.\n対応している音声ファイルの拡張子は'mp3'、'm4a'です.",
+
+    "Playlists stored on the cloud": "クラウドに保存されるプレイリスト(🚧)",
+    "Playlists stored on the cloud detail": "お気に入りのプレイリストをクラウドに保存することができます. 保存したプレイリストは、いつでも、どこでも、どのデバイスからでも再生可能です.",
+
+    "How It Works button": "仕組みを見る",
+    "How It Works": "仕組み",
+    "How It Works detail": "Bucketifyはあなたの音楽ファイルのメタデータのみを管理します.",
+
+    "How To Use button": "使い方を見る",
+    "How To Use": "使い方",
+
+    "Back": "戻る",
+    "Next": "次へ",
+    "Finish": "完了",
+    "Reset": "リセット",
+
+    "Start now": "今すぐ始める",
+
+    "Privacy Policy": "プライバシーポリシー",
+    "Privacy Policy detail": "最終更新 2021-04-29<br /><br />私はこのサイト(http://www.bucketify.net 以下 'Bucketify')を運営しています. このセクションでは、Bucketifyのユーザーから受け取る個人情報の収集、使用、および開示に関するポリシーについて説明します.<br /><br />私はあなたの個人情報をBucketifyの提供と改善のためにのみ使用します. Bucketifyを使用することにより、このポリシーに従って情報を収集および使用することに同意したことになります.",
+    "Privacy Policy link": "詳細情報はこちら.",
+    
+    "Disclaimer": "免責事項",
+    "Disclaimer detail": "最終更新: 2021-04-29<br /><br />Bucketify利用時のお約束です.<br />このサイトは個人が運営しているため、エラーがないこと、サービスの継続性、安全性を保証しません. <br />Bucketifyは、このWebサイトまたはこのWebサイトの使用に関連する事象から生じる、あらゆる種類の直接的、間接的、偶発的、特別、模範的、または結果的な損害について、いかなる当事者に対しても責任を負いかねます.<br />",
+
+    "Play List": "プレイリスト"
+
+}

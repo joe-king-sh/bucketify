@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -28,9 +28,17 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
+// Images
 import logo from '../../images/bucketify_logo.png';
-import { AuthContext } from '../../App';
+
+// Context
+import { AuthContext, LanguageContext } from '../../App';
+
+// Material-ui components
 import { Typography } from '@material-ui/core';
+
+// Translation
+import { useTranslation } from 'react-i18next';
 
 const drawerWidth = 240;
 
@@ -113,12 +121,11 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
 
-    // Link in Button
+    // Style for buttons contain Link.
     linkInButtonOutline: {
       color: 'white',
       textDecoration: 'none',
     },
-
     linkInButtonContaind: {
       textDecoration: 'none',
       color: 'black',
@@ -140,11 +147,17 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
   handleDrawerOpen,
 }) => {
   const AuthStateHooks = useContext(AuthContext);
+  const LanguageContextHooks = useContext(LanguageContext);
 
   const classes = useStyles();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('md'));
-  // const history = useHistory();
+
+  // translation
+  const [t, i18n] = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(LanguageContextHooks.languageState);
+  }, [LanguageContextHooks.languageState, i18n]);
 
   return (
     <AppBar
@@ -182,19 +195,24 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
         {/* The navigation menu on the right side. */}
         <Box className={clsx(classes.buttonNav)}>
           {/* The button to select language. */}
-          <Tooltip title="Language">
-            <IconButton color="inherit">
+          <Tooltip title={t('Choose language') as string}>
+            <IconButton
+              color="inherit"
+              onClick={() =>
+                LanguageContextHooks.toggleLanguage(LanguageContextHooks.languageState)
+              }
+            >
               <Language />
             </IconButton>
           </Tooltip>
 
           {/* The button to select contrast. */}
-          <Tooltip title="Contrast">
+          <Tooltip title={t('Contrast') as string}>
             {isDarkMode ? (
               <IconButton
                 color="inherit"
                 onClick={() => handleDarkModeToggle(isDarkMode)}
-                aria-label="Switch to Light mode"
+                aria-label={t('Switch to Light mode')}
               >
                 <Brightness7Icon />
               </IconButton>
@@ -202,7 +220,7 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
               <IconButton
                 color="inherit"
                 onClick={() => handleDarkModeToggle(isDarkMode)}
-                aria-label="Switch to Dark mode"
+                aria-label={t('Switch to Dark mode')}
               >
                 <Brightness4Icon />
               </IconButton>
@@ -212,13 +230,13 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
           {AuthStateHooks.authState === AuthState.SignedIn ? (
             <React.Fragment>
               <Link to="/accounts">
-                <Tooltip title="Account">
+                <Tooltip title={t('Account') as string}>
                   <IconButton className={clsx(classes.iconButtonLink)}>
                     <AccountCircle />
                   </IconButton>
                 </Tooltip>
               </Link>
-              <Tooltip title="SignOut">
+              <Tooltip title={t('SignOut') as string}>
                 <IconButton className={clsx(classes.iconButtonLink)} onClick={() => Auth.signOut()}>
                   <ExitToAppIcon />
                 </IconButton>
@@ -229,13 +247,13 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
               {/* Sign in button links to login require pages. */}
               <Button variant="outlined" color="secondary">
                 <Link to="/accounts" className={clsx(classes.linkInButtonOutline)}>
-                  Sign In
+                  {t('SignIn')}
                 </Link>
               </Button>
 
               <Button variant="contained" color="secondary">
                 <Link to="/signup" className={clsx(classes.linkInButtonContaind)}>
-                  Sign Up
+                  {t('SignUp')}
                 </Link>
               </Button>
             </React.Fragment>

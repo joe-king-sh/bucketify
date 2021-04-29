@@ -26,7 +26,8 @@
         "email"
     ],
     "userpoolClientReadAttributes": [
-        "email"
+        "email",
+        "email_verified"
     ],
     "userpoolClientLambdaRole": "bucket65de7c04_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,

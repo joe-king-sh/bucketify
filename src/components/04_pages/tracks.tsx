@@ -1,6 +1,6 @@
 import React, {
   // ReactNode,
-  //  useEffect,
+  useEffect,
   useState,
   useContext,
 } from 'react';
@@ -46,15 +46,18 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { fetchAudiosAsync, FetchAudiosInput, FetchAudioOutput } from '../../service/tracksService';
 
 // Contexts
-import { UserDataContext, IUserDataStateHooks } from '../../App';
+import { UserDataContext, IUserDataStateHooks, LanguageContext } from '../../App';
 
 // Common
 import { sizeOfFetchingTrackDatAtOnce } from '../../common/const';
-import { msgNoTracksSelected, msgUnderConstruction } from '../../common/message';
+import { msgNoTracksSelected } from '../../common/message';
 import { AppName } from '../../common/const';
 
 // Router
 import { useHistory } from 'react-router-dom';
+
+// Translation
+import { useTranslation } from 'react-i18next';
 
 // Make custom styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -155,6 +158,13 @@ export const Tracks: React.FC = () => {
   const matches = useMediaQuery(theme.breakpoints.up('md'));
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
   const history = useHistory();
+
+  // Language setting.
+  const LanguageContextHooks = useContext(LanguageContext);
+  const [t, i18n] = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(LanguageContextHooks.languageState);
+  }, [LanguageContextHooks.languageState, i18n]);
 
   /**
    *  States used in this component.
@@ -633,7 +643,7 @@ export const Tracks: React.FC = () => {
         alert={{
           severity: 'info',
           title: '',
-          description: msgUnderConstruction(),
+          description: t('Under construction'),
         }}
         isSnackBarOpen={showSnackBar}
         handleClose={(event?: React.SyntheticEvent, reason?: string) => {
