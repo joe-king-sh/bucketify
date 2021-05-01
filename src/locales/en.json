@@ -48,7 +48,7 @@
     "Your are ready" : "You are ready to use Bucketify🎉 <br />Enjoy!!",
 
     "Learn More": "Learn More",
-    "Introduction": "About this",
+    "Introduction": "About Bucketify",
     "Introduction detail": "Bucketify is a cloud Web music player.<br />This makes you can play your favorite music stored in <strong>Amazon S3</strong> anytime, anywhere.<br /><br /><strong>It is FREE TO USE</strong>. <br />You have to pay only billing of your AWS accounts such as S3 storage or Network transfer.",
 
     "Features": "Features",
@@ -105,6 +105,8 @@
     "Error message InvalidAccessKey": "Check your access key is correct.",
     "Error message SignatureDoesNotMatch": "The request signature we calculated does not match the signature you provided.  Check your secret access key is correct.",
     "Error message NetworkError": "Check your s3 bucket is exists.<br />Need to allow Cross-Origin Resource Sharing (CORS) setting in your buckets.<br /><br />Like below:<br /><br />[<br />    {<br />        \"AllowedHeaders\": [<br />            \"*\"<br />        ],<br />        \"AllowedMethods\": [<br />            \"GET\"<br />        ],<br />        \"AllowedOrigins\": [<br />            \"https://www.bucketify.net\"<br />        ],<br />        \"ExposeHeaders\": []<br />    }<br />]<br />CORS setting may take a few minutes to be enabled.",
-    "Error message AccessDenied": "Need to attach policy to allow ListBucket and GetItem oparation.<br /><br />Like below: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}"
+    "Error message AccessDenied": "Need to attach policy to allow ListBucket and GetItem oparation.<br /><br />Like below: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}",
 
+    "Play tracks selected": "Play tracks selected",
+    "Add to Playlist": "Add to Playlist"
 }
