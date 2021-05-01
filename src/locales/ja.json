@@ -23,7 +23,7 @@
     "Not Found": "ページが見つかりません",
     "Not Found Message": "このページは削除されたか存在しません",
 
-    "Account overview": "アカウント概要",
+    "Account overview": "アカウント情報",
     "Profile": "プロフィール",
 
     "Create Your AWS account" : "AWSアカウントを作成する",    
@@ -83,6 +83,28 @@
     "Disclaimer": "免責事項",
     "Disclaimer detail": "最終更新: 2021-04-29<br /><br />Bucketify利用時のお約束です.<br />このサイトは個人が運営しているため、エラーがないこと、サービスの継続性、安全性を保証しません. <br />Bucketifyは、このWebサイトまたはこのWebサイトの使用に関連する事象から生じる、あらゆる種類の直接的、間接的、偶発的、特別、模範的、または結果的な損害について、いかなる当事者に対しても責任を負いかねます.<br />",
 
-    "Play List": "プレイリスト"
+    "Play List": "プレイリスト",
+
+    "Error message bucket name is empty": "バケット名を入力してください.",
+    "Error message access key is empty": "アクセスキーを入力してください.",
+    "Error message secret access key is empty": "シークレットアクセスキーを入力してください.",
+    "Searching audio files in $bucketname": "bucketNameの中のオーディオファイルを検索しています...",
+    "Error message audio not found": "オーディオファイルが見つかりませんでした.<br />Bucketifyで使用できる拡張子は'mp3'と'm4a'のみです.<br/>S3に対応した拡張子のファイルがあるか確認してください.",
+
+    "Deleting metadata in Bucketify about $bucketName": "Bucketifyに保存された「bucketName」のメタデータを削除しています...",
+
+    "Now loading $audioName": "Now loading...<br />audioName",
+    "Error message loading failed": "予期せぬエラーが発生しました. もう一度やり直してください. <br />エラーが解消しない場合は、GitHubにIssueをあげてください.",
+
+    "Successfully scanned your bucket": "バケットのスキャンに成功しました",
+    "Please select tracks at least one": "1ファイル以上を選択してください",
+
+    "Scan your bucket H2":"バケットをスキャン",
+    "Start Scan": "スキャンを開始",
+
+    "Error message InvalidAccessKey": "Access Keyが正しいことを確認してください.",
+    "Error message SignatureDoesNotMatch": "Secret Access Keyが正しいことを確認してください.",
+    "Error message NetworkError": "S3バケットが存在することを確認してください.<br />以下のようにCross-Origin Resource Sharing (CORS)設定を有効化する必要があります:<br /><br />[<br />    {<br />        \"AllowedHeaders\": [<br />            \"*\"<br />        ],<br />        \"AllowedMethods\": [<br />            \"GET\"<br />        ],<br />        \"AllowedOrigins\": [<br />            \"https://www.bucketify.net\"<br />        ],<br />        \"ExposeHeaders\": []<br />    }<br />]<br /><br />CORS 設定は有効化されるまで数分かかることがあります.",
+    "Error message AccessDenied": "ListBucket と GetItem の操作が可能なポリシーがIAM Userにアタッチされている必要があります.<br /><br />以下のようにIAMポリシーの設定を見直してください: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}"
 
 }
