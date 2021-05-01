@@ -2,9 +2,10 @@
 
 ![bucketify-logo](../src/images/bucketify_logo.png)  
 </div>
+
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-Bucketify(https://www.bucketify.net/) クラウド時代のWebミュージックプレイヤーです.
+Bucketify(https://www.bucketify.net/) クラウド時代のWebミュージックプレイヤーです.  
 あなたがAmazon S3に保存している気に入りの音楽を、いつ、どこからでも再生できます.
 <div align="center">
 
@@ -24,7 +25,7 @@ Bucketify(https://www.bucketify.net/) クラウド時代のWebミュージック
 ## 利用に必要なもの
 - あなたのAWSアカウント
 - オーディオファイルを格納するあなたのS3バケット
-- バケットにアクセスできるポリシーを持った、IAM User
+- バケットにアクセスできるポリシーを持ったIAM User
 
 ## アーキテクチャ
 - Bucketifyはあなたのオーディオファイルの**メタデータのみ**を管理します.
@@ -32,5 +33,6 @@ Bucketify(https://www.bucketify.net/) クラウド時代のWebミュージック
 
 ![bucketify-how-it-work](../src/images/architecture-ja.drawio.svg)  
 </div>
+
 ## License
 このプロジェクトは MIT Licenseです.

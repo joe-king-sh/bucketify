@@ -5,7 +5,7 @@
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 ## About Bucketify
-Bucketify(https://www.bucketify.net/) is a cloud music player.
+Bucketify(https://www.bucketify.net/) is a cloud music player.  
 This makes you can play your favorite music stored in Amazon S3 anytime, anywhere.
 <div align="center">
 
@@ -30,11 +30,13 @@ This makes you can play your favorite music stored in Amazon S3 anytime, anywher
 
 ## Architecture
 Bucketify manages **only your audio file metadata**.
+
 <div align="center">
   
 ![bucketify-how-it-work](src/images/architecture.drawio.svg)  
 </div>
-## License
-This project is licensed under the MIT License.
 
+## License
+This project is licensed under the MIT License.  
+  
 [※日本語版README.mdはこちら](doc/../docs/README-ja.md)
