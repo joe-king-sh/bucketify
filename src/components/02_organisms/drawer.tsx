@@ -321,14 +321,18 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
           </ListItem>
           <Collapse in={isSNSOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding onClick={() => setShowSnackBar(true)}>
-              {/* <Link to="/" className={classes.link}> */}
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <GitHub />
-                </ListItemIcon>
-                <ListItemText primary={t('GitHub')} />
-              </ListItem>
-              {/* </Link> */}
+              <a
+                href="https://github.com/joe-king-sh/bucketify"
+                className={classes.link}
+                target="_blank"
+              >
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <GitHub />
+                  </ListItemIcon>
+                  <ListItemText primary={t('GitHub')} />
+                </ListItem>
+              </a>
 
               <a href="https://twitter.com/joe_king_sh" className={classes.link} target="_blank">
                 <ListItem button className={classes.nested}>

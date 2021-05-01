@@ -36,6 +36,7 @@ import QueueMusicIcon from '@material-ui/icons/QueueMusic';
 // Image
 import demoGifPC from '../../images/bucketify_demo_pc.gif';
 import architecture from '../../images/architecture.drawio.svg';
+import architecture_ja from '../../images/architecture-ja.drawio.svg';
 import scanBucketImage from '../../images/scan-bucket-image.png';
 
 // MyComponents
@@ -367,11 +368,7 @@ const Landing: React.FC = () => {
                 __html: t('SignUp and SignIn to Bucketify detail'),
               }}
             />
-            <Link
-              href="https://www.bucketify.net/accounts"
-              target="_blank"
-              className={clsx(classes.linkText)}
-            >
+            <Link href="https://www.bucketify.net/accounts" className={clsx(classes.linkText)}>
               {t('SignUp and SignIn to Bucketify link text')}
             </Link>
             .<br />
@@ -539,7 +536,12 @@ const Landing: React.FC = () => {
                     // @ts-ignore
                     style={{ transform: props.xys.interpolate(trans) }}
                   >
-                    <img src={architecture} className={classes.howItWorksImage} />
+                    <img
+                      src={
+                        LanguageContextHooks.languageState == 'en' ? architecture : architecture_ja
+                      }
+                      className={classes.howItWorksImage}
+                    />
                   </animated.div>
                 </Box>
                 <Box className={clsx(classes.buttonWrapper)}>

@@ -1,93 +1,34 @@
-# Bucketify
 
-![bucketify-logo](bucketify/build/static/media/bucketify_logo.43f80d6b.png)  
-Music player web application to play music stored in  AWS S3 bucket.  
-BucketifyはAmazon S3に格納したオーディオファイルを再生するクラウド時代のミュージックプレーヤーです。  
+![bucketify-logo](src/images/bucketify_logo.png)  
 
-## 機能
-- ストリーミング再生
-  - S3のファイルをストリーミングで再生可能です。
-  - モバイルでのバックグラウンド再生も対応しています。
-- ライブラリ自動作成
-  - SSのファイルをスキャンしライブラリを自動作成します(mp3,mp4a形式に対応)
-- プレイリスト作成
-  - あなたのお気に入りのプレイリストを作成できます
-  - 作成したプレイリストはPCやモバイルからアクセス可能
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+## About Bucketify
+Bucketify(https://www.bucketify.net/) is a cloud music player.
+This makes you can play your favorite music stored in Amazon S3 anytime, anywhere.
 
-## 利用にあたり準備いただくもの
-- あなたのAWSアカウント
-- オーディオを格納するSSバケット
-- S3バケットへアクセス可能なアクセスキー/シークレットアクセスキー
-
-## 個人情報の収集目的
-- ユーザから収集した個人情報(メールアドレス、名前)については、本アプリケーションの運用管理以外に利用しません。
-
-## 免責事項
-- 本アプリケーションによって生じる不利益などについて、一切の責任を負いかねます。
-- 個人で作成しているため、突然のサービス内容の変更や終了する可能性があります。
-
-## Contact
-- 
-
-環境構築時のメモ
-```
-docker-compose build
-docker-compose up
-
-普段/zshなので
-/bin/zshで.zshrcを読み込む
-<!-- →Dockerやめる -->
-
-npm install -g react && \ 
-
-<!-- reduxやめる -->
-<!-- npm install -g redux react-redux  -->
+![bucketify-demo](src/images/bucketify_demo_pc.gif)  
 
 
-npm install aws-amplify @aws-amplify/ui-react
+## Features
+- Streaming playback
+  - Makes you can streaming playback your favorite music in s3 bucket. 
+  - It is also can mobile background playing.
+- Auto generated libraries
+  - Generates libraries by tracks, artist(🚧), album(🚧).
+  - Allowed file extensions are only 'mp3' or 'm4a'.
+- Playlists stored on the cloud(🚧)
+  - Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.
 
-npm install --save @types/graphql
-npm install --save type-graphql
+## Prerequisites
+- Your AWS Account.
+- Your S3 Bucket to store audio files.
+- IAM User and IAM Policy that can access your buckets.
 
-yarn add aws-amplify-react
+## Architecture
+- Bucketify manages **only your audio file metadata**.
+![bucketify-how-it-work](src/images/architecture.drawio.svg)  
 
-yarn add @material-ui/core
+## License
+This project is licensed under the MIT License.
 
-
-yarn add @material-ui/icons
-
-yarn add react-router react-router-dom
-
-yarn add @types/react-router-dom
-
-最終的にはnpm installだけ
-
-Docker内でtsのコンパイルが遅すぎるのでDockerやめる
-```
-
-## 機能
-- Scan
-  - 指定したバケットの対象曲をスキャンする
-- プレイリスト自動作成
-  - アーティスト別
-  - アルバム別
-  - マイプレイリスト
-  - 全て再生
-- 検索機能
-- 
-
-
-
-
-## amplifyの構築
-```
-amplify init
-
-amplify add auth
-# Social loginの実装
-マネジメントコンソールでIdPごとに属性のマッピングをする必要あり
-
-amplify add api
-
-# Social loginの実装
-```
+[※日本語版README.mdはこちら](doc/../docs/README-ja.md)

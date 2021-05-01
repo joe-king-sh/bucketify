@@ -49,7 +49,7 @@
 
     "Learn More": "Learn More",
     "Introduction": "About Bucketify",
-    "Introduction detail": "Bucketify is a cloud Web music player.<br />This makes you can play your favorite music stored in <strong>Amazon S3</strong> anytime, anywhere.<br /><br /><strong>It is FREE TO USE</strong>. <br />You have to pay only billing of your AWS accounts such as S3 storage or Network transfer.",
+    "Introduction detail": "Bucketify is a cloud music player.<br />This makes you can play your favorite music stored in <strong>Amazon S3</strong> anytime, anywhere.<br /><br /><strong>It is FREE TO USE</strong>. <br />You have to pay only billing of your AWS accounts such as S3 storage or Network transfer.",
 
     "Features": "Features",
 
