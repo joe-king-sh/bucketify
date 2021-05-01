@@ -20,12 +20,13 @@ This makes you can play your favorite music stored in Amazon S3 anytime, anywher
   - Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.
 
 ## Prerequisites
-- Your AWS Account.
+- Your AWS Account.
 - Your S3 Bucket to store audio files.
 - IAM User and IAM Policy that can access your buckets.
 
 ## Architecture
-- Bucketify manages **only your audio file metadata**.
+Bucketify manages **only your audio file metadata**.
+  
 ![bucketify-how-it-work](src/images/architecture.drawio.svg)  
 
 ## License
