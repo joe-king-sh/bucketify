@@ -39,6 +39,9 @@ import Share from '@material-ui/icons/Share';
 import GitHub from '@material-ui/icons/GitHub';
 import Twitter from '@material-ui/icons/Twitter';
 
+// react-share
+import { TwitterShareButton } from 'react-share';
+
 // import i18next for translation.
 import { useTranslation } from 'react-i18next';
 
@@ -334,14 +337,14 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
                 </ListItem>
               </a>
 
-              <a href="https://twitter.com/joe_king_sh" className={classes.link} target="_blank">
+              <TwitterShareButton title="Bucketify" url={'https://www.bucketify.net/'}>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <Twitter />
                   </ListItemIcon>
                   <ListItemText primary={t('Twitter')} />
                 </ListItem>
-              </a>
+              </TwitterShareButton>
             </List>
           </Collapse>
 

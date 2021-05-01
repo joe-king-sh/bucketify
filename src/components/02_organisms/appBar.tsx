@@ -13,6 +13,11 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Language from '@material-ui/icons/Language';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import GitHub from '@material-ui/icons/GitHub';
+import Twitter from '@material-ui/icons/Twitter';
+
+// Share button
+import { TwitterShareButton } from 'react-share';
 
 // Auth
 import { Auth } from 'aws-amplify';
@@ -226,6 +231,23 @@ export const MyAppBar: React.FC<MyAppBarProps> = ({
               </IconButton>
             )}
           </Tooltip>
+
+          <IconButton color="inherit" aria-label={t('GitHub')}>
+            <a
+              href="https://github.com/joe-king-sh/bucketify"
+              className={classes.linkInButtonOutline}
+              target="_blank"
+            >
+              <Tooltip title={t('GitHub') as string}>
+                <GitHub />
+              </Tooltip>
+            </a>
+          </IconButton>
+          <IconButton color="inherit" aria-label={t('Twitter')}>
+            <TwitterShareButton title="Bucketify" url={'https://www.bucketify.net/'}>
+              <Twitter />
+            </TwitterShareButton>
+          </IconButton>
 
           {AuthStateHooks.authState === AuthState.SignedIn ? (
             <React.Fragment>
