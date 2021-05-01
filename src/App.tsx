@@ -25,6 +25,12 @@ import LoginRequiredWrapper from './components/03_templates/loginRequiredWrapper
 import { useTracking } from './common/useTracking';
 import { AppName } from './common/const';
 
+// image
+import bucketifyImage from './images/bucketify_image.png';
+
+//OGP
+import { Helmet } from 'react-helmet';
+
 // Auth Status
 export interface IAuthStateHooks {
   authState: AuthState | undefined;
@@ -56,42 +62,62 @@ export const App: React.FC = () => {
   useTracking('G-1XT7WKVHT9');
 
   return (
-    <Switch>
-      {/* Login not required route */}
-      <Route exact path={['/', '/signup', '/privacy']}>
-        <GenericTemplate>
-          <LoginRequiredWrapper isLoginRequired={false}>
-            <Route exact path="/" component={Landing} />
-            {/* <Route exact path="/signin" component={SignIn} /> */}
-            <Route exact path="/signup" component={SignUp} />
-            <Route exact path="/privacy" component={PrivacyPolicy} />
-          </LoginRequiredWrapper>
-        </GenericTemplate>
-      </Route>
+    <>
+      <Helmet
+        title={`Bucketify`}
+        meta={[
+          { name: 'twitter:card', content: 'summary_large_image' },
+          { name: 'twitter:creator', content: '@joe_king_sh' },
+          { property: 'og:title', content: 'Bucketify' },
+          { property: 'og:type', content: 'website' },
+          { property: 'og:url', content: 'https://www.bucketify.net/' },
+          { property: 'og:image', content: bucketifyImage },
+          { property: 'og:site_name', content: 'Bucketify' },
+          {
+            property: 'og:description',
+            content:
+              'Bucketify(https://www.bucketify.net/) is a cloud music player. This makes you can play your favorite music stored in Amazon S3 anytime, anywhere.',
+          },
+        ]}
+      />
 
-      {/* Login required route */}
-      <Route exact path={['/accounts', '/bucket', '/track', '/player']}>
-        <Switch>
+      <Switch>
+        {/* Login not required route */}
+        <Route exact path={['/', '/signup', '/privacy']}>
           <GenericTemplate>
-            <LoginRequiredWrapper isLoginRequired={true}>
-              <Route exact path="/accounts" component={Accounts} />
-              <Route exact path="/bucket" component={ScanBuckets} />
-              <Route exact path="/track" component={Tracks} />
-              <Route exact path="/player" component={Player} />
+            <LoginRequiredWrapper isLoginRequired={false}>
+              <Route exact path="/" component={Landing} />
+              {/* <Route exact path="/signin" component={SignIn} /> */}
+              <Route exact path="/signup" component={SignUp} />
+              <Route exact path="/privacy" component={PrivacyPolicy} />
             </LoginRequiredWrapper>
           </GenericTemplate>
-        </Switch>
-      </Route>
+        </Route>
 
-      {/* Wrong url route */}
-      <Route
-        render={() => (
-          <GenericTemplate>
-            <NotFound />
-          </GenericTemplate>
-        )}
-      />
-    </Switch>
+        {/* Login required route */}
+        <Route exact path={['/accounts', '/bucket', '/track', '/player']}>
+          <Switch>
+            <GenericTemplate>
+              <LoginRequiredWrapper isLoginRequired={true}>
+                <Route exact path="/accounts" component={Accounts} />
+                <Route exact path="/bucket" component={ScanBuckets} />
+                <Route exact path="/track" component={Tracks} />
+                <Route exact path="/player" component={Player} />
+              </LoginRequiredWrapper>
+            </GenericTemplate>
+          </Switch>
+        </Route>
+
+        {/* Wrong url route */}
+        <Route
+          render={() => (
+            <GenericTemplate>
+              <NotFound />
+            </GenericTemplate>
+          )}
+        />
+      </Switch>
+    </>
   );
 };
 
