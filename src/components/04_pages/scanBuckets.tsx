@@ -335,7 +335,7 @@ const ScanBuckets: React.FC = () => {
   // TSX to return
   return (
     <>
-      <PageContainer h2Text={t('Scan your bucket')}>
+      <PageContainer h2Text={t('Scan your bucket H2')}>
         {/*  Show notification that error or warning or information and more in this alert field. */}
         <AlertField alerts={alerts} />
 

@@ -105,6 +105,9 @@
     "Error message InvalidAccessKey": "Access Keyが正しいことを確認してください.",
     "Error message SignatureDoesNotMatch": "Secret Access Keyが正しいことを確認してください.",
     "Error message NetworkError": "S3バケットが存在することを確認してください.<br />以下のようにCross-Origin Resource Sharing (CORS)設定を有効化する必要があります:<br /><br />[<br />    {<br />        \"AllowedHeaders\": [<br />            \"*\"<br />        ],<br />        \"AllowedMethods\": [<br />            \"GET\"<br />        ],<br />        \"AllowedOrigins\": [<br />            \"https://www.bucketify.net\"<br />        ],<br />        \"ExposeHeaders\": []<br />    }<br />]<br /><br />CORS 設定は有効化されるまで数分かかることがあります.",
-    "Error message AccessDenied": "ListBucket と GetItem の操作が可能なポリシーがIAM Userにアタッチされている必要があります.<br /><br />以下のようにIAMポリシーの設定を見直してください: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}"
+    "Error message AccessDenied": "ListBucket と GetItem の操作が可能なポリシーがIAM Userにアタッチされている必要があります.<br /><br />以下のようにIAMポリシーの設定を見直してください: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}",
+
+    "Play tracks selected": "選択したトラックを再生",
+    "Add to Playlist": "プレイリストへ追加"
 
 }

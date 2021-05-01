@@ -554,7 +554,7 @@ export const Tracks: React.FC = () => {
       onClick: handlePlayTracksFabOnClick,
       icon: (
         <>
-          <span className={classes.fabButtonText}>Play tracks selected</span>
+          <span className={classes.fabButtonText}>{t('Play tracks selected')}</span>
           <PlayArrowIcon />
         </>
       ),
@@ -573,7 +573,7 @@ export const Tracks: React.FC = () => {
       onClick: () => setShowSnackBar(true),
       icon: (
         <>
-          <span className={classes.fabButtonText}>Add to Playlist</span>
+          <span className={classes.fabButtonText}>{t('Add to Playlist')}</span>
           <PlaylistAddIcon />
         </>
       ),
@@ -584,7 +584,7 @@ export const Tracks: React.FC = () => {
   return (
     <>
       {/* Fixed header */}
-      <PageContainer h2Text="Tracks">
+      <PageContainer h2Text={t('Tracks')}>
         <AlertField alerts={alerts} />
 
         {/* Table header */}
