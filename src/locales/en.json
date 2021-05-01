@@ -83,6 +83,28 @@
     "Disclaimer": "Disclaimer",
     "Disclaimer detail": "Last updated: 2021-04-29<br /><br />Use of this site is at your sole risk.<br />Bucketify makes no warranty or guarantees that this website will be uninterrupted, timely, secure, or error-free.<br /><br />In no event will Bucketify be reliable to any party for any direct, indirect, incidental, special, exemplary, or consequential damages of any type whatsoever related to or arising from this website or any use of this website.",
 
-    "Play List": "Play List"
+    "Play List": "Play List",
+
+    "Error message bucket name is empty": "Enter your bucket name.",
+    "Error message access key is empty": "Enter your Access Key.",
+    "Error message secret access key is empty": "Enter your Secret Access Key.",
+    "Searching audio files in $bucketname": "Searching audio files in bucketName...",
+    "Error message audio not found": "No audio file was found.<br />File extensions that you can use in bucketify are only 'mp3','m4a' .<br/>Please confirm that your object is exists and file extension is allowed.",
+
+    "Deleting metadata in Bucketify about $bucketName": "Deleting metadata in Bucketify about bucketName...",
+
+    "Now loading $audioName": "Now loading...<br/>audioName",
+    "Error message loading failed": "An unexpected error has occurred. Please try again. <br />If it wouldn't be resolved, please open the issue on GitHub.",
+
+    "Successfully scanned your bucket": "Successfully scanned your bucket.",
+    "Please select tracks at least one": "Please select tracks at least one.",
+
+    "Scan your bucket H2": "Scan your bucket",
+    "Start Scan": "START SCAN",
+
+    "Error message InvalidAccessKey": "Check your access key is correct.",
+    "Error message SignatureDoesNotMatch": "The request signature we calculated does not match the signature you provided.  Check your secret access key is correct.",
+    "Error message NetworkError": "Check your s3 bucket is exists.<br />Need to allow Cross-Origin Resource Sharing (CORS) setting in your buckets.<br /><br />Like below:<br /><br />[<br />    {<br />        \"AllowedHeaders\": [<br />            \"*\"<br />        ],<br />        \"AllowedMethods\": [<br />            \"GET\"<br />        ],<br />        \"AllowedOrigins\": [<br />            \"https://www.bucketify.net\"<br />        ],<br />        \"ExposeHeaders\": []<br />    }<br />]<br />CORS setting may take a few minutes to be enabled.",
+    "Error message AccessDenied": "Need to attach policy to allow ListBucket and GetItem oparation.<br /><br />Like below: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}"
 
 }

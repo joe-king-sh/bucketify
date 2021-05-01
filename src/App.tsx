@@ -23,6 +23,7 @@ import LoginRequiredWrapper from './components/03_templates/loginRequiredWrapper
 
 // common
 import { useTracking } from './common/useTracking';
+import { AppName } from './common/const';
 
 // Auth Status
 export interface IAuthStateHooks {
@@ -108,9 +109,12 @@ export default () => {
     setUser: setUser,
   };
 
-  const [languageState, setLanguage] = React.useState<string>('en');
+  const [languageState, setLanguage] = React.useState<string>(
+    localStorage.getItem(AppName + 'language') === 'ja' ? 'ja' : 'en'
+  );
   const toggleLanguage = (language: string | undefined) => {
     const newLanguage = language == 'ja' ? 'en' : 'ja';
+    localStorage.setItem(AppName + 'language', newLanguage);
     setLanguage(newLanguage);
   };
   const LanguageContextHooks: ILanguageContext = {

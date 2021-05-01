@@ -4,15 +4,6 @@ import * as musicMetadata from 'music-metadata-browser';
 // AWS SDK
 import { ListObjectsV2Request, ListObjectsV2Output, GetObjectRequest } from 'aws-sdk/clients/s3';
 
-// Messages
-import {
-  msgInValidAccessKey,
-  msgSignatureDoesNotMatch,
-  msgNetworkingError,
-  msgAccessDenied,
-  // msgFileNotFound
-} from '../common/message';
-
 // My components
 import { TAlert } from '../components/02_organisms/alert';
 
@@ -27,6 +18,12 @@ import { createAudioMetaData, deleteAudioMetaData } from '../graphql/mutations';
 import { listAudioByDataValue } from '../graphql/queries';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { ListAudioByDataValueQuery, DeleteAudioMetaDataInput } from '../API';
+
+// Translation
+// import TFunction from 'react-i18next';
+
+// common
+// import { AppName } from '../common/const';
 
 import awsExports from '../aws-exports';
 
@@ -153,13 +150,16 @@ export const getObjectMetadataAsync: (
  * @param {AWS.S3} s3
  * @param {string} bucketName
  * @param {(alert: TAlert) => void} handleAlerts
+ * @param {t} translation helper
  * @return Promise<string[]> An array of s3 object keys of user's audio files.
  */
 export const listAudioFilesKeysInS3Async: (
   s3: AWS.S3,
   bucketName: string,
-  handleAlerts: (alert: TAlert) => void
-) => Promise<string[]> = async (s3, bucketName, handleAlerts) => {
+  handleAlerts: (alert: TAlert) => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any
+) => Promise<string[]> = async (s3, bucketName, handleAlerts, t) => {
   console.group('CALL_LIST_OBJECTS_API');
 
   // List objects
@@ -222,16 +222,16 @@ export const listAudioFilesKeysInS3Async: (
     const alert: TAlert = { severity: 'error', title: '', description: '' };
     if (err.code === 'InvalidAccessKeyId') {
       alert.title = 'Error - InvalidAccessKeyId';
-      alert.description = msgInValidAccessKey();
+      alert.description = t('Error message InvalidAccessKey');
     } else if (err.code === 'SignatureDoesNotMatch') {
       alert.title = 'Error - SignatureDoesNotMatch';
-      alert.description = msgSignatureDoesNotMatch();
+      alert.description = t('Error message SignatureDoesNotMatch');
     } else if (err.code === 'NetworkingError') {
       alert.title = 'Error - NetworkingError';
-      alert.description = msgNetworkingError();
+      alert.description = t('Error message NetworkError');
     } else if (err.code === 'AccessDenied') {
       alert.title = 'Error - AccessDenied';
-      alert.description = msgAccessDenied();
+      alert.description = t('Error message AccessDenied');
     } else {
       // An unexpected error
       alert.title = 'Error - ' + err.code;

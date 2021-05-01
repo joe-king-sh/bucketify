@@ -34,7 +34,11 @@ const AlertField: React.FC<TAlertFieldProps> = ({ alerts }) => {
         return (
           <Alert key={i} severity={alert.severity} className={classes.alertField}>
             <AlertTitle>{alert.title}</AlertTitle>
-            {alert.description}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: alert.description,
+              }}
+            />
           </Alert>
         );
       })}

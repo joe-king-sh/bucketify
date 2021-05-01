@@ -50,7 +50,6 @@ import { UserDataContext, IUserDataStateHooks, LanguageContext } from '../../App
 
 // Common
 import { sizeOfFetchingTrackDatAtOnce } from '../../common/const';
-import { msgNoTracksSelected } from '../../common/message';
 import { AppName } from '../../common/const';
 
 // Router
@@ -332,7 +331,7 @@ export const Tracks: React.FC = () => {
 
     if (tracksToBePlayedMap.size === 0) {
       console.warn('No audio file was found.');
-      const description = msgNoTracksSelected();
+      const description = t('Please select tracks at least one');
       const alert: TAlert = {
         severity: 'warning',
         title: 'No tracks selected.',
@@ -561,24 +560,7 @@ export const Tracks: React.FC = () => {
       ),
       variant: 'extended',
     },
-    // {
-    //   key: 'fab-play-random',
-    //   in: isFabActive,
-    //   timeout: transitionDuration,
-    //   style: {
-    //     transitionDelay: `${isFabActive ? transitionDuration.exit + 35 : 0}ms`,
-    //   },
-    //   color: 'primary',
-    //   className: classes.fabInFab3,
-    //   onClick: handleControlActiveToggle,
-    //   icon: (
-    //     <>
-    //       <span className={classes.fabButtonText}>Play Random</span>
-    //       <ShuffleIcon />
-    //     </>
-    //   ),
-    //   variant: 'extended',
-    // },
+
     {
       key: 'fab-add-playlist',
       in: isFabActive,

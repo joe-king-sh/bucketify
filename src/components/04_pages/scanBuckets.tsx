@@ -1,5 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+// Context
+import { LanguageContext } from '../../App';
 
 // Template
 import PageContainer from '../02_organisms/pageContainer';
@@ -20,16 +23,19 @@ import { CustomizedSnackBar } from '../02_organisms/snackBar';
 // AWS SDK
 import AWS from 'aws-sdk';
 
+// Translation
+import { useTranslation } from 'react-i18next';
+
 // Message
-import {
-  msgRequiredValueEmpty,
-  msgFileNotFound,
-  msgProgressSearch,
-  msgProgressDelete,
-  msgProgressLoading,
-  msgProgressFailed,
-  msgScaningSucceeded,
-} from '../../common/message';
+// import {
+//   msgRequiredValueEmpty,
+//   msgFileNotFound,
+//   msgProgressSearch,
+//   msgProgressDelete,
+//   msgProgressLoading,
+//   msgProgressFailed,
+//   msgScaningSucceeded,
+// } from '../../common/message';
 
 // Service classes
 import {
@@ -166,7 +172,7 @@ const ScanBuckets: React.FC = () => {
     // Confirm bucket name must be not empty.
     if (!formData.bucketName) {
       console.error('The bucket name is empty.');
-      const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your bucket name' });
+      const errorDescription = t('Error message bucket name is empty');
       handleValidation(true, errorDescription, 'bucketName');
       isValidationError = true;
     } else {
@@ -175,7 +181,7 @@ const ScanBuckets: React.FC = () => {
     // Confirm accessKey must be not empty.
     if (!formData.accessKey) {
       console.error('The access key or secret access key is empty.');
-      const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your access key' });
+      const errorDescription = t('Error message access key is empty');
       handleValidation(true, errorDescription, 'accessKey');
       isValidationError = true;
     } else {
@@ -184,7 +190,7 @@ const ScanBuckets: React.FC = () => {
     // Confirm SecretAccessKey must be not empty.
     if (!formData.secretAccessKey) {
       console.error('The access key or secret access key is empty.');
-      const errorDescription = msgRequiredValueEmpty({ requiredValue: 'your secret access key' });
+      const errorDescription = t('Error message secret access key is empty');
       handleValidation(true, errorDescription, 'secretAccessKey');
       isValidationError = true;
     } else {
@@ -199,7 +205,8 @@ const ScanBuckets: React.FC = () => {
    *
    * @return {*}
    */
-  const scanBuckets = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const scanBuckets = async (t: any) => {
     try {
       console.group('SCAN_BUCKETS_OPERATION');
       console.info('Start scan your bucket');
@@ -231,20 +238,24 @@ const ScanBuckets: React.FC = () => {
       // Call list object operation.
       setProgress({
         inProgress: true,
-        nowProcessing: msgProgressSearch({ bucketName: formData.bucketName }),
+        nowProcessing: t('Searching audio files in $bucketname').replace(
+          'bucketName',
+          formData.bucketName
+        ),
         processedCount: 0,
         allCount: 0,
       });
       const audioObjectKeys = await listAudioFilesKeysInS3Async(
         s3,
         formData.bucketName,
-        handleAlerts
+        handleAlerts,
+        t
       );
 
       // If no audio file was found, the scan bucket operation will be end immediately.
       if (audioObjectKeys.length === 0) {
         console.warn('No audio file was found.');
-        const description = msgFileNotFound();
+        const description = t('Error message audio not found');
         const alert: TAlert = {
           severity: 'warning',
           title: 'FileNotFound',
@@ -257,7 +268,10 @@ const ScanBuckets: React.FC = () => {
       // Delete old metadatas.
       setProgress({
         inProgress: true,
-        nowProcessing: msgProgressDelete({ bucketName: formData.bucketName }),
+        nowProcessing: t('Deleting metadata in Bucketify about $bucketName').replace(
+          'bucketName',
+          formData.bucketName
+        ),
         processedCount: 0,
         allCount: 0,
       });
@@ -284,7 +298,8 @@ const ScanBuckets: React.FC = () => {
         );
         setProgress({
           inProgress: true,
-          nowProcessing: msgProgressLoading({ audioName: audioObjectKey }),
+          nowProcessing: t('Now loading $audioName').replace('audioName', audioObjectKey),
+
           processedCount: index + 1,
           allCount: allCount,
         });
@@ -299,7 +314,7 @@ const ScanBuckets: React.FC = () => {
       const alert: TAlert = {
         severity: 'error',
         title: 'Error',
-        description: msgProgressFailed(),
+        description: t('Error message loading failed'),
       };
       handleAlerts(alert);
     } finally {
@@ -309,11 +324,18 @@ const ScanBuckets: React.FC = () => {
     console.groupEnd();
   };
 
+  // translation
+  const LanguageContextHooks = useContext(LanguageContext);
+  const [t, i18n] = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(LanguageContextHooks.languageState);
+  }, [LanguageContextHooks.languageState, i18n]);
+
   /* ------------ Main TSX ------------ */
   // TSX to return
   return (
     <>
-      <PageContainer h2Text="Scan your bucket">
+      <PageContainer h2Text={t('Scan your bucket')}>
         {/*  Show notification that error or warning or information and more in this alert field. */}
         <AlertField alerts={alerts} />
 
@@ -349,7 +371,7 @@ const ScanBuckets: React.FC = () => {
           alert={{
             severity: 'success',
             title: '',
-            description: msgScaningSucceeded(),
+            description: t('Successfully scanned your bucket'),
           }}
           isSnackBarOpen={snackBar.isOpen}
           handleClose={handleSnackbarClose}
@@ -404,8 +426,8 @@ const ScanBuckets: React.FC = () => {
           </Box>
 
           <Box className={classes.button}>
-            <ResponsiveButton onClick={scanBuckets} variant="contained" color="secondary">
-              Start Scan
+            <ResponsiveButton onClick={() => scanBuckets(t)} variant="contained" color="secondary">
+              {t('Start Scan')}
             </ResponsiveButton>
           </Box>
         </form>
