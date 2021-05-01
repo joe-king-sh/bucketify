@@ -1,13 +1,15 @@
+<div align="center">
 
 ![bucketify-logo](../src/images/bucketify_logo.png)  
-
+</div>
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 Bucketify(https://www.bucketify.net/) クラウド時代のWebミュージックプレイヤーです.
 あなたがAmazon S3に保存している気に入りの音楽を、いつ、どこからでも再生できます.
+<div align="center">
 
 ![bucketify-demo](../src/images/bucketify_demo_pc.gif)  
-
+</div>
 
 ## 機能
 - ストリーミング再生
@@ -26,7 +28,9 @@ Bucketify(https://www.bucketify.net/) クラウド時代のWebミュージック
 
 ## アーキテクチャ
 - Bucketifyはあなたのオーディオファイルの**メタデータのみ**を管理します.
-![bucketify-how-it-work](../src/images/architecture-ja.drawio.svg)  
+<div align="center">
 
+![bucketify-how-it-work](../src/images/architecture-ja.drawio.svg)  
+</div>
 ## License
 このプロジェクトは MIT Licenseです.

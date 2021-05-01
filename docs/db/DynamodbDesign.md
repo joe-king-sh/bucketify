@@ -135,10 +135,11 @@ should be use filter expression, after fetch datas.
     | {UserId} | PlayListName | {PlayListName} | {PlayListId} |
     | {UserId} | PlayListAudios | {[PlayListAudios]]} | {PlayListId} |
 
-Many to many の考え方、
-Audio側でもPlayListIdを持って、playlist側でもAudioをもつ？
-playlistName入らなくて、別フィールドとして持たせるだけでいいのでは？
 
+- PlayList作成時の要検討事項
+  - Many to many の考え方
+    - Audio側でもPlayListIdを持って、playlist側でもAudioをもつ？  
+    - playlistNameはいらなくて、別フィールドとして持たせるだけでいいのでは？  
 ## Query condition definition
 
 ##### Table
