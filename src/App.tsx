@@ -26,10 +26,10 @@ import { useTracking } from './common/useTracking';
 import { AppName } from './common/const';
 
 // image
-import bucketifyImage from './images/bucketify_image.png';
+// import bucketifyImage from './images/bucketify_image.png';
 
 //OGP
-import { Helmet } from 'react-helmet';
+// import { Helmet } from 'react-helmet';
 
 // Auth Status
 export interface IAuthStateHooks {
@@ -63,7 +63,7 @@ export const App: React.FC = () => {
 
   return (
     <>
-      <Helmet
+      {/* <Helmet
         title={`Bucketify`}
         meta={[
           { name: 'twitter:card', content: 'summary_large_image' },
@@ -79,7 +79,7 @@ export const App: React.FC = () => {
               'Bucketify(https://www.bucketify.net/) is a cloud music player. This makes you can play your favorite music stored in Amazon S3 anytime, anywhere.',
           },
         ]}
-      />
+      /> */}
 
       <Switch>
         {/* Login not required route */}

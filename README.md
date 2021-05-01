@@ -4,6 +4,10 @@
 </div>
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+![Typescript](https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat")
+![React](https://img.shields.io/badge/-React-555.svg?logo=react&style=flat)
+![AWS Amplify](https://img.shields.io/static/v1?style=for-the-badge&message=AWS+Amplify&color=222222&logo=AWS+Amplify&logoColor=FF9900&label=)
+
 ## About Bucketify
 Bucketify(https://www.bucketify.net/) is a cloud music player.  
 This makes you can play your favorite music stored in Amazon S3 anytime, anywhere.
