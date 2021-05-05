@@ -380,7 +380,7 @@ export const Artists: React.FC = () => {
                         {artistName}
                       </AnchorLink>
                     ) : (
-                      { artistName }
+                      <span>{artistName}</span>
                     )}
                   </TableCell>
                 </TableRow>
