@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: '5.5rem',
       left: '2rem',
-      color: 'white',
+      color: theme.palette.text.primary,
       [theme.breakpoints.up('md')]: {
         display: 'none',
       },

@@ -8,10 +8,11 @@ import React, {
 // Styles
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
-// import useMediaQuery from '@material-ui/core/useMediaQuery';
-// import clsx from 'clsx';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import clsx from 'clsx';
 
 // 3rd party lib
+import AnchorLink from 'react-anchor-link-smooth-scroll';
 // import InfiniteScroll from 'react-infinite-scroller';
 
 // Router
@@ -45,9 +46,6 @@ import AddIcon from '@material-ui/icons/Add';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import CloseIcon from '@material-ui/icons/Close';
-// import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
-// import MusicNote from '@material-ui/icons/MusicNote';
-// import ShuffleIcon from '@material-ui/icons/Shuffle';
 
 // Service classes
 import {
@@ -171,7 +169,7 @@ export const Artists: React.FC = () => {
   // Styles
   const classes = useStyles();
   const theme = useTheme();
-  // const isMatchesOverMd = useMediaQuery(theme.breakpoints.up('md'));
+  const isMatchesOverMd = useMediaQuery(theme.breakpoints.up('md'));
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
   const history = useHistory();
 
@@ -305,10 +303,6 @@ export const Artists: React.FC = () => {
     fetchTracksAsync();
   }, [selectedArtistName]);
 
-  //   // Set checked status reversed.
-  //   setIsCheckedHeaderCheckbox(!isCheckedHeaderCheckbox);
-  // };
-
   const handlePlayTracksFabOnClick: () => void = () => {
     // Init alert field.
     setAlerts([]);
@@ -371,8 +365,13 @@ export const Artists: React.FC = () => {
                   onClick={() => handleArtistSelection(artistName)}
                 >
                   <TableCell>
-                    {/* <MusicNote className={classes.artistIcon} /> */}
-                    {artistName}
+                    {!isMatchesOverMd ? (
+                      <AnchorLink href="#tracks" offset="50" className={clsx(classes.link)}>
+                        {artistName}
+                      </AnchorLink>
+                    ) : (
+                      { artistName }
+                    )}
                   </TableCell>
                 </TableRow>
               );
@@ -503,6 +502,8 @@ export const Artists: React.FC = () => {
     <>
       {/* Fixed header */}
       <PageContainer h2Text={t('Artists')}>
+        <AlertField alerts={alerts} />
+
         <Grid container spacing={3} alignItems="center" justify="center">
           {/* Artist Section */}
           <Grid item xs={12} sm={3} alignItems="center" justify="center">
@@ -513,20 +514,19 @@ export const Artists: React.FC = () => {
           </Grid>
           {/* Track Section */}
           <Grid item xs={12} sm={9} alignItems="center" justify="center">
-            <b>
+            <b id="tracks">
               <MyTypographyH3>
                 {selectedArtistName ? selectedArtistName : t('No artists is selected')}
               </MyTypographyH3>
             </b>
             <Divider />
 
-            <div className={classes.trackListWrapper}>
+            <div className={clsx(classes.trackListWrapper, classes.link)}>
               {TrackSection()}
               {isTrackFetching && loadingCircle}
             </div>
           </Grid>
         </Grid>
-        <AlertField alerts={alerts} />
       </PageContainer>
 
       {/* Floating action buttons */}
