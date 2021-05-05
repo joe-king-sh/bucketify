@@ -220,12 +220,14 @@ export const MyDrawer: React.FC<MyDrawerProps> = ({
 
               <Collapse in={isLibraryOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItem button className={classes.nested} onClick={() => setShowSnackBar(true)}>
-                    <ListItemIcon>
-                      <People />
-                    </ListItemIcon>
-                    <ListItemText primary={t('Artists')} />
-                  </ListItem>
+                  <Link to="/artist" className={classes.link} onClick={() => handleDrawerClose()}>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <People />
+                      </ListItemIcon>
+                      <ListItemText primary={t('Artists')} />
+                    </ListItem>
+                  </Link>
 
                   <ListItem button className={classes.nested} onClick={() => setShowSnackBar(true)}>
                     <ListItemIcon>

@@ -98,6 +98,7 @@
 
     "Successfully scanned your bucket": "バケットのスキャンに成功しました",
     "Please select tracks at least one": "1ファイル以上を選択してください",
+    "No tracks selected.": "オーディオファイルが選択されていません",
 
     "Scan your bucket H2":"バケットをスキャン",
     "Start Scan": "スキャンを開始",
@@ -108,6 +109,8 @@
     "Error message AccessDenied": "ListBucket と GetItem の操作が可能なポリシーがIAM Userにアタッチされている必要があります.<br /><br />以下のようにIAMポリシーの設定を見直してください: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}",
 
     "Play tracks selected": "選択したトラックを再生",
-    "Add to Playlist": "プレイリストへ追加"
+    "Add to Playlist": "プレイリストへ追加",
 
+    "All Artists": "全てのアーティスト",
+    "No artists is selected": "アーティストが選択されていません"
 }

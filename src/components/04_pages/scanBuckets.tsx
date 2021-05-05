@@ -349,7 +349,13 @@ const ScanBuckets: React.FC = () => {
               }
             </Box>
             <Box className={classes.progresMessage}>
-              <Typography>{progress.nowProcessing}</Typography>
+              <Typography>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: progress.nowProcessing,
+                  }}
+                />
+              </Typography>
             </Box>
             <Box>
               {

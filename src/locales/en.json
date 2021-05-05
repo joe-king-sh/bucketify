@@ -98,6 +98,7 @@
 
     "Successfully scanned your bucket": "Successfully scanned your bucket.",
     "Please select tracks at least one": "Please select tracks at least one.",
+    "No tracks selected.": "No tracks selected.",
 
     "Scan your bucket H2": "Scan your bucket",
     "Start Scan": "START SCAN",
@@ -108,5 +109,8 @@
     "Error message AccessDenied": "Need to attach policy to allow ListBucket and GetItem oparation.<br /><br />Like below: <br /><br />{<br />    \"Version\": \"2012-10-17\",<br />    \"Statement\": [<br />        {<br />            \"Sid\": \"VisualEditor0\",<br />            \"Effect\": \"Allow\",<br />            \"Action\": [<br />                \"s3:ListBucket\",<br />                \"s3:ListBucketVersions\",<br />                \"s3:GetObject\"<br />            ],<br />            \"Resource\": [<br />                \"arn:aws:s3:::your-bucket-name\",<br />                \"arn:aws:s3:::your-bucket-name/*\",<br />            ]<br />        }<br />    ]<br />}",
 
     "Play tracks selected": "Play tracks selected",
-    "Add to Playlist": "Add to Playlist"
+    "Add to Playlist": "Add to Playlist",
+
+    "All Artists": "All Artists",
+    "No artists is selected": "No artists is selected."
 }
