@@ -20,6 +20,9 @@ import { initReactI18next } from 'react-i18next';
 import enJson from '../../locales/en.json';
 import jaJson from '../../locales/ja.json';
 
+// gtag
+import { useTracking } from '../../common/useTracking';
+
 // Translate
 i18n.use(initReactI18next).init({
   resources: {
@@ -63,6 +66,9 @@ export interface IGenericTemplateProps {
 
 const GenericTemplate: React.FC<IGenericTemplateProps> = ({ children }) => {
   const classes = useStyles();
+
+  // gtag
+  useTracking();
 
   // DrawerOpen
   const [isDrawerOpen, setOpen] = React.useState(false);

@@ -64,24 +64,6 @@ export const App: React.FC = () => {
 
   return (
     <>
-      {/* <Helmet
-        title={`Bucketify`}
-        meta={[
-          { name: 'twitter:card', content: 'summary_large_image' },
-          { name: 'twitter:creator', content: '@joe_king_sh' },
-          { property: 'og:title', content: 'Bucketify' },
-          { property: 'og:type', content: 'website' },
-          { property: 'og:url', content: 'https://www.bucketify.net/' },
-          { property: 'og:image', content: bucketifyImage },
-          { property: 'og:site_name', content: 'Bucketify' },
-          {
-            property: 'og:description',
-            content:
-              'Bucketify(https://www.bucketify.net/) is a cloud music player. This makes you can play your favorite music stored in Amazon S3 anytime, anywhere.',
-          },
-        ]}
-      /> */}
-
       <Switch>
         {/* Login not required route */}
         <Route exact path={['/', '/signup', '/privacy']}>

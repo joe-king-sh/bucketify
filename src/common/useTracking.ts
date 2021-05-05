@@ -20,7 +20,8 @@ export const useTracking = (trackingId: string | undefined = 'G-1XT7WKVHT9') => 
         );
         return;
       }
-
+      console.info('Update gtag function was triggered.');
+      console.info({ path: location.pathname, trackingid: trackingId });
       window.gtag('config', trackingId, { page_path: location.pathname });
     });
 
