@@ -57,7 +57,7 @@
     "Streaming playback detail": "Makes you can streaming playback your favorite music in s3 bucket. \nIt is also can mobile background playing.",
 
     "Auto generated libraries": "Auto generated libraries",
-    "Auto generated libraries detail": "Generates libraries by tracks, artist(🚧), album(🚧).\nAllowed file extensions are only 'mp3' or 'm4a'.",
+    "Auto generated libraries detail": "Generates libraries by tracks, artist, album(🚧).\nAllowed file extensions are only 'mp3' or 'm4a'.",
 
     "Playlists stored on the cloud": "Playlists stored on the cloud(🚧)",
     "Playlists stored on the cloud detail": "Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.",

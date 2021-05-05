@@ -19,7 +19,7 @@ This makes you can play your favorite music stored in Amazon S3 anytime, anywher
   - Makes you can streaming playback your favorite music in s3 bucket. 
   - It is also can mobile background playing.
 - Auto generated libraries
-  - Generates libraries by tracks, artist(🚧), album(🚧).
+  - Generates libraries by tracks, artist, album(🚧).
   - Allowed file extensions are only 'mp3' or 'm4a'.
 - Playlists stored on the cloud(🚧)
   - Makes you can store playlists on the cloud, and play on any device, anytime, anywhere.
