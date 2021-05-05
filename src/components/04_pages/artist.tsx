@@ -13,7 +13,6 @@ import clsx from 'clsx';
 
 // 3rd party lib
 import AnchorLink from 'react-anchor-link-smooth-scroll';
-// import InfiniteScroll from 'react-infinite-scroller';
 
 // Router
 import { Link } from 'react-router-dom';
@@ -46,6 +45,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import CloseIcon from '@material-ui/icons/Close';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 // Service classes
 import {
@@ -93,7 +93,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tableCellTrack: {
       width: '5%',
-      textAlign: 'right',
     },
 
     // Floating aciton button.
@@ -152,6 +151,18 @@ const useStyles = makeStyles((theme: Theme) =>
     albumDetailWrapper: {
       margin: '10px 0px 30px 0px',
     },
+
+    backArrowIcon: {
+      padding: '10px 5px 0px 0px',
+      color: theme.palette.text.primary,
+      [theme.breakpoints.up('sm')]: {
+        display: 'none',
+      },
+    },
+
+    artistLabelWrapper: {
+      display: 'inline-block',
+    },
   })
 );
 
@@ -170,6 +181,7 @@ export const Artists: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const isMatchesOverMd = useMediaQuery(theme.breakpoints.up('md'));
+  const isMatchesOverSm = useMediaQuery(theme.breakpoints.up('sm'));
   const UserDataHooks: IUserDataStateHooks = useContext(UserDataContext);
   const history = useHistory();
 
@@ -339,9 +351,7 @@ export const Artists: React.FC = () => {
       <Table aria-label="artist table">
         <TableHead>
           <TableRow hover>
-            <TableCell
-            // className={classes.tableCellArtist}
-            >
+            <TableCell variant="head">
               <Link to="/track" className={classes.link}>
                 {t('All Artists')}
               </Link>
@@ -506,26 +516,45 @@ export const Artists: React.FC = () => {
 
         <Grid container spacing={3} alignItems="center" justify="center">
           {/* Artist Section */}
-          <Grid item xs={12} sm={3} alignItems="center" justify="center">
-            <div className={classes.trackListWrapper}>
-              {artistTable}
-              {isArtistFetching && loadingCircle}
-            </div>
-          </Grid>
+          {
+            // Show only when display size over x-small, or artist is not selected.
+            (isMatchesOverSm || !selectedArtistName) && (
+              <Grid item xs={12} sm={3} alignItems="center" justify="center">
+                <div className={classes.trackListWrapper}>
+                  {artistTable}
+                  {isArtistFetching && loadingCircle}
+                </div>
+              </Grid>
+            )
+          }
           {/* Track Section */}
-          <Grid item xs={12} sm={9} alignItems="center" justify="center">
-            <b id="tracks">
-              <MyTypographyH3>
-                {selectedArtistName ? selectedArtistName : t('No artists is selected')}
-              </MyTypographyH3>
-            </b>
-            <Divider />
+          {
+            // Show only when display size over x-small, or artist is selected.
+            (isMatchesOverSm || selectedArtistName) && (
+              <Grid item xs={12} sm={9} alignItems="center" justify="center">
+                <b id="tracks">
+                  <ArrowBackIosIcon
+                    className={classes.backArrowIcon}
+                    onClick={() => {
+                      setSelectedArtistName('');
+                    }}
+                  />
 
-            <div className={clsx(classes.trackListWrapper, classes.link)}>
-              {TrackSection()}
-              {isTrackFetching && loadingCircle}
-            </div>
-          </Grid>
+                  <div className={classes.artistLabelWrapper}>
+                    <MyTypographyH3>
+                      {selectedArtistName ? selectedArtistName : t('No artists is selected')}
+                    </MyTypographyH3>
+                  </div>
+                </b>
+                <Divider />
+
+                <div className={clsx(classes.trackListWrapper, classes.link)}>
+                  {TrackSection()}
+                  {isTrackFetching && loadingCircle}
+                </div>
+              </Grid>
+            )
+          }
         </Grid>
       </PageContainer>
 
@@ -682,13 +711,17 @@ const TrackAlbumDetail: React.FC<ITrackAlbumDetail> = ({
                           value={track.id}
                         />
                       </TableCell>
-                      <TableCell component="th" scope="row" className={classes.tableCellCheckbox}>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        className={classes.tableCellCheckbox}
+                        align="right"
+                      >
                         {track.track}
                       </TableCell>
                       <TableCell component="th" scope="row" className={classes.tableCellTitle}>
                         {track.title}
                       </TableCell>
-                      {/* <TableCell className={classes.tableCellTrack}>{track.track}</TableCell> */}
                     </TableRow>
                   )
                 );
