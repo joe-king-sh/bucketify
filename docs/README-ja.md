@@ -35,5 +35,8 @@ Bucketify(https://www.bucketify.net/) クラウド時代のWebミュージック
 ![bucketify-how-it-work](../src/images/architecture-ja.drawio.svg)  
 </div>
 
+## Link
+- Qiita -[【個人開発】Amazon S3に格納した音楽だけを再生するマニアックな音楽プレイヤーを、React + Typescript + AWS Amplify で作った話](https://qiita.com/joe-king-sh/items/e6d46b8015282c68540d)
+
 ## License
 このプロジェクトは MIT Licenseです.

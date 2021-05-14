@@ -23,7 +23,6 @@ import GenericTemplate from './components/03_templates/genericTemplate';
 import LoginRequiredWrapper from './components/03_templates/loginRequiredWrapper';
 
 // common
-import { useTracking } from './common/useTracking';
 import { AppName } from './common/const';
 
 // image
@@ -60,7 +59,6 @@ export interface ILanguageContext {
 export const LanguageContext = React.createContext<ILanguageContext>({} as ILanguageContext);
 
 export const App: React.FC = () => {
-  useTracking('G-1XT7WKVHT9');
 
   return (
     <>

@@ -39,5 +39,8 @@ Bucketify manages **only your audio file metadata**.
 
 ## License
 This project is licensed under the MIT License.  
-  
+
+## Link
+- Qiita -[【個人開発】Amazon S3に格納した音楽だけを再生するマニアックな音楽プレイヤーを、React + Typescript + AWS Amplify で作った話](https://qiita.com/joe-king-sh/items/e6d46b8015282c68540d)
+
 [※日本語版README.mdはこちら](doc/../docs/README-ja.md)
